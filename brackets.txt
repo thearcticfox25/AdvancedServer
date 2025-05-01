@@ -1,0 +1,2 @@
+#define UPPER_BRACKET "-------\\ice/star~-------"
+#define LOWER_BRACKET "---------------------"

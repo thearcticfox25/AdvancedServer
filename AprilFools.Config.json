@@ -1,0 +1,206 @@
+{
+	"networking":	{
+		"port":	8606,
+		"server_count":	4
+	},
+	"pairing":	{
+		"maximum_players_per_lobby":	25,
+		"ip_validation":	false,
+		"ping_limit":	16384,
+		"player_maximum_errors":	50000,
+		"versioning":	{
+			"target_version":	1101,
+			"disable_version_validating":	true
+		}
+	},
+	"logging":	{
+		"log_debug":	false,
+		"log_to_file":	false
+	},
+	"lobby_misc":	{
+		"moderation":	{
+			"ban_ip":	true,
+			"ban_udid":	true,
+			"ban_nickname":	false,
+			"op_default_level":	3,
+			"banhammer_friendly_fire":	false
+		},
+		"message_of_the_day":	"\\warning: happy april fools' day",
+		"lobby_timeout_timer":	255,
+		"lobby_start_timer":	3,
+		"votekick_cooldown":	30,
+		"server_location":	"Antarctica",
+		"apply_textchat_fixes":	true,
+		"authoritarian_mode":	false,
+		"lobby_ready_required_percentage":	50,
+		"kick_unready_before_starting":	false,
+		"hosts_name":	"An Antarctic Polar Bear",
+		"anonymous_mode":	true
+	},
+	"map_selection":	{
+		"enabled":	true,
+		"exclude_last_map":	true,
+		"timer":	5,
+		"map_list":	[false, true, true, true, true, true, true, true, false, true, false, true, true, false, false, true, true, true, true, false, false]
+	},
+	"character_selection":	{
+		"enable":	true,
+		"charselect_mod_unlocked":	false,
+		"allow_foreign_characters":	true,
+		"charselect_timer":	5
+	},
+	"gameplay":	{
+		"respawn_time":	5,
+		"sudden_death_timer":	120,
+		"ring_appearance_timer":	45,
+		"escape_time":	3,
+		"demonization_percentage":	100,
+		"exe_camp_penalty":	false,
+		"hide_player_characters":	false,
+		"enable_achievements":	false,
+		"enable_sounds":	false,
+		"gametimers_ceiling":	240,
+		"match_respawn_and_game_timers":	true,
+		"anticheat":	{
+			"palette_anticheat":	false,
+			"zone_anticheat":	false,
+			"distance_anticheat":	false,
+			"ability_anticheat":	false,
+			"data_based_anticheat":	false
+		},
+		"competitive_mode":	{
+			"enable":	false,
+			"eliminate_count":	0,
+			"campers_are_first":	false
+		},
+		"banana":	{
+			"disable_timer":	false,
+			"singleplayer":	false
+		},
+		"gmcycle":	{
+			"overhell":	false
+		},
+		"entities_misc":	{
+			"global":	{
+				"rings":	{
+					"enabled":	true,
+					"red_ring_chance":	100
+				},
+				"spikes":	{
+					"timer":	0
+				}
+			},
+			"map_specific":	{
+				"ravine_mist":	{
+					"shards":	{
+						"amount":	12,
+						"required_for_exit":	12
+					},
+					"slugs":	{
+						"enabled":	true,
+						"ring_chance":	0,
+						"red_ring_chance":	100
+					}
+				},
+				"you_cant_run":	{
+					"gas":	{
+						"delay":	0
+					}
+				},
+				"limp_city":	{
+					"chain":	{
+						"delay":	0,
+						"warning":	0,
+						"shocking_time":	0
+					},
+					"eye":	{
+						"recharge_strength":	0,
+						"recharge_timer":	10,
+						"use_cost":	100
+					}
+				},
+				"not_perfect":	{
+					"switch_timer":	0,
+					"switch_timer_chase":	0,
+					"switch_warning_timer":	0,
+					"switch_warning_timer_chase":	0
+				},
+				"kind_and_fair":	{
+					"speedbox":	{
+						"timer":	0,
+						"timer_offset":	0
+					}
+				},
+				"act9":	{
+					"walls":	{
+						"enabled":	true
+					}
+				},
+				"nasty_paradise":	{
+					"snowballs":	{
+						"enabled":	true
+					},
+					"ice":	{
+						"regeneration_timer":	0
+					}
+				},
+				"priceless_freedom":	{
+					"black_rings":	{
+						"enabled":	true
+					}
+				},
+				"hills":	{
+					"thunder":	{
+						"timer":	0,
+						"timer_offset":	0
+					}
+				},
+				"torture_cave":	{
+					"acid":	{
+						"delay":	0
+					}
+				},
+				"dark_tower":	{
+					"stalactites":	{
+						"timer":	0,
+						"timer_offset":	0,
+						"acceleration":	3
+					},
+					"balls":	{
+						"shift_per_tick":	0.5
+					}
+				},
+				"haunting_dream":	{
+					"doors":	{
+						"toggle_delay":	25
+					}
+				},
+				"fart_zone":	{
+					"dummy":	{
+						"velocity":	0.2
+					},
+					"black_rings":	{
+						"enabled":	true
+					}
+				}
+			},
+			"character_specific":	{
+				"tails":	{
+					"projectile_speed":	4,
+					"projectile_timeout_timer":	10
+				}
+			}
+		}
+	},
+	"results_misc":	{
+		"enabled":	true,
+		"timer":	7,
+		"pride":	false
+	},
+	"gui":	{
+		"interface_scale":	2
+	},
+	"other":	{
+		"ignore_inadequate_configuration":	false
+	}
+}

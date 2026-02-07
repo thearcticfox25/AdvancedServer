@@ -498,6 +498,42 @@ bool peer_identity(PeerData* v, Packet* packet)
 	v->lobby_icon = lobby_icon;
 	v->pet = pet;
 
+	v->should_timeout = true;
+	v->disconnecting = false;
+	v->mod_tool = false;
+	v->nickname = nickname;
+	v->udid = udid;
+	v->lobby_icon = lobby_icon;
+	v->pet = pet;
+
+	// --- НОВАЯ ПРОВЕРКА ---
+	// Проверка на "advancedclient" в UDID (регистронезависимая)
+	bool has_advancedclient = false;
+	const char* forbidden = "advancedclient";
+	size_t forbidden_len = strlen(forbidden);
+	size_t udid_len = strlen(v->udid.value);
+
+	if (udid_len >= forbidden_len) {
+		for (size_t i = 0; i <= udid_len - forbidden_len; i++) {
+			bool match = true;
+			for (size_t j = 0; j < forbidden_len; j++) {
+				if (tolower((unsigned char)v->udid.value[i + j]) != forbidden[j]) {
+					match = false;
+					break;
+				}
+			}
+			if (match) {
+				has_advancedclient = true;
+				break;
+			}
+		}
+	}
+
+	if (has_advancedclient) {
+		Info("Kicking player with 'advancedclient' in UDID: %s (IP: %s)", v->udid.value, v->ip.value);
+		server_disconnect(v->server, v->peer, DR_OTHER, "AdvancedClient is not allowed on this server");
+		return false;
+	}
 	bool res = true;
 	MutexLock(v->server->state_lock);
 	{

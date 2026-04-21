@@ -1078,14 +1078,15 @@ bool server_cmd_handle(Server* server, unsigned long hash, PeerData* v, String* 
 			RAssert(server_send_msg(v->server, v->peer, format));
 			snprintf(format, 100, "id: %d", v->id);
 			RAssert(server_send_msg(v->server, v->peer, format));
-			if (v->op == 3) {
-				snprintf(format, 100, "perms: local host");
+			if (v->op > 0) {
+			    const char* op_str = "unknown";
+			    if (v->op == 1) op_str = "operator";
+			    else if (v->op == 2) op_str = "moderator";
+			    else if (v->op == 3) op_str = "local host";
+			    snprintf(format, 100, "perms: %s", op_str);
 			} else {
-				const char* op_str = (v->op >= 0 && v->op <= 2) ? op_names[v->op] : "unknown";
-				snprintf(format, 100, "perms: %d (%s)", v->op, op_str);
+			    snprintf(format, 100, "perms: member");
 			}
-			RAssert(server_send_msg(v->server, v->peer, format));
-			break;
 		}
 	}
 

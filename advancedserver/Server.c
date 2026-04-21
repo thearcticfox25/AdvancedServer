@@ -1079,7 +1079,7 @@ bool server_cmd_handle(Server* server, unsigned long hash, PeerData* v, String* 
 			snprintf(format, 100, "id: %d", v->id);
 			RAssert(server_send_msg(v->server, v->peer, format));
 			if (v->op == 3) {
-				snprintf(format, 100, "perms: provider");
+				snprintf(format, 100, "perms: local host");
 			} else {
 				const char* op_str = (v->op >= 0 && v->op <= 2) ? op_names[v->op] : "unknown";
 				snprintf(format, 100, "perms: %d (%s)", v->op, op_str);

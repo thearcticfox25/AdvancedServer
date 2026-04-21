@@ -14,7 +14,12 @@ cJSON* g_banned_nicknames = NULL;
 cJSON* g_timeouts = NULL;
 cJSON* g_ops = NULL;
 cJSON* g_whitelisted_players = NULL;
-Mutex	g_banMut;
+
+Mutex	g_banIpMut;
+Mutex	g_banUdidMut;
+Mutex	g_banNickMut;
+Mutex	g_whitelistMut;
+
 Mutex	g_timeoutMut;
 Mutex	g_opMut;
 
@@ -23,8 +28,12 @@ bool init_balls(void)
     (void)mkdir("Player_Data", 0777);
 
     MutexCreate(g_timeoutMut);
-    MutexCreate(g_banMut);
     MutexCreate(g_opMut);
+
+    MutexCreate(g_banIpMut);
+    MutexCreate(g_banUdidMut);
+    MutexCreate(g_banNickMut);
+    MutexCreate(g_whitelistMut);
 
     RAssert(collection_init(&g_timeouts, TIMEOUTS_FILE, "{}"));
     RAssert(collection_init(&g_banned_ips, BANNED_IPS_FILE, "{}"));
@@ -42,36 +51,45 @@ bool init_balls(void)
 bool ban_add(const char* nickname, const char* udid, const char* ip)
 {
     bool res = true;
-    bool changed = false;
+    bool save_ip = false;
+    bool save_udid = false;
+    bool save_nick = false;
 
-    MutexLock(g_banMut);
+    MutexLock(g_banIpMut);
+    if (!cJSON_HasObjectItem(g_banned_ips, ip))
     {
-        bool changed = false;
-        if (!cJSON_HasObjectItem(g_banned_ips, ip))
-        {
-            cJSON* js = cJSON_CreateString(nickname);
-            cJSON_AddItemToObject(g_banned_ips, ip, js);
-            changed = true;
-        }
-        if (!cJSON_HasObjectItem(g_banned_udids, udid))
-        {
-            cJSON* js = cJSON_CreateString(nickname);
-            cJSON_AddItemToObject(g_banned_udids, udid, js);
-            changed = true;
-        }
-        if (!cJSON_HasObjectItem(g_banned_nicknames, nickname))
-        {
-            cJSON* js = cJSON_CreateString(nickname);
-            cJSON_AddItemToObject(g_banned_nicknames, nickname, js);
-            changed = true;
-        }
+        cJSON* js = cJSON_CreateString(nickname);
+        cJSON_AddItemToObject(g_banned_ips, ip, js);
+        save_ip = true;
     }
-    MutexUnlock(g_banMut);
+    MutexUnlock(g_banIpMut);
 
-    if (changed)
-        res = collection_save(BANNED_IPS_FILE, g_banned_ips) &&
-        collection_save(BANNED_UDIDS_FILE, g_banned_udids) &&
-        collection_save(BANNED_NICKNAMES_FILE, g_banned_nicknames);
+    MutexLock(g_banUdidMut);
+    if (!cJSON_HasObjectItem(g_banned_udids, udid))
+    {
+        cJSON* js = cJSON_CreateString(nickname);
+        cJSON_AddItemToObject(g_banned_udids, udid, js);
+        save_udid = true;
+    }
+    MutexUnlock(g_banUdidMut);
+
+    MutexLock(g_banNickMut);
+    if (!cJSON_HasObjectItem(g_banned_nicknames, nickname))
+    {
+        cJSON* js = cJSON_CreateString(nickname);
+        cJSON_AddItemToObject(g_banned_nicknames, nickname, js);
+        save_nick = true;
+    }
+    MutexUnlock(g_banNickMut);
+
+    if (save_ip)
+        res = res && collection_save(BANNED_IPS_FILE, g_banned_ips);
+
+    if (save_udid)
+        res = res && collection_save(BANNED_UDIDS_FILE, g_banned_udids);
+
+    if (save_nick)
+        res = res && collection_save(BANNED_NICKNAMES_FILE, g_banned_nicknames);
 
     return res;
 }
@@ -79,35 +97,42 @@ bool ban_add(const char* nickname, const char* udid, const char* ip)
 bool ban_revoke(const char* argument)
 {
     bool res = false;
-    bool changed = false;
+    bool save_ip = false;
+    bool save_udid = false;
+    bool save_nick = false;
 
-    MutexLock(g_banMut);
+    MutexLock(g_banIpMut);
+    if (cJSON_HasObjectItem(g_banned_ips, argument))
     {
-
-        if (cJSON_HasObjectItem(g_banned_ips, argument))
-        {
-            cJSON_DeleteItemFromObject(g_banned_ips, argument);
-            changed = true;
-        }
-
-        if (cJSON_HasObjectItem(g_banned_udids, argument))
-        {
-            cJSON_DeleteItemFromObject(g_banned_udids, argument);
-            changed = true;
-        }
-
-        if (cJSON_HasObjectItem(g_banned_nicknames, argument))
-        {
-            cJSON_DeleteItemFromObject(g_banned_nicknames, argument);
-            changed = true;
-        }
+        cJSON_DeleteItemFromObject(g_banned_ips, argument);
+        save_ip = true;
     }
-    MutexUnlock(g_banMut);
+    MutexUnlock(g_banIpMut);
 
-    if (changed)
-        res = collection_save(BANNED_IPS_FILE, g_banned_ips) &&
-        collection_save(BANNED_UDIDS_FILE, g_banned_udids) &&
-        collection_save(BANNED_NICKNAMES_FILE, g_banned_nicknames);
+    MutexLock(g_banUdidMut);
+    if (cJSON_HasObjectItem(g_banned_udids, argument))
+    {
+        cJSON_DeleteItemFromObject(g_banned_udids, argument);
+        save_udid = true;
+    }
+    MutexUnlock(g_banUdidMut);
+
+    MutexLock(g_banNickMut);
+    if (cJSON_HasObjectItem(g_banned_nicknames, argument))
+    {
+        cJSON_DeleteItemFromObject(g_banned_nicknames, argument);
+        save_nick = true;
+    }
+    MutexUnlock(g_banNickMut);
+
+    if (save_ip)
+        res = collection_save(BANNED_IPS_FILE, g_banned_ips);
+
+    if (save_udid)
+        res = collection_save(BANNED_UDIDS_FILE, g_banned_udids) || res;
+
+    if (save_nick)
+        res = collection_save(BANNED_NICKNAMES_FILE, g_banned_nicknames) || res;
 
     return res;
 }
@@ -115,24 +140,27 @@ bool ban_revoke(const char* argument)
 bool ban_check(const char* nickname, const char* udid, const char* ip, bool* result)
 {
     *result = false;
-    MutexLock(g_banMut);
-    {
-        if (g_config.states.lobby_misc.moderation.ban_ip) {
-            if (cJSON_HasObjectItem(g_banned_ips, ip))
-                *result = true;
-        }
 
-        if (g_config.states.lobby_misc.moderation.ban_udid) {
-            if (cJSON_HasObjectItem(g_banned_udids, udid))
-                *result = true;
-        }
-
-        if (g_config.states.lobby_misc.moderation.ban_nickname) {
-            if (cJSON_HasObjectItem(g_banned_nicknames, nickname))
-                *result = true;
-        }
+    if (g_config.states.lobby_misc.moderation.ban_ip) {
+        MutexLock(g_banIpMut);
+        if (cJSON_HasObjectItem(g_banned_ips, ip))
+            *result = true;
+        MutexUnlock(g_banIpMut);
     }
-    MutexUnlock(g_banMut);
+
+    if (!(*result) && g_config.states.lobby_misc.moderation.ban_udid) {
+        MutexLock(g_banUdidMut);
+        if (cJSON_HasObjectItem(g_banned_udids, udid))
+            *result = true;
+        MutexUnlock(g_banUdidMut);
+    }
+
+    if (!(*result) && g_config.states.lobby_misc.moderation.ban_nickname) {
+        MutexLock(g_banNickMut);
+        if (cJSON_HasObjectItem(g_banned_nicknames, nickname))
+            *result = true;
+        MutexUnlock(g_banNickMut);
+    }
 
     return true;
 }
@@ -333,7 +361,7 @@ bool whitelist_add(const char* nickname, const char* ip)
     bool res = true;
     bool changed = false;
 
-    MutexLock(g_banMut);
+    MutexLock(g_whitelistMut);
     {
         if (!cJSON_HasObjectItem(g_whitelisted_players, ip))
         {
@@ -342,7 +370,7 @@ bool whitelist_add(const char* nickname, const char* ip)
             changed = true;
         }
     }
-    MutexUnlock(g_banMut);
+    MutexUnlock(g_whitelistMut);
 
     if (changed)
         res = collection_save(WHITELIST_FILE, g_whitelisted_players);
@@ -355,7 +383,7 @@ bool whitelist_revoke(const char* argument)
     bool res = false;
     bool changed = false;
 
-    MutexLock(g_banMut);
+    MutexLock(g_whitelistMut);
     {
         if (cJSON_HasObjectItem(g_whitelisted_players, argument))
         {
@@ -363,7 +391,7 @@ bool whitelist_revoke(const char* argument)
             changed = true;
         }
     }
-    MutexUnlock(g_banMut);
+    MutexUnlock(g_whitelistMut);
 
     if (changed)
         res = collection_save(WHITELIST_FILE, g_whitelisted_players);
@@ -374,12 +402,12 @@ bool whitelist_revoke(const char* argument)
 bool whitelist_check(const char* ip, bool* result)
 {
     *result = true;
-    MutexLock(g_banMut);
+    MutexLock(g_whitelistMut);
     {
         if (cJSON_HasObjectItem(g_whitelisted_players, ip))
             *result = false;
     }
-    MutexUnlock(g_banMut);
+    MutexUnlock(g_whitelistMut);
 
     return true;
 }

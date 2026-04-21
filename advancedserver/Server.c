@@ -1068,6 +1068,25 @@ bool server_cmd_handle(Server* server, unsigned long hash, PeerData* v, String* 
 			break;
 		}
 
+		case CMD_PING:
+		{
+			char format[100];
+			const char* op_names[] = {"member", "operator", "moderator", "local host"};
+			snprintf(format, 100, "user: %s", v->nickname.value);
+			RAssert(server_send_msg(v->server, v->peer, format));
+			snprintf(format, 100, "ms: %u", v->peer->roundTripTime);
+			RAssert(server_send_msg(v->server, v->peer, format));
+			snprintf(format, 100, "id: %d", v->id);
+			RAssert(server_send_msg(v->server, v->peer, format));
+			if (v->op == 3) {
+				snprintf(format, 100, "perms: provider");
+			} else {
+				const char* op_str = (v->op >= 0 && v->op <= 2) ? op_names[v->op] : "unknown";
+				snprintf(format, 100, "perms: %d (%s)", v->op, op_str);
+			}
+			RAssert(server_send_msg(v->server, v->peer, format));
+			break;
+		}
 	}
 
 	return true;

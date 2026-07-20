@@ -1,0 +1,33 @@
+[package]
+name = "AdvancedServer"
+version = "1.1.0"
+edition = "2021"
+license = "AGPL-3.0"
+
+[[bin]]
+name = "AdvancedServer"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+signal-hook = "0.3"
+rand = { version = "0.8", features = ["small_rng"] }
+log = "0.4"
+env_logger = "0.11"
+chrono = "0.4"
+crossterm = "0.28"
+rusty_enet = { path = "./lib/rusty_enet/" }
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+[patch.crates-io]
+rusty_enet = { path = "./lib/rusty_enet/" }
+
+[profile.release]
+# opt-level 3: this is a 60Hz physics/anticheat server where throughput matters
+# more than binary size. (Was "z" — optimized for size, leaving speed on the table.)
+opt-level = 3
+lto = true
+strip = true

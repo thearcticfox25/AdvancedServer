@@ -27,6 +27,7 @@ pub fn send_preidentity(idx: usize, host: &mut enet::Host<UdpSocket>, pp: &mut P
 }
 
 pub fn disconnect_idx(idx: usize, host: &mut enet::Host<UdpSocket>, reason: u32) {
+    log::info!("Disconnected idx {} (reason {})", idx, reason);
     if let Some(peer) = host.get_peer_mut(enet::PeerID(idx)) {
         peer.disconnect(reason);
     }
@@ -41,6 +42,8 @@ pub fn handle_identity(
     ip_set: &mut HashSet<String>,
     peer_index_map: &mut HashMap<u16, usize>,
     index_to_id: &mut HashMap<usize, u16>,
+    all_shared: &[std::sync::Arc<crate::server::ServerShared>],
+    base_port: u16,
 ) {
     let cfg = cfg();
     let mut pkt = GamePacket::from_data(data);
@@ -49,21 +52,21 @@ pub fn handle_identity(
 
     let version = match pkt.read_u16() {
         Some(v) => v,
-        None => return,
+        None => { log::debug!("Identity failed for idx {}: truncated version", idx); return; }
     };
     let _server_index = pkt.read_i32();
     let nickname = match pkt.read_str() {
         Some(s) => s,
-        None => return,
+        None => { log::debug!("Identity failed for idx {}: truncated nickname", idx); return; }
     };
     let udid = match pkt.read_str() {
         Some(s) => s,
-        None => return,
+        None => { log::debug!("Identity failed for idx {}: truncated udid", idx); return; }
     };
     let lobby_icon = pkt.read_u8().unwrap_or(0);
     let pet = pkt.read_i8().unwrap_or(-1);
 
-    // R4: limit by Unicode characters, not bytes — matches the upstream "30 characters
+    // Limit by Unicode characters, not bytes — matches the upstream "30 characters
     // max" rule (C's string_length counts codepoints) so multi-byte nicks aren't
     // rejected early. read_str already caps the raw field at 128 bytes.
     if crate::packet::str_unicode_len(&nickname) >= 30 {
@@ -107,6 +110,7 @@ pub fn handle_identity(
 
     if let Some(ts) = crate::moderation::timeout_check(&udid, &ip) {
         if ts > crate::moderation::now_unix() {
+            log::info!("{} is rate-limited (id {}, ip {})", crate::colors::colorize(&nickname), idx, ip);
             disconnect_idx(idx, host, DisconnectReason::RateLimited as u32);
             pending.remove(&idx);
             return;
@@ -115,6 +119,26 @@ pub fn handle_identity(
 
     let max = cfg.server_config.pairing.maximum_players_per_lobby as usize;
     if server.total_count() >= max {
+        // Before rejecting, check sibling lobbies in this same process for
+        // room and redirect there instead. No disconnect on this path --
+        // just tell the client where to go and leave the pending connection
+        // be; it's cleaned up by the ordinary pending-timeout if the client
+        // doesn't follow.
+        for (j, shared_j) in all_shared.iter().enumerate() {
+            if j as u16 == server.id { continue; }
+            let count = shared_j.peers.read().map(|g| g.len()).unwrap_or(usize::MAX);
+            if count < max {
+                let target_port = base_port + j as u16;
+                let mut redirect = GamePacket::new(PacketType::SERVER_LOBBY_CHANGELOBBY);
+                let _ = redirect.write_u32(target_port as u32);
+                let ep = enet::Packet::reliable(redirect.data());
+                if let Some(peer) = host.get_peer_mut(enet::PeerID(idx)) {
+                    let _ = peer.send(0, &ep);
+                }
+                log::debug!("Redirecting idx {} to another free server: {}", idx, j);
+                return;
+            }
+        }
         disconnect_idx(idx, host, DisconnectReason::LobbyFull as u32);
         pending.remove(&idx);
         return;
@@ -132,13 +156,14 @@ pub fn handle_identity(
     }
 
     if crate::moderation::ban_check(&nickname, &udid, &ip) {
+        log::info!("{} banned by host (id {}, ip {})", crate::colors::colorize(&nickname), idx, ip);
         disconnect_idx(idx, host, DisconnectReason::BannedByHost as u32);
         pending.remove(&idx);
         return;
     }
 
     if cfg.states.lobby_misc.moderation.enforce_whitelist
-        && !crate::moderation::whitelist_check(&nickname, &udid, &ip)
+        && !crate::moderation::whitelist_check(&udid, &ip)
     {
         disconnect_idx(idx, host, DisconnectReason::BannedByHost as u32);
         pending.remove(&idx);
@@ -180,14 +205,17 @@ pub fn handle_identity(
         let _ = peer.send(0, &ep);
     }
 
+    let last_peer = server.peers.last();
     log::info!(
         "[Server {}] Player '{}' joined (id={}, mod_tool={}, mobile={})",
         server.id,
-        crate::colors::colorize(server.peers.last().map(|p| p.nickname.as_str()).unwrap_or("?")),
+        crate::colors::colorize(last_peer.map(|p| p.nickname.as_str()).unwrap_or("?")),
         game_id,
         mod_tool,
         is_mobile,
     );
+    log::info!("  IP: {}", last_peer.map(|p| p.ip.as_str()).unwrap_or("?"));
+    log::info!("  UID: {}", last_peer.map(|p| p.udid.as_str()).unwrap_or("?"));
 
     let mut outbox: Vec<OutboxMsg> = Vec::new();
     match server.state {

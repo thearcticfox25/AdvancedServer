@@ -61,7 +61,7 @@ impl Entity for Act9Wall {
                     let bx = (ACT9_ROOM_WIDTH - x) + 64.0;
                     (bx, y, bx + 64.0 * 34.0, y + 64.0 * 19.5)
                 }
-                _ => return false,
+                _ => { log::error!("Invalid wall id!"); return false; }
             };
 
             let to_kick: Vec<u16> = ctx.ingame_peers.iter()

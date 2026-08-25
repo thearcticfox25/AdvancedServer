@@ -8,6 +8,7 @@ use crate::states::game::game_init;
 use rand::Rng;
 
 pub fn charselect_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    log::debug!("Entering CharSelect state...");
     let cfg = cfg();
     server.state = GameState::CharSelect;
 
@@ -21,6 +22,9 @@ pub fn charselect_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
     let exe_id = pick_exe(server);
     server.lobby.exe = exe_id;
+    if let Some(p) = server.find_peer(exe_id) {
+        log::info!("{} (id {}, c {}) is exe!", crate::colors::colorize(&p.nickname), exe_id, p.exe_chance);
+    }
 
     let timer = cfg.states.character_selection.charselect_timer;
     let map   = server.lobby.map;
@@ -48,6 +52,7 @@ pub fn charselect_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     server.lobby.countdown = 60.0;
     server.lobby.countdown_sec = timer;
 
+    log::info!("Server is now in Character Select");
 
     if !cfg.states.character_selection.enable {
         let mut rng = rand::thread_rng();
@@ -187,7 +192,7 @@ pub fn charselect_state_left(v_id: u16, server: &mut Server, outbox: &mut Vec<Ou
     let min_to_continue = cfg().states.lobby_misc.min_players_required.max(1) as usize;
     let remaining = server.peers.iter().filter(|p| p.in_game && p.id != v_id).count();
     if remaining < min_to_continue || v_id == server.lobby.exe {
-        crate::states::lobby::lobby_init(server);
+        crate::states::lobby::lobby_init(server, outbox);
         crate::states::lobby::lobby_broadcast_init(server, outbox);
         return;
     }
@@ -242,6 +247,9 @@ pub fn charselect_state_handle(
                 if let Some(pd) = server.find_peer_mut(v_id) {
                     pd.surv_char = SurvChar::from_i8(cidx as i8);
                 }
+                if let Some(p) = server.find_peer(v_id) {
+                    log::info!("{} (id {}) choses [{:?}]!", crate::colors::colorize(&p.nickname), v_id, p.surv_char);
+                }
 
                 if !hide_chars && !mod_unlocked {
                     let mut chg = Packet::new(PacketType::SERVER_LOBBY_CHARACTER_CHANGE);
@@ -267,6 +275,9 @@ pub fn charselect_state_handle(
             if let Some(pd) = server.find_peer_mut(v_id) {
                 pd.exe_char = ExeChar::from_i8(char_0based);
             }
+            if let Some(p) = server.find_peer(v_id) {
+                log::info!("{} (id {}) choses [{:?}]!", crate::colors::colorize(&p.nickname), v_id, p.exe_char);
+            }
 
 
             let mut resp = Packet::new(PacketType::SERVER_LOBBY_EXECHARACTER_RESPONSE);
@@ -284,7 +295,7 @@ pub fn charselect_state_handle(
         }
 
         PacketType::CLIENT_CHAT_MESSAGE => {
-            if !server.chat_rate_allow(v_id) { return; } // SEC-L3: anti-flood
+            if !server.chat_rate_allow(v_id) { return; } // anti-flood
             packet.pos = 2;
             let _sender = packet.read_u16();
             let msg = match packet.read_str() { Some(s) => s, None => return };
@@ -292,6 +303,8 @@ pub fn charselect_state_handle(
             if !in_game {
                 crate::states::waiting_room::handle_waiter_chat(v_id, &msg, server, outbox);
             } else {
+                let nick = server.find_peer(v_id).map(|p| p.nickname.clone()).unwrap_or_default();
+                log::info!("{} (id {}): {}", crate::colors::colorize(&nick), v_id, msg);
                 let mut pkt = Packet::new(PacketType::CLIENT_CHAT_MESSAGE);
                 let _ = pkt.write_u16(v_id);
                 let _ = pkt.write_str(&msg);

@@ -19,6 +19,7 @@ pub fn mapvote_check_state(server: &mut Server) {
 }
 
 pub fn mapvote_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    log::debug!("Entering MapVote state...");
     let cfg = cfg();
 
     let mut rng = rand::thread_rng();
@@ -38,6 +39,7 @@ pub fn mapvote_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
         }
     }
     if available.is_empty() {
+        log::error!("No maps available for automatic selection! Falling back to map 0.");
         available.push(0);
     }
 
@@ -45,6 +47,7 @@ pub fn mapvote_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
         let chosen = available[rng.gen_range(0..available.len())] as i8;
         server.last_map = chosen;
         server.lobby.map = chosen;
+        log::info!("Map automatically chosen: {}", crate::maps::MAP_LIST[chosen as usize].name);
         charselect_init(server, outbox);
         return;
     }
@@ -53,15 +56,34 @@ pub fn mapvote_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
     let count = available.len().min(3);
     let mut chosen: [u8; 3] = [0, 0, 0];
-    let mut used = vec![false; available.len()];
-    for slot in 0..count {
-        loop {
-            let idx = rng.gen_range(0..available.len());
-            if !used[idx] {
-                used[idx] = true;
-                chosen[slot] = available[idx] as u8;
-                break;
+    if available.len() <= 3 {
+        for slot in 0..count {
+            chosen[slot] = available[slot] as u8;
+        }
+    } else {
+        // Weighted rejection sampling against map_pickrates: a map is accepted
+        // with probability pickrate/255, so maps recently picked (low pickrate
+        // after finish_map_vote's decay) are less likely to reappear.
+        let mut used = vec![false; available.len()];
+        for slot in 0..count {
+            let mut chosen_idx = None;
+            for _ in 0..500 {
+                let idx = rng.gen_range(0..available.len());
+                if used[idx] { continue; }
+                let map = available[idx];
+                let pickrate = server.map_pickrates.get(map).copied().unwrap_or(255);
+                let roll = rng.gen_range(0..255);
+                if roll < pickrate {
+                    chosen_idx = Some(idx);
+                    break;
+                }
+                log::debug!("{} vs {} lost", roll, pickrate);
             }
+            let idx = chosen_idx.unwrap_or_else(|| {
+                (0..available.len()).find(|i| !used[*i]).unwrap_or(0)
+            });
+            used[idx] = true;
+            chosen[slot] = available[idx] as u8;
         }
     }
     for slot in count..3 {
@@ -71,6 +93,14 @@ pub fn mapvote_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     server.lobby.maps = chosen;
     server.lobby.votes = [0u8; 3];
     server.lobby.voting_map = -1;
+
+    log::info!("Server is now in Map Vote");
+    log::info!(
+        "Maps: [{}] [{}] [{}]",
+        crate::maps::MAP_LIST[chosen[0] as usize].name,
+        crate::maps::MAP_LIST[chosen[1] as usize].name,
+        crate::maps::MAP_LIST[chosen[2] as usize].name,
+    );
 
 
     for p in server.peers.iter_mut() {
@@ -109,7 +139,7 @@ pub fn mapvote_state_left(v_id: u16, server: &mut Server, outbox: &mut Vec<Outbo
     let remaining = server.peers.iter().filter(|p| p.in_game && p.id != v_id).count();
     let min_to_continue = cfg().states.lobby_misc.min_players_required.max(1) as usize;
     if remaining < min_to_continue {
-        crate::states::lobby::lobby_init(server);
+        crate::states::lobby::lobby_init(server, outbox);
         crate::states::lobby::lobby_broadcast_init(server, outbox);
         return;
     }
@@ -147,6 +177,13 @@ pub fn mapvote_state_handle(
                 pd.voted = true;
             }
 
+            let voted_map = server.lobby.maps[map_idx as usize];
+            let nick = server.find_peer(v_id).map(|p| p.nickname.clone()).unwrap_or_default();
+            log::info!(
+                "{} (id {}) voted for [{}]!",
+                crate::colors::colorize(&nick), v_id, crate::maps::MAP_LIST[voted_map as usize].name,
+            );
+
 
             let mut pkt = Packet::new(PacketType::SERVER_VOTE_SET);
             let _ = pkt.write_u8(server.lobby.votes[0]);
@@ -159,7 +196,7 @@ pub fn mapvote_state_handle(
         }
 
         PacketType::CLIENT_CHAT_MESSAGE => {
-            if !server.chat_rate_allow(v_id) { return; } // SEC-L3: anti-flood
+            if !server.chat_rate_allow(v_id) { return; } // anti-flood
             packet.pos = 2;
             let _sender = packet.read_u16();
             let msg = match packet.read_str() { Some(s) => s, None => return };
@@ -169,6 +206,9 @@ pub fn mapvote_state_handle(
                 crate::states::waiting_room::handle_waiter_chat(v_id, &msg, server, outbox);
                 return;
             }
+
+            let nick = server.find_peer(v_id).map(|p| p.nickname.clone()).unwrap_or_default();
+            log::info!("{} (id {}): {}", crate::colors::colorize(&nick), v_id, msg);
 
             let trimmed = msg.trim();
             if let Some(cmd) = parse_cmd(trimmed) {
@@ -248,6 +288,30 @@ fn finish_map_vote(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
     server.lobby.map = chosen_map;
     server.last_map = chosen_map;
+
+    // Pickrate decay: the winner drops hard, the other two candidates on the
+    // ballot drop a little, everything else not picked this round drifts back
+    // up — so a map that just won is unlikely to reappear in the next vote's
+    // candidate slate.
+    let won = chosen_map as usize;
+    if let Some(p) = server.map_pickrates.get_mut(won) {
+        *p = (*p - 255).max(0);
+    }
+    for &m in maps.iter() {
+        if let Some(p) = server.map_pickrates.get_mut(m as usize) {
+            *p = (*p - 25).max(0);
+        }
+    }
+    for (i, p) in server.map_pickrates.iter_mut().enumerate() {
+        if i == won { continue; }
+        *p = (*p + 25).min(255);
+    }
+
+    log::debug!("Pickrates:");
+    for (i, p) in server.map_pickrates.iter().enumerate().take(crate::maps::MAP_COUNT) {
+        log::debug!("  {}: {}", i, p);
+    }
+    log::info!("Map is [{}]", crate::maps::MAP_LIST[chosen_map as usize].name);
 
     crate::states::waiting_room::broadcast_map_announcement(chosen_map, outbox);
     charselect_init(server, outbox);

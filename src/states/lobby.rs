@@ -11,7 +11,19 @@ use crate::states::map_vote::mapvote_init;
 use crate::states::NO_COUNTDOWN;
 use crate::vote::{Vote, VoteState, VoteType};
 
-pub fn lobby_init(server: &mut Server) {
+/// This is a "promote, don't demote" reset. It never sets in_game back to
+/// false for anyone -- a player who's already in_game (was actively playing
+/// the round that just ended) stays in_game across the transition; only
+/// peers who joined mid-round as waiting-room spectators (in_game already
+/// false, set at connect time when the server wasn't in Lobby state) get
+/// promoted to in_game=true here, notified via the same
+/// SERVER_IDENTITY_RESPONSE their client got on first connect. That
+/// asymmetry is why every other Lobby-state entry point (natural countdown,
+/// the ".map" force-command, ?start, vote-practice) can call this and then
+/// jump straight into mapvote_init/charselect_init with no extra
+/// bookkeeping: lobby_init already leaves in_game correct for everyone.
+pub fn lobby_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    log::debug!("Entering Lobby state...");
     server.state = GameState::Lobby;
     server.lobby.countdown = 0.0;
     server.lobby.prac_countdown = 0.0;
@@ -29,15 +41,26 @@ pub fn lobby_init(server: &mut Server) {
     server.lobby.legacy_practice_ongoing = false;
     server.lobby.legacy_practice_votes.clear();
 
+    let mut newly_promoted: Vec<u16> = Vec::new();
     for p in server.peers.iter_mut() {
-        p.in_game = false;
         p.ready = false;
         p.plr = crate::player::Player::default();
         p.surv_char = SurvChar::None;
         p.exe_char = crate::server::ExeChar::None;
+        if !p.in_game {
+            p.in_game = true;
+            newly_promoted.push(p.id);
+        }
+    }
+    for id in newly_promoted {
+        let mut resp = Packet::new(PacketType::SERVER_IDENTITY_RESPONSE);
+        let _ = resp.write_u8(1);
+        let _ = resp.write_u16(id);
+        outbox.push(OutboxMsg::SendTo(id, resp.data().to_vec(), true));
     }
 
     update_exe_chance(server);
+    log::info!("Server is now in Lobby");
 }
 
 pub fn lobby_broadcast_init(server: &Server, outbox: &mut Vec<OutboxMsg>) {
@@ -139,6 +162,7 @@ pub fn lobby_state_left(v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxM
             let target_id = kick_target.id;
             let cfg = cfg();
             if target_id == v_id && cfg.states.lobby_misc.votekick.autoban_leavers {
+                log::info!("Kick target left during vote — vote auto-succeeds");
                 let kick_secs = cfg.server_config.pairing.kick_timeout_window as u64;
                 if let Some(p) = server.find_peer(v_id) {
                     let (nick, udid, ip) = (p.nickname.clone(), p.udid.clone(), p.ip.clone());
@@ -206,7 +230,7 @@ pub fn lobby_state_handle(
         }
 
         PacketType::CLIENT_CHAT_MESSAGE => {
-            if !server.chat_rate_allow(v_id) { return; } // SEC-L3: anti-flood
+            if !server.chat_rate_allow(v_id) { return; } // anti-flood
             packet.pos = 2;
             let _sender = packet.read_u16();
             let msg = match packet.read_str() {
@@ -320,8 +344,7 @@ pub fn lobby_state_handle(
         }
 
         PacketType::CLIENT_PLAYER_PALETTE => {
-            // SEC-L1: actually run the palette anti-cheat (previously the validator
-            // existed but was never called). It both rejects impossible recolors and,
+            // The palette anti-cheat both rejects impossible recolors and,
             // via its `id == v_id` check, blocks palette-spoofing of another player.
             if cfg().states.gameplay.anticheat.palette_anticheat {
                 packet.pos = 2;
@@ -443,6 +466,9 @@ pub fn handle_console_cmd(line: &str, server: &mut Server, outbox: &mut Vec<Outb
 }
 
 fn handle_chat(v_id: u16, msg: &str, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    let nick = server.find_peer(v_id).map(|p| p.nickname.clone()).unwrap_or_default();
+    log::info!("{} (id {}): {}", crate::colors::colorize(&nick), v_id, msg);
+
     let trimmed = msg.trim();
 
     if trimmed.starts_with(':') || trimmed.starts_with('.') {
@@ -470,12 +496,12 @@ fn handle_chat(v_id: u16, msg: &str, server: &mut Server, outbox: &mut Vec<Outbo
 pub fn send_greeting(v_id: u16, server: &Server, outbox: &mut Vec<OutboxMsg>) {
     let cfg = cfg();
     let sc = cfg.server_config.networking.server_count;
+    send_chat(outbox, v_id, &cfg.states.lobby_misc.upper_bracket);
+    send_chat(outbox, v_id, &format!("hosted by {}{}{}", COLOR_PURPUR, cfg.states.lobby_misc.hosts_name, COLOR_RESET));
     if sc >= 2 {
-        send_chat(outbox, v_id, &cfg.states.lobby_misc.upper_bracket);
-        send_chat(outbox, v_id, &format!("hosted by {}{}{}", COLOR_PURPUR, cfg.states.lobby_misc.hosts_name, COLOR_RESET));
         send_chat(outbox, v_id, &format!("server {}{}{} of {}{}{}", COLOR_RED, server.id + 1, COLOR_RESET, COLOR_BLUE, sc, COLOR_RESET));
-        send_chat(outbox, v_id, &cfg.states.lobby_misc.lower_bracket);
     }
+    send_chat(outbox, v_id, &cfg.states.lobby_misc.lower_bracket);
     send_chat(outbox, v_id, &format!("{}type .help for command list{}", COLOR_GRAY, COLOR_RESET));
     let loc = &cfg.states.lobby_misc.server_location;
     let ping_limit = cfg.server_config.pairing.ping_limit;
@@ -512,6 +538,29 @@ pub fn exec_cmd_pub(
         }
         _ => false,
     }
+}
+
+/// Parses a 1-based map index from `arg` and, if valid, jumps straight to
+/// CharSelect with it -- skipping MapVote entirely, as if map_selection were
+/// disabled in config or a successful .vp/.votepractice vote had just
+/// happened. Shared by .map and :start/?start's optional map argument.
+fn start_with_map(arg: &str, v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    let ind: i32 = match arg.parse::<i32>() {
+        Ok(v) => v,
+        Err(_) => {
+            send_chat(outbox, v_id, &format!("{}example:~ .map 1", COLOR_RED));
+            return;
+        }
+    };
+    let mc = crate::maps::MAP_COUNT as i32;
+    if ind < 1 || ind > mc {
+        send_chat(outbox, v_id, &format!("{}map should be between 1 and {}", COLOR_RED, mc));
+        return;
+    }
+    let map = (ind - 1) as i8;
+    server.lobby.map = map;
+    server.last_map = map;
+    crate::states::char_select::charselect_init(server, outbox);
 }
 
 fn exec_cmd(
@@ -771,26 +820,7 @@ fn exec_cmd(
                 send_chat(outbox, v_id, &format!("{}your permission level is too low", COLOR_RED));
                 return true;
             }
-            let ind_str = cmd.arg(0);
-            let ind: i32 = match ind_str.parse::<i32>() {
-                Ok(v) => v,
-                Err(_) => {
-                    send_chat(outbox, v_id, &format!("{}example:~ .map 1", COLOR_RED));
-                    return true;
-                }
-            };
-            let mc = crate::maps::MAP_COUNT as i32;
-            if ind < 1 || ind > mc {
-                send_chat(outbox, v_id, &format!("{}map should be between 1 and {}", COLOR_RED, mc));
-                return true;
-            }
-            let map = (ind - 1) as i8;
-            server.lobby.map = map;
-            server.last_map = map;
-            for p in server.peers.iter_mut() {
-                p.in_game = true;
-            }
-            crate::states::char_select::charselect_init(server, outbox);
+            start_with_map(cmd.arg(0), v_id, server, outbox);
         }
 
         "kick" => {
@@ -837,12 +867,19 @@ fn exec_cmd(
                 send_chat(outbox, v_id, &format!("{}your permission level is too low", COLOR_RED));
                 return true;
             }
-            if server.state == GameState::Game && server.game.end == 0.0 {
+            // game_state_tick returns before ever reaching its `end > 0.0`
+            // check while !server.game.started (still waiting on client
+            // ready-sync), so an end scheduled by game_end here can't start
+            // counting down until every last client's ready packet arrives.
+            // Only defer to game_end once the round has actually started;
+            // otherwise there's no real round to end, just go straight to a
+            // clean lobby.
+            if server.state == GameState::Game && server.game.started && server.game.end == 0.0 {
 
                 game_end(server, Ending::ExeWin, false, outbox);
             } else if server.state != GameState::Lobby {
                 let mut ob: Vec<OutboxMsg> = Vec::new();
-                lobby_init(server);
+                lobby_init(server, &mut ob);
                 lobby_broadcast_init(server, &mut ob);
                 outbox.append(&mut ob);
             }
@@ -853,7 +890,25 @@ fn exec_cmd(
                 send_chat(outbox, v_id, &format!("{}your permission level is too low", COLOR_RED));
                 return true;
             }
-            mapvote_init(server, outbox);
+            // Only valid from Lobby: a state change forced out from under
+            // whatever screen players are already on (mid-round/MapVote/
+            // CharSelect/Results) would leave their client desynced from the
+            // server's state. Use ?stop first to get back to a clean Lobby.
+            if server.state != GameState::Lobby {
+                return true;
+            }
+            // No extra bookkeeping needed here: reaching GameState::Lobby at
+            // all means lobby_init already ran and left in_game correct for
+            // every connected peer.
+            let map_arg = cmd.arg(0);
+            if map_arg.is_empty() {
+                mapvote_init(server, outbox);
+            } else {
+                // :start <id> / ?start --map/-m <id>: skip MapVote entirely,
+                // as if map_selection were disabled or a successful .vp vote
+                // had happened.
+                start_with_map(map_arg, v_id, server, outbox);
+            }
         }
 
         "chance" => {
@@ -919,7 +974,7 @@ fn handle_map_vote(v_id: u16, map_idx: Option<usize>, server: &mut Server, outbo
     broadcast_chat(outbox, "-----------------------");
     broadcast_chat(outbox, &format!("{}~ {}started map vote for {}{}.", nick, COLOR_YELLOW, map_name, COLOR_RESET));
     broadcast_chat(outbox, &format!("type {}.yes~ or ignore", COLOR_CYAN));
-    broadcast_chat(outbox, &format!("results will be summarized in {}{}~ sec", COLOR_GRAY, cfg.states.lobby_misc.votekick.cooldown));
+    broadcast_chat(outbox, &format!("results will be summarized in {}{}~ sec", COLOR_GRAY, (crate::vote::VOTE_TIMEOUT_TICKS / 60.0) as i32));
     broadcast_chat(outbox, "-----------------------");
 
     server.lobby.vote.add(v_id);
@@ -966,7 +1021,7 @@ fn handle_votekick(
 
 
     if let Some(tp) = server.find_peer(target_id) {
-        if tp.op >= 2 {
+        if tp.op > 0 {
             send_chat(outbox, v_id, &format!("{}you're permissionless", COLOR_RED));
             return;
         }
@@ -1001,7 +1056,7 @@ fn handle_votekick(
     broadcast_chat(outbox, "-----------------------");
     broadcast_chat(outbox, &format!("{}~ {}started kick vote for {}{}~", voter_nick, COLOR_RED, COLOR_RESET, target_nick));
     broadcast_chat(outbox, &format!("type {}.yes~ or ignore", COLOR_CYAN));
-    broadcast_chat(outbox, &format!("results will be summarized in {}{}~ sec", COLOR_GRAY, cfg.states.lobby_misc.votekick.cooldown));
+    broadcast_chat(outbox, &format!("results will be summarized in {}{}~ sec", COLOR_GRAY, (crate::vote::VOTE_TIMEOUT_TICKS / 60.0) as i32));
     broadcast_chat(outbox, "-----------------------");
 }
 
@@ -1052,9 +1107,6 @@ fn check_vote_result(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
                 if let Some(kt) = &server.lobby.kick_target {
                     let kick_secs = cfg.server_config.pairing.kick_timeout_window as u64;
-                    if cfg.states.lobby_misc.votekick.autoban_leavers {
-                        crate::moderation::ban_add(&kt.nickname, &kt.udid, &kt.ip, &kt.nickname);
-                    }
                     crate::moderation::timeout_set(&kt.nickname, &kt.udid, &kt.ip,
                         crate::moderation::now_unix() + kick_secs, &kt.nickname);
                 }
@@ -1136,7 +1188,7 @@ fn handle_votekick_legacy(v_id: u16, target_id: u16, server: &mut Server, outbox
     }
 
     match server.find_peer(target_id) {
-        Some(tp) if tp.op >= 2 => {
+        Some(tp) if tp.op > 0 => {
             send_chat(outbox, v_id, &format!("{}you're permissionless", COLOR_RED));
             return;
         }
@@ -1228,9 +1280,6 @@ fn check_votekick_legacy(server: &mut Server, ignore: bool, outbox: &mut Vec<Out
         if let Some(tp) = server.find_peer(target) {
             let (nick, udid, ip) = (tp.nickname.clone(), tp.udid.clone(), tp.ip.clone());
             let kick_secs = cfg.server_config.pairing.kick_timeout_window as u64;
-            if cfg.states.lobby_misc.votekick.autoban_leavers {
-                crate::moderation::ban_add(&nick, &udid, &ip, &nick);
-            }
             crate::moderation::timeout_set(&nick, &udid, &ip,
                 crate::moderation::now_unix() + kick_secs, &nick);
         }
@@ -1263,9 +1312,6 @@ fn handle_practice_legacy(v_id: u16, server: &mut Server, outbox: &mut Vec<Outbo
             let map: i8 = 20; // Fart Zone, the legacy practice map
             server.lobby.map = map;
             server.last_map = map;
-            for p in server.peers.iter_mut() {
-                p.in_game = true;
-            }
             crate::states::char_select::charselect_init(server, outbox);
         }
         return;
@@ -1403,9 +1449,6 @@ pub fn lobby_state_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
                 let map = server.lobby.voting_map;
                 server.lobby.voting_map = -1;
                 server.lobby.map = map;
-                for p in server.peers.iter_mut() {
-                    p.in_game = true;
-                }
                 crate::states::char_select::charselect_init(server, outbox);
             }
         }
@@ -1441,10 +1484,6 @@ fn start_game_from_lobby(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
             outbox.push(OutboxMsg::Disconnect(id, DisconnectReason::KickedByHost as u32));
             server.peers.retain(|p| p.id != id);
         }
-    }
-
-    for p in server.peers.iter_mut() {
-        p.in_game = true;
     }
 
     mapvote_init(server, outbox);

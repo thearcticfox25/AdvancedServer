@@ -66,6 +66,7 @@ fn rmz_spawnshards(peer_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg
     let pos = server.find_peer(peer_id).map(|p| p.plr.pos).unwrap_or((0.0, 0.0));
     for _ in 0..shard_count {
         let ox: f32 = (rand::random::<u8>() % 17) as f32 - 8.0;
+        log::debug!("shard spawned at {} {}", pos.0 + ox, pos.1);
         game_spawn(server, outbox, RmzShard::new(pos.0 + ox, pos.1, 1));
     }
     if let Some(pd) = server.find_peer_mut(peer_id) {

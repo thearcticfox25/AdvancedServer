@@ -1,5 +1,6 @@
 use super::{Entity, EntityCtx};
 use crate::packet::{Packet, PacketType};
+use crate::server::OutboxMsg;
 use crate::vote::TICKS_PER_SEC;
 use rand::Rng;
 
@@ -73,9 +74,11 @@ impl DtTailsDoll {
         if !valid.is_empty() {
             let idx = ctx.rand.gen_range(0..valid.len());
             self.pos = valid[idx];
+            log::debug!("Tails doll found spot {} at {} {}", idx, self.pos.0, self.pos.1);
         } else {
             let idx = ctx.rand.gen_range(0..SPOTS.len());
             self.pos = SPOTS[idx];
+            log::debug!("Tails doll didn't find a spot, using {} {}", self.pos.0, self.pos.1);
         }
     }
 
@@ -141,7 +144,9 @@ impl Entity for DtTailsDoll {
                         let mut pkt = Packet::new(PacketType::SERVER_DTTAILSDOLL_STATE);
                         let _ = pkt.write_u8(2);
 
-                        ctx.broadcast(pkt, true);
+                        // Marked/pounce/caught cues are private to the hunted player --
+                        // broadcasting them would out who's being stalked.
+                        ctx.outbox.push(OutboxMsg::SendTo(self.target as u16, pkt.data().to_vec(), true));
                     }
                 }
             }
@@ -152,7 +157,7 @@ impl Entity for DtTailsDoll {
                     if self.target >= 0 {
                         let mut pkt = Packet::new(PacketType::SERVER_DTTAILSDOLL_STATE);
                         let _ = pkt.write_u8(3);
-                        ctx.broadcast(pkt, true);
+                        ctx.outbox.push(OutboxMsg::SendTo(self.target as u16, pkt.data().to_vec(), true));
                     }
                     self.state = TdState::Follow;
                 }
@@ -186,7 +191,7 @@ impl Entity for DtTailsDoll {
                         if self.target >= 0 {
                             let mut pkt = Packet::new(PacketType::SERVER_DTTAILSDOLL_STATE);
                             let _ = pkt.write_u8(1);
-                            ctx.broadcast(pkt, true);
+                            ctx.outbox.push(OutboxMsg::SendTo(self.target as u16, pkt.data().to_vec(), true));
                         }
                         self.state = TdState::Reloc;
                     }

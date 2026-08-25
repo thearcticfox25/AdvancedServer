@@ -30,20 +30,49 @@ pub fn init_status() {
 }
 
 fn load_status() -> Status {
-    const STATUS_FILE: &str = "Status.json";
-    std::fs::read_to_string(STATUS_FILE)
-        .ok()
-        .and_then(|s| serde_json::from_str(&s).ok())
-        .unwrap_or_default()
+    match std::fs::read_to_string(STATUS_FILE) {
+        Ok(s) => match serde_json::from_str(&s) {
+            Ok(status) => status,
+            Err(e) => {
+                log::error!("Failed to parse status file: {}", e);
+                Status::default()
+            }
+        },
+        Err(_) => Status::default(),
+    }
+}
+
+const STATUS_FILE: &str = "Status.json";
+
+/// Shared by save_status/save_status_best_effort. `log_errors` is a caller
+/// choice, not an oversight: log::warn! itself isn't async-signal-safe, so
+/// the crash-handler path must stay silent (see save_status_best_effort).
+fn write_status(s: &Status, log_errors: bool) {
+    if let Ok(json) = serde_json::to_string_pretty(s) {
+        if let Err(e) = std::fs::write(STATUS_FILE, json) {
+            if log_errors {
+                log::warn!("Could not open status file {} for writing: {}", STATUS_FILE, e);
+            }
+        }
+    }
 }
 
 pub fn save_status() {
-    const STATUS_FILE: &str = "Status.json";
     if let Some(mutex) = STATUS.get() {
         if let Ok(s) = mutex.lock() {
-            if let Ok(json) = serde_json::to_string_pretty(&*s) {
-                let _ = std::fs::write(STATUS_FILE, json);
-            }
+            write_status(&s, true);
+        }
+    }
+}
+
+/// Best-effort save for use from a crash-signal handler: never blocks (try_lock,
+/// so a crash that happened while this thread already held the status lock
+/// can't deadlock the exit path -- std::sync::Mutex isn't reentrant), and
+/// never logs on failure (see write_status).
+pub fn save_status_best_effort() {
+    if let Some(mutex) = STATUS.get() {
+        if let Ok(s) = mutex.try_lock() {
+            write_status(&s, false);
         }
     }
 }

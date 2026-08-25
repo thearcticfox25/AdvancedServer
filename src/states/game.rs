@@ -23,6 +23,7 @@ pub const PLRSTATE_EXE: u8       = 3;
 pub const PLRSTATE_SPECTATOR: u8 = 4;
 
 pub fn game_init(exe: i32, map: i8, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    log::debug!("Entering Game state...");
     server.state = GameState::Game;
 
     server.game.exe          = exe;
@@ -175,13 +176,15 @@ pub fn game_uninit(server: &mut Server, show_results: bool, outbox: &mut Vec<Out
     if show_results {
         results_init(server, outbox);
     } else {
-        crate::states::lobby::lobby_init(server);
+        crate::states::lobby::lobby_init(server, outbox);
         crate::states::lobby::lobby_broadcast_init(server, outbox);
     }
 }
 
 pub fn game_end(server: &mut Server, ending: Ending, achiv: bool, outbox: &mut Vec<OutboxMsg>) {
     if server.game.end > 0.0 { return; }
+
+    log::info!("Ending is {:?}", ending);
 
     let cfg = cfg();
     server.game.ending = ending;
@@ -210,6 +213,7 @@ pub fn game_end(server: &mut Server, ending: Ending, achiv: bool, outbox: &mut V
 pub fn game_bigring(server: &mut Server, state: BigRingState, outbox: &mut Vec<OutboxMsg>) {
     if server.game.bring_state == state { return; }
     server.game.bring_state = state;
+    log::info!("Big ring is {}!", if state == BigRingState::Activated { "activated" } else { "deactivated" });
 
     let mut pkt = Packet::new(PacketType::SERVER_GAME_SPAWN_RING);
     let _ = pkt.write_u8(if state == BigRingState::Activated { 1 } else { 0 });
@@ -229,6 +233,8 @@ fn game_demonize(v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
     let should_demonize = players * (cfg.states.gameplay.demonization_percentage as f64 / 100.0) > demonized;
 
+    let nick = server.find_peer(v_id).map(|p| p.nickname.clone()).unwrap_or_default();
+
     let mut pkt = Packet::new(PacketType::SERVER_GAME_DEATHTIMER_END);
     if should_demonize {
         if let Some(pd) = server.find_peer_mut(v_id) {
@@ -238,12 +244,14 @@ fn game_demonize(v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
         }
         with_status(|s| { s.total_demonised += 1; });
         let _ = pkt.write_u8(1);
+        log::info!("{} (id {}) was demonized!", crate::colors::colorize(&nick), v_id);
     } else {
         if let Some(pd) = server.find_peer_mut(v_id) {
             pd.plr.flags |= plrflags::CANTREVIVE;
         }
         with_status(|s| { s.total_died += 1; });
         let _ = pkt.write_u8(0);
+        log::info!("{} (id {}) died!", crate::colors::colorize(&nick), v_id);
     }
     outbox.push(OutboxMsg::SendTo(v_id, pkt.data().to_vec(), true));
 }
@@ -496,11 +504,13 @@ pub fn game_state_handle(
 
 
         PacketType::CLIENT_CHAT_MESSAGE => {
-            if !server.chat_rate_allow(v_id) { return; } // SEC-L3: anti-flood
+            if !server.chat_rate_allow(v_id) { return; } // anti-flood
             if server.find_peer(v_id).map(|p| p.in_game).unwrap_or(true) { return; }
             packet.pos = 2;
             let _sender = packet.read_u16();
             let msg = match packet.read_str() { Some(s) => s, None => return };
+            let nick = server.find_peer(v_id).map(|p| p.nickname.clone()).unwrap_or_default();
+            log::info!("{} (id {}): {}", crate::colors::colorize(&nick), v_id, msg);
             crate::states::waiting_room::handle_waiter_chat(v_id, &msg, server, outbox);
         }
 
@@ -550,6 +560,7 @@ fn player_add_error(v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>,
     let max_errors = cfg().server_config.pairing.player_maximum_errors;
     if let Some(pd) = server.find_peer_mut(v_id) {
         pd.plr.errors = pd.plr.errors.saturating_add(by);
+        log::debug!("{} error is now {}", v_id, pd.plr.errors);
         if pd.plr.errors >= max_errors {
             outbox.push(OutboxMsg::Disconnect(v_id, DisconnectReason::KickedByHost as u32));
             return false;
@@ -654,7 +665,7 @@ fn handle_player_data(v_id: u16, packet: &mut Packet, server: &mut Server, outbo
     const PLAYER_ATTACKING: u8 = 1 << 4;
     const PLAYER_REDRING:   u8 = 1 << 3;
     let is_attacking = flags & PLAYER_ATTACKING != 0;
-    // [#7] Red-ring (or black-ring) effect disables every ability client-side; the
+    // Red-ring (or black-ring) effect disables every ability client-side; the
     // survivor broadcasts it via PLAYER_REDRING. Store it so the ability handlers can
     // reject ability packets sent while it is active (Cheat-Engine bypass).
     let red_ring_now = !is_exe && (flags & PLAYER_REDRING != 0);
@@ -925,7 +936,7 @@ fn handle_player_data(v_id: u16, packet: &mut Packet, server: &mut Server, outbo
         }
     }
 
-    // [#6] Black-ring contact: an honest survivor standing inside an erector black ring
+    // Black-ring contact: an honest survivor standing inside an erector black ring
     // takes 20 damage (net_state_game.SERVER_BRING_COLLECTED). Cheats either never send
     // CLIENT_BRING_COLLECTED or patch out the damage. The server knows erector-ring
     // positions, so force the collection when a survivor is clearly inside one it never
@@ -1050,11 +1061,10 @@ fn handle_player_death_state(v_id: u16, packet: &mut Packet, server: &mut Server
         } else {
 
             let respawn_time = cfg.states.gameplay.respawn_time as u16;
-            let time_to_sd   = if server.game.time_sec > cfg.states.gameplay.sudden_death_timer as u16 {
-                server.game.time_sec - cfg.states.gameplay.sudden_death_timer as u16
-            } else {
-                0
-            };
+            let sd_timer     = cfg.states.gameplay.sudden_death_timer as u16;
+            let time_to_sd   = ticks_until_sudden_death(
+                server.game.time_sec, sd_timer, cfg.states.gameplay.banana.disable_timer,
+            );
             let death_timer_sec = if cfg.states.gameplay.match_respawn_and_game_timers && time_to_sd < respawn_time {
                 time_to_sd
             } else {
@@ -1063,7 +1073,11 @@ fn handle_player_death_state(v_id: u16, packet: &mut Packet, server: &mut Server
 
             if let Some(pd) = server.find_peer_mut(v_id) {
                 pd.plr.death_timer_sec = death_timer_sec;
-                pd.plr.death_timer     = death_timer_sec as f64 * 60.0;
+                // death_timer (the 0..60 sub-second accumulator) starts at 0 at the
+                // moment of death, independent from death_timer_sec (the whole-second
+                // count): tick_players' >=60 rollover check must only fire after a
+                // full real second has actually accumulated.
+                pd.plr.death_timer     = 0.0;
             }
 
 
@@ -1259,12 +1273,16 @@ fn handle_revival(v_id: u16, packet: &mut Packet, server: &mut Server, outbox: &
         let mut rr = Packet::new(PacketType::SERVER_REVIVAL_REVIVED);
         outbox.push(OutboxMsg::SendTo(pid, rr.data().to_vec(), true));
 
+        if let Some(p) = server.find_peer(pid) {
+            log::info!("{} (id {}) was revived!", crate::colors::colorize(&p.nickname), pid);
+        }
 
         let revivers: Vec<i32> = server.find_peer(pid)
             .map(|p| p.plr.revival_init.to_vec())
             .unwrap_or_default();
         for r in revivers {
             if r == -1 { break; }
+            log::debug!("Removed rings from {}", r);
             let mut sub = Packet::new(PacketType::SERVER_REVIVAL_RINGSUB);
             outbox.push(OutboxMsg::SendTo(r as u16, sub.data().to_vec(), true));
         }
@@ -1356,7 +1374,7 @@ fn handle_cream_rings(v_id: u16, packet: &mut Packet, server: &mut Server, outbo
     if cfg.states.gameplay.anticheat.ability_anticheat {
         let cd = server.find_peer(v_id).map(|p| p.plr.cooldown).unwrap_or(1.0);
         if cd > 0.0 { return; }
-        // [#7] reject abilities used under the red/black-ring effect (client blocks
+        // Reject abilities used under the red/black-ring effect (client blocks
         // them; a Cheat-Engine bypass would still send the packet).
         if server.find_peer(v_id).map(|p| p.plr.red_ring).unwrap_or(false) { return; }
     }
@@ -1484,7 +1502,7 @@ fn handle_tprojectile(v_id: u16, packet: &mut Packet, server: &mut Server, outbo
     if cfg.states.gameplay.anticheat.ability_anticheat {
         let cd = server.find_peer(v_id).map(|p| p.plr.cooldown).unwrap_or(1.0);
         if cd > 0.0 { return; }
-        // [#7] reject abilities used under the red/black-ring effect (client blocks
+        // Reject abilities used under the red/black-ring effect (client blocks
         // them; a Cheat-Engine bypass would still send the packet).
         if server.find_peer(v_id).map(|p| p.plr.red_ring).unwrap_or(false) { return; }
     }
@@ -1558,7 +1576,7 @@ fn handle_etracker(v_id: u16, packet: &mut Packet, server: &mut Server, outbox: 
     if cfg.states.gameplay.anticheat.ability_anticheat {
         let cd = server.find_peer(v_id).map(|p| p.plr.cooldown).unwrap_or(1.0);
         if cd > 0.0 { return; }
-        // [#7] reject abilities used under the red/black-ring effect (client blocks
+        // Reject abilities used under the red/black-ring effect (client blocks
         // them; a Cheat-Engine bypass would still send the packet).
         if server.find_peer(v_id).map(|p| p.plr.red_ring).unwrap_or(false) { return; }
     }
@@ -1897,20 +1915,22 @@ pub fn game_state_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     server.game.elapsed += 1.0;
 
     let disable_timer = cfg.states.gameplay.banana.disable_timer;
-    let overhell      = cfg.states.gameplay.gmcycle.overhell;
 
-    if disable_timer && overhell {
-        let ceil_frames = cfg.states.gameplay.gametimers_ceiling as f64 * 60.0;
-        if server.game.elapsed >= ceil_frames {
-            game_end(server, Ending::SurvWin, false, outbox);
-            return;
-        }
-    }
+    // gametimers_ceiling must never apply while disable_timer is on: it's a
+    // reimplementation of the "No Timer" mod (README credits), whose entire
+    // point is no time-based ending at all. Letting a ceiling still force
+    // game_end here would hold the round hostage to an artificial cutoff
+    // (and skew whatever duration Results ends up displaying) exactly
+    // contrary to that. game_init's own ceiling clamp is gated on
+    // !disable_timer the same way.
 
-    server.game.time -= 1.0;
-
-    let new_sec = (server.game.time / 60.0).max(0.0) as u16;
-    if new_sec < server.game.time_sec {
+    let new_sec = if disable_timer {
+        (server.game.elapsed / 60.0) as u16
+    } else {
+        server.game.time -= 1.0;
+        (server.game.time / 60.0).max(0.0) as u16
+    };
+    if new_sec != server.game.time_sec {
         server.game.time_sec = new_sec;
 
 
@@ -1940,10 +1960,13 @@ pub fn game_state_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     }
 
 
-    if !server.game.sudden_death
-        && !cfg.states.gameplay.banana.disable_timer
-        && server.game.time_sec <= cfg.states.gameplay.sudden_death_timer as u16
-    {
+    let past_sudden_death_threshold = if disable_timer {
+        server.game.time_sec > cfg.states.gameplay.sudden_death_timer as u16
+    } else {
+        server.game.time_sec <= cfg.states.gameplay.sudden_death_timer as u16
+    };
+
+    if !server.game.sudden_death && past_sudden_death_threshold {
         server.game.sudden_death = true;
         with_status(|s| { s.timeouts += 1; });
 
@@ -1953,6 +1976,10 @@ pub fn game_state_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
             .map(|p| (p.id, p.plr.death_timer_sec as f64 + p.plr.death_timer / 60.0))
             .collect();
         dead_players.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
+        log::debug!("Demonization order:");
+        for (id, secs) in &dead_players {
+            log::debug!("{}: {}", id, secs);
+        }
         for (id, _) in dead_players {
             game_demonize(id, server, outbox);
         }
@@ -1974,6 +2001,22 @@ pub fn game_state_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
 
     tick_entities(server, outbox);
+}
+
+/// Ticks remaining before sudden death actually triggers (see
+/// game_state_tick's past_sudden_death_threshold). The two directions aren't
+/// symmetric: normal mode's threshold is inclusive (time_sec <= sd_timer)
+/// so counting down reaches the trigger the instant time_sec hits sd_timer,
+/// but disable_timer's is exclusive (time_sec > sd_timer) -- time_sec can
+/// sit exactly *at* sd_timer and still need one more increment before it
+/// fires. A plain abs_diff misses that +1 and reports 0 a full tick before
+/// disable_timer's real trigger.
+fn ticks_until_sudden_death(time_sec: u16, sd_timer: u16, disable_timer: bool) -> u16 {
+    if disable_timer {
+        sd_timer.saturating_sub(time_sec) + 1
+    } else {
+        time_sec.saturating_sub(sd_timer)
+    }
 }
 
 fn tick_players(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
@@ -2073,9 +2116,10 @@ fn tick_players(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
         }
     }
 
-    let sudden_death = server.game.sudden_death;
-    let sd_timer     = cfg.states.gameplay.sudden_death_timer as u16;
-    let time_sec     = server.game.time_sec;
+    let sudden_death  = server.game.sudden_death;
+    let sd_timer      = cfg.states.gameplay.sudden_death_timer as u16;
+    let time_sec      = server.game.time_sec;
+    let disable_timer = cfg.states.gameplay.banana.disable_timer;
 
     let peer_ids: Vec<u16> = server.peers.iter()
         .filter(|p| p.in_game && p.plr.flags & plrflags::DEAD != 0
@@ -2091,48 +2135,99 @@ fn tick_players(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
             continue;
         }
 
-        let death_timer_sec = server.find_peer(id).map(|p| p.plr.death_timer_sec).unwrap_or(0);
-        let death_timer     = server.find_peer(id).map(|p| p.plr.death_timer).unwrap_or(0.0);
+        let mut death_timer_sec = server.find_peer(id).map(|p| p.plr.death_timer_sec).unwrap_or(0);
 
-
-        if let Some(pd) = server.find_peer_mut(id) {
-            pd.plr.death_timer += 1.0;
-        }
-
-        let new_timer = server.find_peer(id).map(|p| p.plr.death_timer).unwrap_or(0.0);
-        if new_timer < 60.0 { continue; }
-
-
-        if let Some(pd) = server.find_peer_mut(id) {
-            pd.plr.death_timer = 0.0;
-        }
-
-        let v_pos   = server.find_peer(id).map(|p| p.plr.pos).unwrap_or((0.0, 0.0));
-        let dist    = crate::player::vec2_dist(v_pos, exe_pos);
-        let exe_near = dist <= 240.0 && cfg.states.gameplay.exe_camp_penalty;
-
-        let time_to_sd = if time_sec > sd_timer { time_sec - sd_timer } else { 0 };
-        let should_dec = !exe_near
-            || (time_to_sd < death_timer_sec as u16 && cfg.states.gameplay.match_respawn_and_game_timers);
-
-        if should_dec {
-            let new_sec = death_timer_sec.saturating_sub(1);
-            if let Some(pd) = server.find_peer_mut(id) {
-                pd.plr.death_timer_sec = new_sec;
+        // Proximity to the exe freezes the death-timer countdown (see should_dec
+        // below); proximity to an already-demonized player only halves its regen
+        // rate. Checked every tick, not just on rollover, since demonized_near
+        // affects the accumulation rate itself.
+        let v_pos = server.find_peer(id).map(|p| p.plr.pos).unwrap_or((0.0, 0.0));
+        let mut exe_near = false;
+        let mut demonized_near = false;
+        if cfg.states.gameplay.exe_camp_penalty {
+            for other in server.peers.iter() {
+                if !other.in_game { continue; }
+                let is_exe = other.id as i32 == exe_id;
+                let is_demonized = other.plr.flags & plrflags::DEMONIZED != 0;
+                if !is_exe && !is_demonized { continue; }
+                if crate::player::vec2_dist(v_pos, other.plr.pos) <= 240.0 {
+                    if is_demonized {
+                        demonized_near = true;
+                    } else {
+                        demonized_near = false;
+                        exe_near = true;
+                        break;
+                    }
+                }
             }
-            if new_sec == 0 {
+        }
+
+        let time_to_sd = ticks_until_sudden_death(time_sec, sd_timer, disable_timer);
+
+        // Catch-up sync, every tick -- not gated on this player's own ~1s
+        // sub-tick rollover below, and not gated on exe_near either: this is
+        // the hard ceiling match_respawn_and_game_timers promises (death_timer_sec
+        // can never show more time than is actually left), not just an
+        // anti-camp correction, so it must apply regardless of each player's
+        // own rollover phase relative to the global clock. Server-internal
+        // bookkeeping only (still broadcasts the same SERVER_GAME_DEATHTIMER_TICK
+        // the client already expects), not a protocol or client-visible-gameplay
+        // change.
+        if cfg.states.gameplay.match_respawn_and_game_timers
+            && time_to_sd < death_timer_sec as u16
+        {
+            death_timer_sec = time_to_sd as u8;
+            if let Some(pd) = server.find_peer_mut(id) {
+                pd.plr.death_timer_sec = death_timer_sec;
+            }
+            if death_timer_sec == 0 {
                 game_demonize(id, server, outbox);
                 continue;
             }
+            let mut pkt = Packet::new(PacketType::SERVER_GAME_DEATHTIMER_TICK);
+            let _ = pkt.write_u8(exe_near as u8);
+            let _ = pkt.write_u16(id);
+            let _ = pkt.write_u8(death_timer_sec);
+            outbox.push(OutboxMsg::Broadcast(pkt.data().to_vec(), true));
         }
 
+        // Checks the accumulator carried over from previous ticks *before*
+        // adding this tick's increment (added unconditionally at the end,
+        // below) -- not accumulate-then-check. This keeps each dead player's
+        // rollover tick aligned to when they actually died, rather than
+        // drifting by a tick relative to players who died at a different phase.
+        let death_timer_before = server.find_peer(id).map(|p| p.plr.death_timer).unwrap_or(0.0);
+        if death_timer_before >= 60.0 {
+            if let Some(pd) = server.find_peer_mut(id) {
+                pd.plr.death_timer = 0.0;
+            }
 
-        let dt_sec = server.find_peer(id).map(|p| p.plr.death_timer_sec).unwrap_or(0);
-        let mut pkt = Packet::new(PacketType::SERVER_GAME_DEATHTIMER_TICK);
-        let _ = pkt.write_u8(exe_near as u8);
-        let _ = pkt.write_u16(id);
-        let _ = pkt.write_u8(dt_sec);
-        outbox.push(OutboxMsg::Broadcast(pkt.data().to_vec(), true));
+            let should_dec = !exe_near
+                || (time_to_sd < death_timer_sec as u16 && cfg.states.gameplay.match_respawn_and_game_timers);
+
+            if should_dec {
+                let new_sec = death_timer_sec.saturating_sub(1);
+                if let Some(pd) = server.find_peer_mut(id) {
+                    pd.plr.death_timer_sec = new_sec;
+                }
+                if new_sec == 0 {
+                    game_demonize(id, server, outbox);
+                    continue;
+                }
+            }
+
+            let dt_sec = server.find_peer(id).map(|p| p.plr.death_timer_sec).unwrap_or(0);
+            let mut pkt = Packet::new(PacketType::SERVER_GAME_DEATHTIMER_TICK);
+            let _ = pkt.write_u8(exe_near as u8);
+            let _ = pkt.write_u16(id);
+            let _ = pkt.write_u8(dt_sec);
+            outbox.push(OutboxMsg::Broadcast(pkt.data().to_vec(), true));
+        }
+
+        let increment = if demonized_near { 0.5 } else { 1.0 };
+        if let Some(pd) = server.find_peer_mut(id) {
+            pd.plr.death_timer += increment;
+        }
     }
 }
 

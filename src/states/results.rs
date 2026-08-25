@@ -25,6 +25,7 @@ const SHAMES_2: &[&str] = &[
 ];
 
 pub fn results_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    log::debug!("Entering Results state...");
     let cfg = cfg();
     server.state = GameState::Results;
     server.results.countdown = cfg.states.results_misc.timer as f64 * 60.0;
@@ -47,7 +48,7 @@ pub fn results_state_left(v_id: u16, server: &mut Server, outbox: &mut Vec<Outbo
 fn results_uninit(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     server.game.entities.clear();
     server.game.left.clear();
-    lobby_init(server);
+    lobby_init(server, outbox);
     lobby_broadcast_init(server, outbox);
 }
 
@@ -75,7 +76,7 @@ pub fn results_state_handle(
         }
 
         PacketType::CLIENT_CHAT_MESSAGE => {
-            if !server.chat_rate_allow(v_id) { return; } // SEC-L3: anti-flood
+            if !server.chat_rate_allow(v_id) { return; } // anti-flood
             let in_game = server.find_peer(v_id).map(|p| p.in_game).unwrap_or(true);
             if in_game {
                 return;
@@ -89,6 +90,9 @@ pub fn results_state_handle(
             if let Some(pd) = server.find_peer_mut(v_id) {
                 pd.timeout = 0.0;
             }
+
+            let nick = server.find_peer(v_id).map(|p| p.nickname.clone()).unwrap_or_default();
+            log::info!("[{}] (id {}): {}", crate::colors::colorize(&nick), v_id, msg);
 
             if let Some(cmd) = crate::terminal::cmd::parse_cmd(&msg) {
                 let op = server.find_peer(v_id).map(|p| p.op).unwrap_or(0);

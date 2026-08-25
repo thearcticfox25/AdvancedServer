@@ -28,6 +28,16 @@ pub struct ServerConfig {
 pub struct Networking {
     pub port: u16,
     pub server_count: u16,
+    pub vinny: Vinny,
+}
+
+/// Per-tick flood cap, raw ENet events/packets. Lives under `networking`
+/// since it applies before any game-state processing.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Vinny {
+    pub max_events_per_tick: u32,
+    pub max_packets_per_peer_per_tick: u16,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -49,10 +59,16 @@ pub struct Versioning {
     pub disable_version_validating: bool,
 }
 
+/// 0: startup banner + basic init report + terminal command replies only
+///    (those always show -- an admin needs to see their own command run).
+/// 1: level 0 + ERROR logs.
+/// 2: level 1 + WARN logs.
+/// 3 (default, matches the C version's default verbosity): level 2 + INFO logs.
+/// 4: level 3 + DEBUG logs.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Logging {
-    pub log_debug: bool,
+    pub log_level: u8,
     pub log_to_file: bool,
 }
 
@@ -69,21 +85,21 @@ pub struct StatesConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct LobbyMisc {
-    pub moderation: Moderation,
-    pub votekick: Votekick,
-    pub chat_rate_limit: ChatRateLimit,
+    pub upper_bracket: String,
+    pub server_location: String,
+    pub hosts_name: String,
+    pub lower_bracket: String,
     pub message_of_the_day: String,
     pub lobby_timeout_timer: u8,
     pub lobby_start_timer: u8,
     pub authoritarian_mode: bool,
     pub lobby_ready_required_percentage: u8,
     pub kick_unready_before_starting: bool,
-    pub server_location: String,
-    pub hosts_name: String,
     pub anonymous_mode: bool,
     pub min_players_required: u8,
-    pub upper_bracket: String,
-    pub lower_bracket: String,
+    pub moderation: Moderation,
+    pub votekick: Votekick,
+    pub chat_rate_limit: ChatRateLimit,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -98,7 +114,7 @@ pub struct Moderation {
     pub aggressive_username_ban: bool,
 }
 
-/// SEC-L3: per-peer chat anti-flood (token bucket). A peer may send up to `burst`
+/// Per-peer chat anti-flood (token bucket). A peer may send up to `burst`
 /// messages back-to-back, then is limited to `messages_per_second` sustained.
 /// Operators at or above `exempt_op_level` bypass the limit entirely.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -150,6 +166,14 @@ pub struct Gameplay {
     pub enable_achievements: bool,
     pub enable_sounds: bool,
     pub gametimers_ceiling: u16,
+    /// Caps a dead player's displayed/effective death_timer_sec to the time
+    /// actually remaining until sudden death, and forces it to keep counting
+    /// down through exe-camp freeze once sudden death is closer than the
+    /// respawn timer -- without this, the shown countdown can promise a
+    /// respawn later than sudden death will actually kill everyone still
+    /// down, or freeze indefinitely near the exe with sudden death still
+    /// bearing down regardless. Correctly inverts for banana.disable_timer,
+    /// where time_sec counts up instead of down.
     pub match_respawn_and_game_timers: bool,
     pub ending_timer: u8,
     pub waiting_timeout: u8,
@@ -504,9 +528,18 @@ impl Default for ServerConfig {
     }
 }
 
+impl Default for Vinny {
+    fn default() -> Self {
+        Self {
+            max_events_per_tick: 256,
+            max_packets_per_peer_per_tick: 16,
+        }
+    }
+}
+
 impl Default for Networking {
     fn default() -> Self {
-        Self { port: 8606, server_count: 1 }
+        Self { port: 8606, server_count: 1, vinny: Vinny::default() }
     }
 }
 
@@ -532,7 +565,7 @@ impl Default for Versioning {
 
 impl Default for Logging {
     fn default() -> Self {
-        Self { log_debug: false, log_to_file: false }
+        Self { log_level: 3, log_to_file: false }
     }
 }
 
@@ -551,21 +584,21 @@ impl Default for StatesConfig {
 impl Default for LobbyMisc {
     fn default() -> Self {
         Self {
-            moderation: Moderation::default(),
-            votekick: Votekick::default(),
-            chat_rate_limit: ChatRateLimit::default(),
+            upper_bracket: "-----\\advanced/server~-----".to_string(),
+            server_location: "Saint Petersburg".to_string(),
+            hosts_name: "The Arctic Fox".to_string(),
+            lower_bracket: "------------------------".to_string(),
             message_of_the_day: "\\mods are disallowed on this server".to_string(),
             lobby_timeout_timer: 25,
             lobby_start_timer: 5,
             authoritarian_mode: false,
             lobby_ready_required_percentage: 100,
             kick_unready_before_starting: false,
-            server_location: "Saint Petersburg".to_string(),
-            hosts_name: "That Arctic Furry".to_string(),
             anonymous_mode: false,
             min_players_required: 2,
-            upper_bracket: "-----\\advanced/server~-----".to_string(),
-            lower_bracket: "------------------------".to_string(),
+            moderation: Moderation::default(),
+            votekick: Votekick::default(),
+            chat_rate_limit: ChatRateLimit::default(),
         }
     }
 }
@@ -640,7 +673,7 @@ impl Default for Gameplay {
             enable_achievements: true,
             enable_sounds: true,
             gametimers_ceiling: 570,
-            match_respawn_and_game_timers: false,
+            match_respawn_and_game_timers: true,
             ending_timer: 5,
             waiting_timeout: 15,
             entities_misc: EntitiesMisc::default(),
@@ -917,7 +950,7 @@ impl Default for Anticheat {
 
 impl Default for UselessAnticheat {
     fn default() -> Self {
-        Self { enable: true, strict_mode: UselessStrictMode::default() }
+        Self { enable: false, strict_mode: UselessStrictMode::default() }
     }
 }
 
@@ -963,6 +996,7 @@ pub fn load_config() -> anyhow::Result<Config> {
         let mut cfg: Config = toml::from_str(&data)?;
 
         cfg.states.map_selection.map_list.resize(21, false);
+        log::debug!("{} loaded.", CONFIG_FILE);
         Ok(cfg)
     } else {
         log::warn!("Config.toml not found, using defaults.");
@@ -1002,6 +1036,14 @@ impl Config {
         let crl = &self.states.lobby_misc.chat_rate_limit;
         if crl.enable && (crl.burst < 1.0 || crl.messages_per_second <= 0.0) {
             log::error!("chat_rate_limit: burst must be >= 1.0 and messages_per_second > 0.0 when enabled");
+            return false;
+        }
+        if self.server_config.networking.server_count == 0 {
+            log::error!("networking.server_count must be >= 1");
+            return false;
+        }
+        if self.server_config.pairing.ping_limit < 3 {
+            log::error!("pairing.ping_limit must be >= 3");
             return false;
         }
         true

@@ -221,6 +221,7 @@ pub fn exec_terminal_cmd(cmd: &TerminalCmd, ctx: &mut TerminalCtx) {
         "help" => {
             (ctx.print)("--- terminal commands (prefix: ?) ---");
             (ctx.print)("  ?help                      show this list");
+            (ctx.print)("  ?info                      show version and credits");
             (ctx.print)("  ?lobby <n>                 switch active lobby (1-indexed)");
             (ctx.print)("  ?playerlist                list players (table view)");
             (ctx.print)("  ?playerlist --banned/-b    list banned IPs / UDIDs / nicknames");
@@ -234,6 +235,7 @@ pub fn exec_terminal_cmd(cmd: &TerminalCmd, ctx: &mut TerminalCtx) {
             (ctx.print)("  ?license                   print embedded license text");
             (ctx.print)("  ?halt                      kills the entire server");
             (ctx.print)("  ?start                     force-start a game in active lobby");
+            (ctx.print)("  ?start --map/-m <id>       force-start, skipping MapVote straight to CharSelect with map <id>");
             (ctx.print)("  ?stop                      force-end the current round");
             (ctx.print)("---");
         }
@@ -670,6 +672,17 @@ pub fn exec_terminal_cmd(cmd: &TerminalCmd, ctx: &mut TerminalCtx) {
             }
         }
 
+        "info" => {
+            (ctx.print)(&format!("AdvancedServer {}", crate::server::SERVER_VERSION));
+            (ctx.print)("Created by: The Arctic Fox");
+            (ctx.print)("Contains code referenced from: BetterServer (MIT)");
+            (ctx.print)("");
+            (ctx.print)("Rust rewrite additionally references, for comparison/porting purposes:");
+            (ctx.print)("  - AdvancedServer's own C predecessor (AGPL-3.0)");
+            (ctx.print)("  - disasterserver by vinny (used with permission) -- source of the");
+            (ctx.print)("    per-tick event/packet flood cap in this build");
+        }
+
         "license" => {
             for line in crate::license::license_text().lines() {
                 (ctx.print)(line);
@@ -684,7 +697,13 @@ pub fn exec_terminal_cmd(cmd: &TerminalCmd, ctx: &mut TerminalCtx) {
             *ctx.should_exit = true;
         }
 
-        "start"  => send_to_current(ctx, ":start"),
+        "start" => {
+            let args = ParsedArgs::parse(&cmd.args, &[("m", "map")]);
+            match args.get("map") {
+                Some(m) => send_to_current(ctx, &format!(":start {}", m)),
+                None => send_to_current(ctx, ":start"),
+            }
+        }
         "stop"   => send_to_current(ctx, ":stop"),
 
         "say" => {

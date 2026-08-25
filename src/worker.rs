@@ -106,6 +106,7 @@ pub fn server_worker(
     running: Arc<AtomicBool>,
     cmd_rx: &mpsc::Receiver<ConsoleCmd>,
     shared: Arc<ServerShared>,
+    all_shared: Vec<Arc<ServerShared>>,
 ) {
     if server_id > 0 {
         std::thread::sleep(std::time::Duration::from_millis(server_id as u64 * 50));
@@ -139,11 +140,11 @@ pub fn server_worker(
         }
     };
 
-    log::info!("[Server {}] Listening on port {}", server_id, port);
+    crate::terminal::print_always(module_path!(), &format!("[Server {}] Listening on port {}", server_id, port));
 
     {
         let mut outbox: Vec<OutboxMsg> = Vec::new();
-        lobby_init(&mut server);
+        lobby_init(&mut server, &mut outbox);
         lobby_broadcast_init(&server, &mut outbox);
         apply_outbox(&mut host, &mut server, &mut outbox);
     }
@@ -170,10 +171,18 @@ pub fn server_worker(
     let mut summary_tick: u64 = 0;
     let mut last_peer_count: usize = usize::MAX;
 
+    log::debug!("Entering main loop...");
     while running.load(Ordering::Relaxed) && server.running {
-        loop {
+        // Flood cap: bounds how many ENet events this tick-iteration will
+        // drain, and how many receives from any single peer it'll actually
+        // process, so one flooding/buggy client can't stall ticking for
+        // everyone else. Both reset every outer-loop pass.
+        let mut serviced_events: u32 = 0;
+        let mut peer_drained: HashMap<usize, u16> = HashMap::new();
+        while serviced_events < cfg.server_config.networking.vinny.max_events_per_tick {
             match host.service() {
                 Ok(Some(event)) => {
+                    serviced_events += 1;
                     let ev = event.no_ref();
                     match ev {
                         enet::EventNoRef::Connect { peer: peer_id, .. } => {
@@ -256,6 +265,11 @@ pub fn server_worker(
 
                         enet::EventNoRef::Receive { peer: peer_id, packet, .. } => {
                             let idx = peer_id.0;
+                            let drained = peer_drained.entry(idx).or_insert(0);
+                            *drained += 1;
+                            if *drained > cfg.server_config.networking.vinny.max_packets_per_peer_per_tick {
+                                continue;
+                            }
                             let data = packet.data().to_vec();
 
                             if let Some(game_id) = index_to_id.get(&idx).copied() {
@@ -304,6 +318,8 @@ pub fn server_worker(
                                         &mut ip_set,
                                         &mut peer_index_map,
                                         &mut index_to_id,
+                                        &all_shared,
+                                        base_port,
                                     );
                                 }
                             }
@@ -317,19 +333,6 @@ pub fn server_worker(
                 }
             }
         }
-
-        let delta = server.delta;
-        pending.retain(|idx, pp| {
-            pp.timeout -= delta * 60.0;
-            if pp.timeout <= 0.0 {
-                if let Some(peer) = host.get_peer_mut(enet::PeerID(*idx)) {
-                    peer.disconnect_now(DisconnectReason::ServerTimeout as u32);
-                }
-                false
-            } else {
-                true
-            }
-        });
 
         while let Ok(cmd) = cmd_rx.try_recv() {
             let mut outbox: Vec<OutboxMsg> = Vec::new();
@@ -347,6 +350,19 @@ pub fn server_worker(
         let now = Instant::now();
         if now >= next_tick {
             next_tick += target_tick;
+
+            let delta = server.delta;
+            pending.retain(|idx, pp| {
+                pp.timeout -= delta * 60.0;
+                if pp.timeout <= 0.0 {
+                    if let Some(peer) = host.get_peer_mut(enet::PeerID(*idx)) {
+                        peer.disconnect_now(DisconnectReason::ServerTimeout as u32);
+                    }
+                    false
+                } else {
+                    true
+                }
+            });
 
 
             if server_id == 0 && !tutorial_shown && cfg.miscellaneous.other.instructor_enabled {

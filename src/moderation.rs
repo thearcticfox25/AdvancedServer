@@ -218,11 +218,14 @@ pub fn whitelist_revoke_full(nickname: &str, udid: &str, ip: &str) -> bool {
     ).unwrap_or(0) > 0
 }
 
-pub fn whitelist_check(nickname: &str, udid: &str, ip: &str) -> bool {
+/// Matched only by udid and ip, never by nickname — see op_check's doc
+/// comment. Matching on nickname would let anyone bypass the whitelist gate by
+/// connecting under a whitelisted player's unauthenticated display name.
+pub fn whitelist_check(udid: &str, ip: &str) -> bool {
     let conn = db_lock();
     conn.query_row(
-        "SELECT 1 FROM whitelist WHERE (ip != '' AND ip = ?1) OR (udid != '' AND udid = ?2) OR (nickname != '' AND nickname = ?3) LIMIT 1",
-        params![ip, udid, nickname],
+        "SELECT 1 FROM whitelist WHERE (ip != '' AND ip = ?1) OR (udid != '' AND udid = ?2) LIMIT 1",
+        params![ip, udid],
         |_| Ok(true),
     ).unwrap_or(false)
 }
@@ -324,7 +327,7 @@ pub fn op_add(nickname: &str, udid: &str, ip: &str, note: &str) -> bool {
     let conn = db_lock();
     // Match existing operators by udid/ip only — never by nickname. The op grant is
     // anchored to udid+ip (the same keys op_check uses); the nickname column is stored
-    // for display only and must not influence privilege (see op_check / SEC-M1).
+    // for display only and must not influence privilege (see op_check).
     let updated = conn.execute(
         "UPDATE ops SET level = ?1, note = ?2, nickname = ?3 WHERE (udid != '' AND udid = ?4) OR (ip != '' AND ip = ?5)",
         params![level, note, nickname, udid, ip],
@@ -360,10 +363,8 @@ pub fn op_set(ip: &str, level: u8, note: &str) -> bool {
 
 /// Set (or, with `level == 0`, remove) an operator anchored on udid+ip.
 ///
-/// SEC-M1: privilege is keyed on udid/ip only; `nickname` is stored for display and
-/// never used for matching. This replaces the former `op_set_nick`, which matched and
-/// inserted operators purely by the unauthenticated nickname — a privilege-escalation
-/// vector (see op_check).
+/// Privilege is keyed on udid/ip only; `nickname` is stored for display and
+/// never used for matching, since the nickname is unauthenticated (see op_check).
 pub fn op_set_full(nickname: &str, udid: &str, ip: &str, level: u8, note: &str) -> bool {
     let conn = db_lock();
     if level == 0 {
@@ -394,9 +395,9 @@ pub fn op_revoke(ip: &str) -> bool {
 
 /// Resolve a connecting player's operator level.
 ///
-/// SEC-M1: operator status is matched **only by udid and ip**, never by nickname.
+/// Operator status is matched **only by udid and ip**, never by nickname.
 /// The nickname is an unauthenticated, publicly-visible string from the identity
-/// packet — matching on it let anyone inherit an operator's level simply by
+/// packet — matching on it would let anyone inherit an operator's level simply by
 /// connecting under that operator's display name (privilege escalation, including
 /// op>=2 which bypasses ip_validation and grants ban/kick). udid is per-device and
 /// not publicly displayed, so udid+ip is the trust anchor. The default localhost op

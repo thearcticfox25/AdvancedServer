@@ -161,6 +161,7 @@ impl Entity for SlugSpawner {
 
     fn on_tick(&mut self, ctx: &mut EntityCtx) -> bool {
         if self.slug_id != 0 && !ctx.entity_ids.contains(&self.slug_id) {
+            log::debug!("removed slug from {}", self.id);
             self.slug_id = 0;
         }
         if self.slug_id != 0 {

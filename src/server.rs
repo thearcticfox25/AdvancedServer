@@ -4,7 +4,7 @@ use std::time::Instant;
 
 use rusty_enet as enet;
 
-pub const SERVER_VERSION: &str  = "1.1.0.1.psi-testing-1";
+pub const SERVER_VERSION: &str  = "1.1.0.1.psi-testing-2";
 
 use crate::anticheat::auth::AuthData;
 use crate::entities::Entity;
@@ -131,14 +131,14 @@ pub struct PeerData {
     pub timeout: f64,
     pub vote_cooldown: f64,
     pub rtt: u16,
-    // SEC-L3: per-peer chat token bucket (anti-flood). Refilled on demand from
+    // Per-peer chat token bucket (anti-flood). Refilled on demand from
     // wall-clock time, so no per-tick bookkeeping is needed.
     pub chat_tokens: f64,
     pub chat_last: Instant,
 }
 
 impl PeerData {
-    /// SEC-L3: consume one chat token. `burst`/`refill_per_sec` come from config
+    /// Consume one chat token. `burst`/`refill_per_sec` come from config
     /// (`states.lobby_misc.chat_rate_limit`). Returns true if the message is allowed,
     /// false if the peer is currently rate-limited and the message should be dropped.
     pub fn chat_token_take(&mut self, burst: f64, refill_per_sec: f64) -> bool {
@@ -312,7 +312,7 @@ impl Server {
             game: GameData::default(),
             results: ResultsData::default(),
             last_map: -1,
-            map_pickrates: [0i16; 30],
+            map_pickrates: [255i16; 30],
             delta: 1.0 / 60.0,
             peers: Vec::new(),
         }
@@ -334,7 +334,7 @@ impl Server {
         self.peers.iter_mut().find(|p| p.id == id)
     }
 
-    /// SEC-L3: whether `id` is allowed to send a chat message right now. Operators at or
+    /// Whether `id` is allowed to send a chat message right now. Operators at or
     /// above the configured `exempt_op_level` bypass the limit so moderation messaging is
     /// never throttled. When the limit is disabled this is a no-op (always allows).
     pub fn chat_rate_allow(&mut self, id: u16) -> bool {

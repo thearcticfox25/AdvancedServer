@@ -125,12 +125,17 @@ pub fn lobby_state_join(v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxM
     check_countdown(server, outbox);
 }
 
+// Only in_game peers belong on the Lobby roster a target requests. In every
+// non-tournament case that's already everyone (lobby_init promotes the whole
+// roster before anyone can be in Lobby at all), so this is a no-op filter
+// there -- it only matters for tournament_mode's Lobby stub, where spectators
+// stay in_game=false while it's briefly active.
 fn send_lobby_player_list(target: u16, server: &Server, outbox: &mut Vec<OutboxMsg>) {
     let anon_mode = cfg().states.lobby_misc.anonymous_mode;
     let target_op = server.peers.iter().find(|p| p.id == target).map(|p| p.op).unwrap_or(0);
     let anon = anon_mode && target_op < 1;
     for pd in server.peers.iter() {
-        if pd.id == target {
+        if pd.id == target || !pd.in_game {
             continue;
         }
         let mut pkt = Packet::new(PacketType::SERVER_LOBBY_PLAYER);
@@ -1338,12 +1343,19 @@ fn force_start(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     mapvote_init(server, outbox);
 }
 
-fn send_countdown(sec: u8, outbox: &mut Vec<OutboxMsg>) {
+// Only actual Lobby occupants (in_game) get the countdown -- a spectator who
+// isn't in this Lobby stay (tournament_mode continuing, promotion suppressed)
+// isn't watching it count down either. In every non-tournament case every
+// peer is always in_game while a countdown is running (lobby_init promotes
+// everyone), so this is a no-op filter there.
+pub(crate) fn send_countdown(sec: u8, server: &Server, outbox: &mut Vec<OutboxMsg>) {
     let is_counting: u8 = if sec < NO_COUNTDOWN { 1 } else { 0 };
     let mut pkt = Packet::new(PacketType::SERVER_LOBBY_COUNTDOWN);
     let _ = pkt.write_u8(is_counting);
     let _ = pkt.write_u8(sec);
-    outbox.push(OutboxMsg::Broadcast(pkt.data().to_vec(), true));
+    for p in server.peers.iter().filter(|p| p.in_game) {
+        outbox.push(OutboxMsg::SendTo(p.id, pkt.data().to_vec(), true));
+    }
 }
 
 fn check_countdown(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
@@ -1351,6 +1363,12 @@ fn check_countdown(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 }
 
 fn check_countdown_ex(exclude: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    // tournament_advance's forced wait must run to completion untouched --
+    // someone toggling ready (or a new peer joining) during it would otherwise
+    // reset the countdown fields lobby_state_tick is ticking down for
+    // tournament_pending, since ready_count starts back at 0 every Lobby entry.
+    if server.lobby.tournament_pending { return; }
+
     let cfg = cfg();
     let total = server.peers.iter().filter(|p| p.id != exclude).count();
     let ready_count = server.peers.iter().filter(|p| p.ready && p.id != exclude).count();
@@ -1359,7 +1377,7 @@ fn check_countdown_ex(exclude: u16, server: &mut Server, outbox: &mut Vec<Outbox
         if server.lobby.countdown_sec < NO_COUNTDOWN {
             server.lobby.countdown_sec = NO_COUNTDOWN;
             server.lobby.countdown = 0.0;
-            send_countdown(NO_COUNTDOWN, outbox);
+            send_countdown(NO_COUNTDOWN, server, outbox);
         }
         return;
     }
@@ -1371,11 +1389,11 @@ fn check_countdown_ex(exclude: u16, server: &mut Server, outbox: &mut Vec<Outbox
         let timer = cfg.states.lobby_misc.lobby_start_timer;
         server.lobby.countdown_sec = timer;
         server.lobby.countdown = timer as f64 * 60.0;
-        send_countdown(timer, outbox);
+        send_countdown(timer, server, outbox);
     } else if ready_count < required && server.lobby.countdown_sec < NO_COUNTDOWN {
         server.lobby.countdown_sec = NO_COUNTDOWN;
         server.lobby.countdown = 0.0;
-        send_countdown(NO_COUNTDOWN, outbox);
+        send_countdown(NO_COUNTDOWN, server, outbox);
     }
 }
 
@@ -1460,12 +1478,17 @@ pub fn lobby_state_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
         let new_sec = (server.lobby.countdown / 60.0).ceil() as u8;
         if new_sec < server.lobby.countdown_sec {
             server.lobby.countdown_sec = new_sec;
-            send_countdown(new_sec, outbox);
+            send_countdown(new_sec, server, outbox);
         }
 
         if server.lobby.countdown <= 0.0 {
             server.lobby.countdown_sec = 0;
-            start_game_from_lobby(server, outbox);
+            if server.lobby.tournament_pending {
+                server.lobby.tournament_pending = false;
+                mapvote_init(server, outbox);
+            } else {
+                start_game_from_lobby(server, outbox);
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ use std::time::Instant;
 
 use rusty_enet as enet;
 
-pub const SERVER_VERSION: &str  = "1.1.0.1.psi-testing-2";
+pub const SERVER_VERSION: &str  = "1.1.0.1.psi-testing-3";
 
 use crate::anticheat::auth::AuthData;
 use crate::entities::Entity;
@@ -209,6 +209,11 @@ pub struct LobbyData {
     // legacy (v1.0.0 C#) votepractice state
     pub legacy_practice_ongoing: bool,
     pub legacy_practice_votes: Vec<u16>,
+    /// Set by tournament_advance instead of calling mapvote_init directly, so
+    /// the countdown this tick started actually elapses in real time -- giving
+    /// every client's freshly-entered Lobby room time to finish loading -- before
+    /// lobby_state_tick's normal countdown-expiry branch moves on to MapVote.
+    pub tournament_pending: bool,
 }
 
 impl Default for LobbyData {
@@ -231,6 +236,7 @@ impl Default for LobbyData {
             legacy_votekick_votes: Vec::new(),
             legacy_practice_ongoing: false,
             legacy_practice_votes: Vec::new(),
+            tournament_pending: false,
         }
     }
 }
@@ -281,11 +287,16 @@ impl Default for GameData {
 
 pub struct ResultsData {
     pub countdown: f64,
+    /// Decided once in results_init and read again in results_uninit's
+    /// tournament_advance, so the two stay in sync: whether spectators will be
+    /// let into Lobby once this Results screen ends. Always true outside
+    /// tournament_mode.
+    pub open_lobby_after: bool,
 }
 
 impl Default for ResultsData {
     fn default() -> Self {
-        Self { countdown: 0.0 }
+        Self { countdown: 0.0, open_lobby_after: true }
     }
 }
 

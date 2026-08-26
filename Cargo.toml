@@ -13,6 +13,7 @@ anyhow = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 toml = "0.8"
+toml_edit = "0.22"
 signal-hook = "0.3"
 rand = { version = "0.8", features = ["small_rng"] }
 log = { version = "0.4", features = ["std"] }

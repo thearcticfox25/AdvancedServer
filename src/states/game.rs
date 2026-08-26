@@ -14,6 +14,7 @@ use crate::status::with_status;
 
 use rand::SeedableRng;
 use rand::rngs::SmallRng;
+use rand::seq::SliceRandom;
 use std::time::Instant;
 
 pub const PLRSTATE_ALIVE: u8     = 0;
@@ -59,6 +60,10 @@ pub fn game_init(exe: i32, map: i8, server: &mut Server, outbox: &mut Vec<Outbox
         p.ready = false;
     }
 
+    let ambush_pct = cfg().states.gameplay.gmcycle.ambush_force_demonization_percentage_on_start;
+    if ambush_pct > 0 {
+        ambush_force_demonize_on_start(exe, ambush_pct, server, outbox);
+    }
 
     let pkt = Packet::new(PacketType::SERVER_LOBBY_GAME_START);
     outbox.push(OutboxMsg::Broadcast(pkt.data().to_vec(), true));
@@ -254,6 +259,31 @@ fn game_demonize(v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
         log::info!("{} (id {}) died!", crate::colors::colorize(&nick), v_id);
     }
     outbox.push(OutboxMsg::SendTo(v_id, pkt.data().to_vec(), true));
+}
+
+/// Ambush: instantly demonizes `pct`% of non-exe in-game players at round start,
+/// bypassing the wound/death-timer flow entirely.
+fn ambush_force_demonize_on_start(exe: i32, pct: u8, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+    let mut candidates: Vec<u16> = server.peers.iter()
+        .filter(|p| p.in_game && p.id as i32 != exe)
+        .map(|p| p.id)
+        .collect();
+    candidates.shuffle(&mut rand::thread_rng());
+
+    let count = ((candidates.len() as f64) * (pct as f64 / 100.0)).round() as usize;
+    for &id in candidates.iter().take(count) {
+        if let Some(pd) = server.find_peer_mut(id) {
+            pd.plr.flags |= plrflags::DEMONIZED;
+            pd.plr.stats.rings = 0;
+        }
+        let mut pkt = Packet::new(PacketType::SERVER_GAME_DEATHTIMER_END);
+        let _ = pkt.write_u8(1);
+        outbox.push(OutboxMsg::SendTo(id, pkt.data().to_vec(), true));
+    }
+    if count > 0 {
+        with_status(|s| { s.total_demonised += count as u32; });
+        log::info!("[Server {}] Ambush: {} player(s) demonized on start", server.id, count);
+    }
 }
 
 pub fn game_state_join(v_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
@@ -1065,7 +1095,7 @@ fn handle_player_death_state(v_id: u16, packet: &mut Packet, server: &mut Server
             let time_to_sd   = ticks_until_sudden_death(
                 server.game.time_sec, sd_timer, cfg.states.gameplay.banana.disable_timer,
             );
-            let death_timer_sec = if cfg.states.gameplay.match_respawn_and_game_timers && time_to_sd < respawn_time {
+            let death_timer_sec = if cfg.states.gameplay.sync_sudden_death_timers && time_to_sd < respawn_time {
                 time_to_sd
             } else {
                 respawn_time
@@ -2166,14 +2196,14 @@ fn tick_players(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
         // Catch-up sync, every tick -- not gated on this player's own ~1s
         // sub-tick rollover below, and not gated on exe_near either: this is
-        // the hard ceiling match_respawn_and_game_timers promises (death_timer_sec
+        // the hard ceiling sync_sudden_death_timers promises (death_timer_sec
         // can never show more time than is actually left), not just an
         // anti-camp correction, so it must apply regardless of each player's
         // own rollover phase relative to the global clock. Server-internal
         // bookkeeping only (still broadcasts the same SERVER_GAME_DEATHTIMER_TICK
         // the client already expects), not a protocol or client-visible-gameplay
         // change.
-        if cfg.states.gameplay.match_respawn_and_game_timers
+        if cfg.states.gameplay.sync_sudden_death_timers
             && time_to_sd < death_timer_sec as u16
         {
             death_timer_sec = time_to_sd as u8;
@@ -2203,7 +2233,7 @@ fn tick_players(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
             }
 
             let should_dec = !exe_near
-                || (time_to_sd < death_timer_sec as u16 && cfg.states.gameplay.match_respawn_and_game_timers);
+                || (time_to_sd < death_timer_sec as u16 && cfg.states.gameplay.sync_sudden_death_timers);
 
             if should_dec {
                 let new_sec = death_timer_sec.saturating_sub(1);

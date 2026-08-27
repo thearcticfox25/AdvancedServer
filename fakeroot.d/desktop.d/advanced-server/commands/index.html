@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Server — Commands</title>
+  <link rel="stylesheet" href="../../../sub-site.css">
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 8px 0 16px;
+    }
+    th, td {
+      text-align: left;
+      padding: 6px 10px;
+      border: 1px solid var(--bg3);
+    }
+    th {
+      background: var(--bg2);
+      font-weight: 600;
+    }
+    td:first-child { white-space: nowrap; }
+    .lvl {
+      font-size: 0.85em;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+    .note {
+      background: rgba(255,200,100,0.08);
+      border-left: 3px solid #ffc864;
+      padding: 6px 10px;
+      margin: 8px 0;
+      font-size: 0.92em;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Advanced Server — Commands</h1>
+
+<section>
+  <h2>Command Prefixes</h2>
+  <p>
+    Both <code>.</code> and <code>:</code> prefixes work identically for all in-game chat commands.
+  </p>
+</section>
+
+<section>
+  <h2>Lobby Commands</h2>
+
+  <table>
+    <thead>
+      <tr><th>Command</th><th>Op level</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.help [1-5]</code></td><td></td><td>Command reference (5 pages).</td></tr>
+      <tr><td><code>.info</code></td><td></td><td>Server information: version and build date.</td></tr>
+      <tr><td><code>:credits</code></td><td></td><td>Project authors.</td></tr>
+      <tr><td><code>:source</code></td><td></td><td>Link to the source code repository.</td></tr>
+      <tr><td><code>.stink &lt;player&gt;</code></td><td></td><td>Public taunt directed at another player.</td></tr>
+      <tr><td><code>.lobby &lt;N&gt;</code></td><td></td><td>Switch to a different lobby by number.</td></tr>
+      <tr><td><code>.yes</code> / <code>.y</code></td><td></td><td>Vote "yes" in the current vote.</td></tr>
+      <tr><td><code>.vk &lt;player&gt;</code></td><td></td><td>Start a votekick against a player. Requires 3+ players; has a cooldown.</td></tr>
+      <tr><td><code>.vp</code></td><td></td><td>Start a vote for a practice round (map selection).</td></tr>
+      <tr><td><code>:vm &lt;N&gt;</code></td><td></td><td>Vote for a specific map by its number.</td></tr>
+      <tr><td><code>:status [1-4]</code></td><td></td><td>Server statistics (kills, shots, clones, etc.). 4 pages.</td></tr>
+      <tr><td><code>.map &lt;map&gt;</code></td><td class="lvl">≥ 1</td><td>Force a specific map for the next game.</td></tr>
+      <tr><td><code>:chance &lt;0-100&gt;</code></td><td class="lvl">≥ 1</td><td>Set your personal chance of becoming EXE.</td></tr>
+      <tr><td><code>.kick</code></td><td class="lvl">≥ 2</td><td>Open the player kick UI.</td></tr>
+      <tr><td><code>.ban</code></td><td class="lvl">≥ 2</td><td>Open the player ban UI.</td></tr>
+      <tr><td><code>:stop</code></td><td class="lvl">≥ 2</td><td>Force the current round to end immediately.</td></tr>
+      <tr><td><code>:start</code></td><td class="lvl">≥ 2</td><td>Force the game to start (proceeds to map selection).</td></tr>
+      <tr><td><code>.op</code></td><td class="lvl">≥ 3</td><td>Open the UI to grant operator rights to a player.</td></tr>
+      <tr><td><code>:reboot</code></td><td class="lvl">≥ 3</td><td>Reset the lobby to its initial state.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <code>.vk</code>, <code>.vp</code>, and <code>:vm</code> are disabled when <code>authoritarian_mode</code> or <code>anonymous_mode</code> is active.
+  </div>
+  <div class="note">
+    During map voting, only <code>.vp</code>, <code>.yes</code>, and <code>.y</code> are accepted — and only from operators, to forcefully conclude the vote.
+  </div>
+</section>
+
+<section>
+  <h2>Server CLI Commands</h2>
+  <p>Entered directly in the server terminal. Prefix: <code>?</code></p>
+
+  <table>
+    <thead>
+      <tr><th>Command</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>?help</code></td><td>List all terminal commands.</td></tr>
+      <tr><td><code>?lobby &lt;N&gt;</code></td><td>Switch the active lobby.</td></tr>
+      <tr><td><code>?playerlist</code></td><td>List players in the active lobby.</td></tr>
+      <tr><td><code>?playerlist --banned</code> / <code>-b</code></td><td>List all bans (IPs, UDIDs, nicknames).</td></tr>
+      <tr><td><code>?playerlist --timeouts</code> / <code>-t</code></td><td>List active kick timeouts.</td></tr>
+      <tr><td><code>?playerlist --admins</code> / <code>-a</code></td><td>List all operators.</td></tr>
+      <tr><td><code>?kick --pid / --endpoint / --username / --udid [--note]</code></td><td>Kick a player.</td></tr>
+      <tr><td><code>?ban --pid / --endpoint / --username / --udid [--note]</code></td><td>Ban a player.</td></tr>
+      <tr><td><code>?pardon --pid / --endpoint / --username / --udid</code></td><td>Remove all bans and timeouts from a player.</td></tr>
+      <tr><td><code>?op --pid / --endpoint / --username / --udid [--op-level 0-255] [--note]</code></td><td>Set a player's operator level.</td></tr>
+      <tr><td><code>?say &lt;text&gt;</code></td><td>Send a message to the active lobby.</td></tr>
+      <tr><td><code>?broadcast &lt;text&gt;</code></td><td>Send a message to all lobbies.</td></tr>
+      <tr><td><code>?start [--map / -m &lt;map id&gt;]</code></td><td>Force the game to start in the active lobby.</td></tr>
+      <tr><td><code>?stop</code></td><td>Force the current round to end in the active lobby.</td></tr>
+      <tr><td><code>?license</code></td><td>Print the license text.</td></tr>
+      <tr><td><code>?halt</code></td><td>Shut down the server.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</body>
+</html>

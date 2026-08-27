@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Advanced Server — information page for the AdvancedServer sonic.exe multiplayer server mod (TD2D / TD2DR).">
+  <meta name="keywords" content="sonic.exe, advanced server, advancedserver, td2d, td2dr, sonic, server, multiplayer, mod">
+  <title>Advanced Server Information Page</title>
+
+  <!-- Mobile check runs BEFORE CSS/JS loads; class added immediately so CSS hides desktop. -->
+  <script>
+    (function() {
+        var mobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+                         .test(navigator.userAgent)
+                     || (window.innerWidth < 768 && 'ontouchstart' in window);
+        if (mobile) {
+            document.documentElement.classList.add('is-mobile');
+            window.__isMobile = true;
+        }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="windowed-apps.d/winver.d/winver.css">
+  <link rel="stylesheet" href="windowed-apps.d/browser.d/browser.css">
+  <link rel="stylesheet" href="windowed-apps.d/explorer.d/explorer.css">
+  <link rel="stylesheet" href="windowed-apps.d/videoplayer.d/videoplayer.css">
+</head>
+<body>
+
+<!-- ── Mobile file browser (shown instead of desktop on mobile devices) ── -->
+<div id="mobile-block">
+  <div class="info-banner mob-header-bar">
+    <div class="info-hdr">
+      <div class="info-name">Advanced Server</div>
+      <div class="info-name">Information Page</div>
+    </div>
+  </div>
+  <div class="mob-bc" id="mob-bc"></div>
+  <div class="mob-list" id="mob-list">
+    <div class="mob-empty">Loading…</div>
+  </div>
+  <div id="mob-domain-warn" style="display:none">
+    <button class="mob-dw-close" id="mob-dw-close">✕</button>
+    <span class="mob-dw-msg">Unofficial mirror — official URL: <span id="mob-dw-url" title="Tap to copy"></span></span>
+    <span class="mob-dw-icon">⚠</span>
+  </div>
+</div>
+
+<!-- ── Desktop root ────────────────────────────────────────────── -->
+<div id="desktop-root">
+  <div id="desktop-grid" class="fg-root fg-desktop"></div>
+  <div id="window-layer"></div>
+
+  <div id="taskbar">
+    <div id="show-desktop-btn" title="Show Desktop"></div>
+    <div id="taskbar-apps"></div>
+    <div id="start-btn" title="Start">
+      <div class="start-icon-grid">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Start menu ────────────────────────────────────────────────── -->
+<div id="start-menu" class="hidden">
+  <div id="start-banner">
+    <div class="sm-banner-name">Advanced Server</div>
+    <div class="sm-banner-sub">Information Page</div>
+  </div>
+  <div id="start-buttons"></div>
+</div>
+
+<!-- ── Domain warning (Win8/10 notification, shown on wrong origin) ── -->
+<div id="domain-warning" style="display:none">
+  <button class="dw-close" onclick="document.getElementById('domain-warning').style.display='none'">✕</button>
+  <div class="dw-body">
+    <div class="dw-msg">
+      <strong>Warning:</strong> You are accessing this site through an unverified source or mirror.
+      For your safety and to ensure accurate information, please browse the website through the official URL:
+      <span class="copy-domain" id="expected-url-display" title="Click to copy"></span>.
+      Using unofficial mirrors may lead to misinformation or security risks.
+    </div>
+  </div>
+  <div class="dw-icon">⚠</div>
+</div>
+
+<!-- ── Max-windows warning ──────────────────────────────────────── -->
+<div id="max-windows-warning" class="system-dialog hidden">
+  <div class="dialog-box">
+    <div class="dialog-icon">⚠</div>
+    <div class="dialog-msg">
+      Maximum of <strong id="max-win-n">16</strong> windows reached.<br>
+      Close some windows to open more.
+    </div>
+    <button class="dialog-ok">OK</button>
+  </div>
+</div>
+
+<!-- ── Scripts: config → vfs → wm → file-grid → apps → desktop ── -->
+<script src="config.js"></script>
+<script src="fakeroot.d/vfs-manifest.js"></script>
+<script src="vfs.js"></script>
+<script src="window-manager.js"></script>
+<script src="file-grid.js"></script>
+<script src="windowed-apps.d/winver.d/winver.js"></script>
+<script src="windowed-apps.d/browser.d/browser.js"></script>
+<script src="windowed-apps.d/explorer.d/explorer.js"></script>
+<script src="windowed-apps.d/videoplayer.d/videoplayer.js"></script>
+<script src="mobile.js"></script>
+<script src="desktop.js"></script>
+
+<script>
+// ── Bootstrap ──────────────────────────────────────────────────────
+document.getElementById('max-win-n').textContent = Config.system.maxWindows;
+document.querySelector('#max-windows-warning .dialog-ok')
+    .addEventListener('click', () => {
+        document.getElementById('max-windows-warning').classList.add('hidden');
+    });
+
+// ── Domain check ───────────────────────────────────────────────────
+(function checkDomain() {
+    const expected = Config.site?.expectedUrl;
+    if (!expected) return;
+    try {
+        const exp = new URL(expected);
+        const ok  = location.origin   === exp.origin
+                 && location.pathname.startsWith(exp.pathname);
+        if (!ok) {
+            const el  = document.getElementById('domain-warning');
+            const lbl = document.getElementById('expected-url-display');
+            if (lbl) {
+                lbl.textContent = expected;
+                lbl.addEventListener('click', () => {
+                    navigator.clipboard.writeText(expected).then(() => {
+                        const old = lbl.title;
+                        lbl.title = 'Copied!';
+                        setTimeout(() => { lbl.title = old; }, 1500);
+                    }).catch(() => {});
+                });
+            }
+            if (el) el.style.display = '';
+        }
+    } catch (e) { console.warn('[domain check]', e); }
+})();
+
+// ── Init ───────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+    await VFS.init();
+    if (window.__isMobile) { MobileBrowser.init(); return; }
+    Desktop.init();
+});
+</script>
+
+</body>
+</html>

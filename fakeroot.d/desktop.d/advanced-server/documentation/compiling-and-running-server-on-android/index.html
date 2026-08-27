@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Server — Compiling &amp; Running on Android</title>
+  <link rel="stylesheet" href="../../../../sub-site.css">
+  <style>
+    #readme pre {
+      background: var(--code-bg);
+      border: 1px solid var(--bg3);
+      padding: 10px 14px;
+      overflow-x: auto;
+      margin: 8px 0 10px;
+      border-radius: 2px;
+    }
+    #readme pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.85em;
+      color: var(--text);
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    #readme blockquote {
+      border-left: 3px solid var(--acc2);
+      padding: 4px 12px;
+      color: var(--text-dim);
+      margin: 8px 0;
+    }
+    #readme hr {
+      border: none;
+      border-top: 1px solid var(--bg3);
+      margin: 14px 0;
+    }
+    #readme img {
+      height: 260px;
+      width: auto;
+      max-width: 100%;
+      display: inline-block;
+      border: 2px solid var(--bg3);
+      margin: 4px 6px 4px 0;
+      cursor: zoom-in;
+    }
+    #readme img:hover { border-color: var(--acc); }
+    #readme table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 8px 0;
+      font-size: 0.9em;
+    }
+    #readme th, #readme td {
+      border: 1px solid var(--bg3);
+      padding: 5px 10px;
+      text-align: left;
+    }
+    #readme th { background: var(--bg2); color: var(--acc); }
+    .rm-status { font-style: italic; color: var(--text-dim); padding: 12px 0; }
+    .rm-error   { color: #e08080; padding: 12px 0; }
+    /* lightbox */
+    #lb-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    #lb-overlay.open { display: flex; }
+    #lb-overlay img {
+      max-width: 92vw;
+      max-height: 92vh;
+      border: 2px solid var(--acc2);
+    }
+  </style>
+</head>
+<body>
+
+<div id="readme">
+  <p class="rm-status">Loading…</p>
+</div>
+
+<div id="lb-overlay">
+  <img id="lb-img" src="" alt="">
+</div>
+
+<script src="../../../../vendor/marked.min.js"></script>
+<script>
+(function () {
+    const RAW = 'https://raw.githubusercontent.com/wiki/thearcticfox25/AdvancedServer/Compiling-%26-Running-on-Android.md';
+    const el      = document.getElementById('readme');
+    const overlay = document.getElementById('lb-overlay');
+    const lbImg   = document.getElementById('lb-img');
+
+    function render(md) {
+        if (typeof marked !== 'undefined') {
+            el.innerHTML = marked.parse(md);
+        } else {
+            el.innerHTML = '<pre style="white-space:pre-wrap;overflow-x:auto">'
+                + md.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</pre>';
+        }
+        el.querySelectorAll('img').forEach(function (img) {
+            img.addEventListener('click', function () {
+                lbImg.src = img.src;
+                lbImg.alt = img.alt;
+                overlay.classList.add('open');
+            });
+        });
+    }
+
+    fetch(RAW)
+        .then(r => {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.text();
+        })
+        .then(render)
+        .catch(err => {
+            el.innerHTML =
+                '<p class="rm-error">&#9888; Could not load this page (' + err.message + '). ' +
+                '<a href="https://github.com/thearcticfox25/AdvancedServer/wiki/Compiling-&-Running-on-Android" target="_blank">' +
+                'View on GitHub</a></p>';
+        });
+
+    overlay.addEventListener('click', function () {
+        overlay.classList.remove('open');
+    });
+})();
+</script>
+
+</body>
+</html>

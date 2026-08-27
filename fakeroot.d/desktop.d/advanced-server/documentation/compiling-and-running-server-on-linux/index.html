@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Server — Compiling &amp; Running on Linux</title>
+  <link rel="stylesheet" href="../../../../sub-site.css">
+  <style>
+    #readme pre {
+      background: var(--code-bg);
+      border: 1px solid var(--bg3);
+      padding: 10px 14px;
+      overflow-x: auto;
+      margin: 8px 0 10px;
+      border-radius: 2px;
+    }
+    #readme pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.85em;
+      color: var(--text);
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    #readme blockquote {
+      border-left: 3px solid var(--acc2);
+      padding: 4px 12px;
+      color: var(--text-dim);
+      margin: 8px 0;
+    }
+    #readme hr {
+      border: none;
+      border-top: 1px solid var(--bg3);
+      margin: 14px 0;
+    }
+    #readme img { max-width: 100%; height: auto; }
+    #readme table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 8px 0;
+      font-size: 0.9em;
+    }
+    #readme th, #readme td {
+      border: 1px solid var(--bg3);
+      padding: 5px 10px;
+      text-align: left;
+    }
+    #readme th { background: var(--bg2); color: var(--acc); }
+    .rm-status { font-style: italic; color: var(--text-dim); padding: 12px 0; }
+    .rm-error   { color: #e08080; padding: 12px 0; }
+  </style>
+</head>
+<body>
+
+<div id="readme">
+  <p class="rm-status">Loading…</p>
+</div>
+
+<script src="../../../../vendor/marked.min.js"></script>
+<script>
+(function () {
+    const RAW = 'https://raw.githubusercontent.com/wiki/thearcticfox25/AdvancedServer/Compiling-%26-Running-on-Linux.md';
+    const el  = document.getElementById('readme');
+
+    function render(md) {
+        if (typeof marked !== 'undefined') {
+            el.innerHTML = marked.parse(md);
+        } else {
+            el.innerHTML = '<pre style="white-space:pre-wrap;overflow-x:auto">'
+                + md.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</pre>';
+        }
+    }
+
+    fetch(RAW)
+        .then(r => {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.text();
+        })
+        .then(render)
+        .catch(err => {
+            el.innerHTML =
+                '<p class="rm-error">&#9888; Could not load this page (' + err.message + '). ' +
+                '<a href="https://github.com/thearcticfox25/AdvancedServer/wiki/Compiling-&-Running-on-Linux" target="_blank">' +
+                'View on GitHub</a></p>';
+        });
+})();
+</script>
+
+</body>
+</html>

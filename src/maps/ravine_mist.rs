@@ -42,7 +42,7 @@ fn rmz_checkstate(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     let amount = shard_cfg.amount;
     let required = shard_cfg.required_for_exit;
 
-    let remaining = server.game.entities.iter().filter(|e| e.tag() == "shard").count().min(amount as usize) as u8;
+    let remaining = server.game.entities.iter().filter(|entity| entity.tag() == "shard").count().min(amount as usize) as u8;
     let total = amount.saturating_sub(remaining);
 
     let mut pkt = Packet::new(PacketType::SERVER_RMZSHARD_STATE);
@@ -51,7 +51,7 @@ fn rmz_checkstate(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     outbox.push(OutboxMsg::Broadcast(pkt.data().to_vec(), true));
 
     if server.game.time_sec <= 50 && !cfg.states.gameplay.banana.disable_timer {
-        let remaining2 = server.game.entities.iter().filter(|e| e.tag() == "shard").count().min(amount as usize) as u8;
+        let remaining2 = server.game.entities.iter().filter(|entity| entity.tag() == "shard").count().min(amount as usize) as u8;
         let total2 = amount.saturating_sub(remaining2);
         if total2 >= required {
             game_bigring(server, BigRingState::Activated, outbox);
@@ -62,15 +62,15 @@ fn rmz_checkstate(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 }
 
 fn rmz_spawnshards(peer_id: u16, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let shard_count = server.find_peer(peer_id).map(|p| p.plr.data[0]).unwrap_or(0);
-    let pos = server.find_peer(peer_id).map(|p| p.plr.pos).unwrap_or((0.0, 0.0));
+    let shard_count = server.find_peer(peer_id).map(|peer| peer.plr.data[0]).unwrap_or(0);
+    let pos = server.find_peer(peer_id).map(|peer| peer.plr.pos).unwrap_or((0.0, 0.0));
     for _ in 0..shard_count {
-        let ox: f32 = (rand::random::<u8>() % 17) as f32 - 8.0;
-        log::debug!("shard spawned at {} {}", pos.0 + ox, pos.1);
-        game_spawn(server, outbox, RmzShard::new(pos.0 + ox, pos.1, 1));
+        let offset_x: f32 = (rand::random::<u8>() % 17) as f32 - 8.0;
+        log::debug!("shard spawned at {} {}", pos.0 + offset_x, pos.1);
+        game_spawn(server, outbox, RmzShard::new(pos.0 + offset_x, pos.1, 1));
     }
-    if let Some(pd) = server.find_peer_mut(peer_id) {
-        pd.plr.data[0] = 0;
+    if let Some(peer) = server.find_peer_mut(peer_id) {
+        peer.plr.data[0] = 0;
     }
 }
 
@@ -88,13 +88,13 @@ pub fn rmz_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
     let amount = cfg.states.gameplay.entities_misc.map_specific.ravine_mist.shards.amount as usize;
     let mut shards = ALL_SHARD_POSITIONS;
-    let n = shards.len();
-    for i in 0..n - 1 {
-        let j = i + (rand::random::<usize>() % (n - i));
-        shards.swap(i, j);
+    let count = shards.len();
+    for slot in 0..count - 1 {
+        let pick = slot + (rand::random::<usize>() % (count - slot));
+        shards.swap(slot, pick);
     }
-    for i in 0..amount.min(n) {
-        game_spawn(server, outbox, RmzShard::new(shards[i].0, shards[i].1, 0));
+    for slot in 0..amount.min(count) {
+        game_spawn(server, outbox, RmzShard::new(shards[slot].0, shards[slot].1, 0));
     }
 }
 
@@ -112,7 +112,7 @@ pub fn rmz_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 
     if server.game.time_sec <= escape_time && server.game.bring_state < BigRingState::Activated {
         let shard_cfg = &cfg.states.gameplay.entities_misc.map_specific.ravine_mist.shards;
-        let remaining = server.game.entities.iter().filter(|e| e.tag() == "shard").count() as u8;
+        let remaining = server.game.entities.iter().filter(|entity| entity.tag() == "shard").count() as u8;
         let collected = shard_cfg.amount.saturating_sub(remaining);
         if collected >= shard_cfg.required_for_exit {
             game_bigring(server, BigRingState::Activated, outbox);
@@ -121,38 +121,38 @@ pub fn rmz_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 }
 
 pub fn rmz_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let ptype = match packet.packet_type() { Some(t) => t, None => return };
+    let packet_type = match packet.packet_type() { Some(found) => found, None => return };
 
-    match ptype {
+    match packet_type {
         PacketType::CLIENT_RMZSLIME_HIT => {
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
             if server.game.end > 0.0 { return; }
 
             packet.pos = 2;
-            let eid  = match packet.read_u16() { Some(v) => v, None => return };
-            let proj = match packet.read_u8()  { Some(v) => v, None => return };
+            let entity_id  = match packet.read_u16() { Some(value) => value, None => return };
+            let by_projectile = match packet.read_u8()  { Some(value) => value, None => return };
 
             let ring_type = server.game.entities.iter()
-                .find(|e| e.id() == eid && e.tag() == "slug")
-                .and_then(|e| e.rmz_slug_ring());
+                .find(|entity| entity.id() == entity_id && entity.tag() == "slug")
+                .and_then(|entity| entity.rmz_slug_ring());
 
-            let slug_exists = server.game.entities.iter().any(|e| e.id() == eid && e.tag() == "slug");
+            let slug_exists = server.game.entities.iter().any(|entity| entity.id() == entity_id && entity.tag() == "slug");
             if !slug_exists { return; }
 
-            game_despawn(server, outbox, eid);
+            game_despawn(server, outbox, entity_id);
 
-            if proj != 0 { return; }
+            if by_projectile != 0 { return; }
 
             if let Some(ring_bonus) = ring_type {
                 if ring_bonus == 0 {
-                    if let Some(pd) = server.find_peer_mut(peer_id) {
-                        pd.plr.rings += 1;
-                        pd.plr.stats.rings += 1;
-                        pd.plr.last_rings = Some(std::time::Instant::now());
+                    if let Some(peer) = server.find_peer_mut(peer_id) {
+                        peer.plr.rings += 1;
+                        peer.plr.stats.rings += 1;
+                        peer.plr.last_rings = Some(std::time::Instant::now());
                     }
                 }
-                let has_rings = server.find_peer(peer_id).map(|p| p.plr.rings > 0).unwrap_or(false);
+                let has_rings = server.find_peer(peer_id).map(|peer| peer.plr.rings > 0).unwrap_or(false);
                 let mut pkt = Packet::new(PacketType::SERVER_RMZSLIME_RINGBONUS);
                 let _ = pkt.write_u8(ring_bonus);
                 let _ = pkt.write_u8(has_rings as u8);
@@ -161,50 +161,50 @@ pub fn rmz_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox
         }
 
         PacketType::CLIENT_RMZSHARD_COLLECT => {
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
             if server.game.end > 0.0 { return; }
 
             packet.pos = 2;
-            let eid = match packet.read_u16() { Some(v) => v, None => return };
+            let entity_id = match packet.read_u16() { Some(value) => value, None => return };
 
-            let shard_exists = server.game.entities.iter().any(|e| e.id() == eid && e.tag() == "shard");
+            let shard_exists = server.game.entities.iter().any(|entity| entity.id() == entity_id && entity.tag() == "shard");
             if !shard_exists { return; }
 
-            if let Some(pd) = server.find_peer_mut(peer_id) {
-                pd.plr.data[0] = pd.plr.data[0].saturating_add(1);
+            if let Some(peer) = server.find_peer_mut(peer_id) {
+                peer.plr.data[0] = peer.plr.data[0].saturating_add(1);
             }
 
             let exe_id = server.game.exe;
             let ingame_ids: Vec<u16> = server.peers.iter()
-                .filter(|p| p.in_game)
-                .map(|p| p.id)
+                .filter(|peer| peer.in_game)
+                .map(|peer| peer.id)
                 .collect();
-            for pid in ingame_ids {
-                let is_exe = pid as i32 == exe_id;
-                let flags = server.find_peer(pid).map(|p| p.plr.flags).unwrap_or(0);
+            for player_id in ingame_ids {
+                let is_exe = player_id as i32 == exe_id;
+                let flags = server.find_peer(player_id).map(|peer| peer.plr.flags).unwrap_or(0);
                 let is_demonized = flags & plrflags::DEMONIZED != 0;
                 let display_pid = if is_exe || is_demonized { 0u16 } else { peer_id };
                 let mut pkt = Packet::new(PacketType::SERVER_RMZSHARD_STATE);
                 let _ = pkt.write_u8(2);
-                let _ = pkt.write_u16(eid);
+                let _ = pkt.write_u16(entity_id);
                 let _ = pkt.write_u16(display_pid);
-                outbox.push(OutboxMsg::SendTo(pid, pkt.data().to_vec(), true));
+                outbox.push(OutboxMsg::SendTo(player_id, pkt.data().to_vec(), true));
             }
 
-            game_despawn(server, outbox, eid);
+            game_despawn(server, outbox, entity_id);
             rmz_checkstate(server, outbox);
         }
 
         PacketType::CLIENT_PLAYER_DEATH_STATE => {
             if server.game.end > 0.0 { return; }
 
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if peer_id as i32 == server.game.exe { return; }
             if !peer.in_game { return; }
 
             packet.pos = 2;
-            let dead = match packet.read_u8() { Some(v) => v, None => return };
+            let dead = match packet.read_u8() { Some(value) => value, None => return };
             let _rtimes = packet.read_u8();
 
             if dead != 0 {

@@ -186,14 +186,14 @@ pub struct Gameplay {
     pub waiting_timeout: u8,
     /// Elimination-tournament progression, off at 0. Runs a real Lobby entry
     /// between rounds -- clients need that to leave Results and reset their
-    /// per-round state -- but with spectator promotion suppressed for as long
-    /// as the tournament still has another round left, so anyone waiting in
-    /// the spectator room stays there instead of joining a running tournament.
-    /// Spectators also aren't shown the Results screen for a round that isn't
-    /// the tournament's last, since they won't be following it into Lobby.
+    /// per-round state -- but the waiting room is not let in for as long as the
+    /// tournament still has another round left, so anyone who joined mid-
+    /// tournament stays there instead of walking into a running bracket. The
+    /// waiting room also isn't shown the Results screen for a round that isn't
+    /// the tournament's last, since it won't be following it into Lobby.
     /// Once elimination would leave too few players to continue (below
     /// lobby_misc.min_players_required), that round is treated as the
-    /// tournament's last and spectators are let in same as always. After
+    /// tournament's last and the waiting room is let in same as always. After
     /// viewing results, the worst-ranked survivor(s) (by the same ranking used
     /// for the results screen) are kicked before the next round starts. If
     /// every survivor escaped -- no bad performance to rank -- the exe is
@@ -205,6 +205,11 @@ pub struct Gameplay {
     /// 3: same as mode 2 when even; when odd, kick two thirds if the count is
     ///    divisible by 3, else fall back to mode 1.
     pub tournament_mode: u8,
+    /// Enables the `.spectate` chat command, which lets a player sitting in the
+    /// waiting room watch the round that is already running instead of waiting
+    /// it out on the waiting screen. See states::spectate for what that costs
+    /// and what it cannot do.
+    pub allow_spectators: bool,
     pub entities_misc: EntitiesMisc,
     pub anticheat: Anticheat,
     pub banana: Banana,
@@ -499,7 +504,7 @@ pub struct UselessStrictMode {
 
 impl UselessStrictMode {
     pub fn is_active(&self) -> bool {
-        self.c1.iter().all(|&v| v != 0) && self.c2.iter().all(|&v| v != 0)
+        self.c1.iter().all(|&checksum| checksum != 0) && self.c2.iter().all(|&checksum| checksum != 0)
     }
 }
 
@@ -709,6 +714,7 @@ impl Default for Gameplay {
             ending_timer: 5,
             waiting_timeout: 15,
             tournament_mode: 0,
+            allow_spectators: false,
             entities_misc: EntitiesMisc::default(),
             anticheat: Anticheat::default(),
             banana: Banana::default(),
@@ -1173,7 +1179,9 @@ const CONFIG_TOML_COMMENTS: &[(&str, Option<&str>, &str)] = &[
     ("states.gameplay", Some("waiting_timeout"),
         "Time (seconds) the server waits for clients to finish loading the game\nscene before kicking those who failed to prepare in time."),
     ("states.gameplay", Some("tournament_mode"),
-        "Elimination-tournament progression, off at 0. Runs a real Lobby entry\nbetween rounds -- clients need that to leave Results and reset their\nper-round state -- but with spectator promotion suppressed for as long as\nthe tournament still has another round left, so anyone waiting in the\nspectator room stays there instead of joining a running tournament.\nSpectators also aren't shown the Results screen for a round that isn't\nthe tournament's last, since they won't be following it into Lobby. Once\nelimination would leave too few players to continue (below\nlobby_misc.min_players_required), that round is treated as the\ntournament's last and spectators are let in same as always. After\nviewing results, the worst-ranked survivor(s) (by the same ranking used\nfor the results screen) are kicked before the next round starts. If\nevery survivor escaped -- no bad performance to rank -- the exe is\neliminated instead.\n\n1: kick the single worst player.\n2: kick half the round's participants if that count is even, else fall\n   back to mode 1.\n3: same as mode 2 when even; when odd, kick two thirds if the count is\n   divisible by 3, else fall back to mode 1."),
+        "Elimination-tournament progression, off at 0. Runs a real Lobby entry\nbetween rounds -- clients need that to leave Results and reset their\nper-round state -- but the waiting room is not let in for as long as the\ntournament still has another round left, so anyone who joined mid-\ntournament stays there instead of walking into a running bracket. The\nwaiting room also isn't shown the Results screen for a round that isn't\nthe tournament's last, since it won't be following it into Lobby. Once\nelimination would leave too few players to continue (below\nlobby_misc.min_players_required), that round is treated as the\ntournament's last and the waiting room is let in same as always. After\nviewing results, the worst-ranked survivor(s) (by the same ranking used\nfor the results screen) are kicked before the next round starts. If\nevery survivor escaped -- no bad performance to rank -- the exe is\neliminated instead.\n\n1: kick the single worst player.\n2: kick half the round's participants if that count is even, else fall\n   back to mode 1.\n3: same as mode 2 when even; when odd, kick two thirds if the count is\n   divisible by 3, else fall back to mode 1."),
+    ("states.gameplay", Some("allow_spectators"),
+        "Enables the .spectate chat command. A player who is in the waiting\nroom while a round is running can type it to watch that round instead\nof waiting it out on the waiting screen. They take no part in it: they\nare not on the roster, cannot be picked as exe, cannot be hurt and\ncannot hurt anyone, and nobody in the round is told they are there.\nThe game client has no spectator mode, so watching is done by walking\nthat one client through the join it missed and then killing it off --\nwhich takes it about five seconds, costs the spectator the waiting-room\nchat until the round ends, and shows them no map object (rings and the\nlike) that was spawned before they asked."),
 
     // states.gameplay.entities_misc
     ("states.gameplay.entities_misc.global.rings", Some("enabled"),
@@ -1321,7 +1329,7 @@ const CONFIG_TOML_COMMENTS: &[(&str, Option<&str>, &str)] = &[
 
 fn comment_prefix(comment: &str) -> String {
     comment.lines()
-        .map(|l| if l.is_empty() { "#\n".to_string() } else { format!("# {}\n", l) })
+        .map(|line| if line.is_empty() { "#\n".to_string() } else { format!("# {}\n", line) })
         .collect()
 }
 
@@ -1337,7 +1345,7 @@ fn navigate_table<'a>(root: &'a mut toml_edit::Table, path: &str) -> Option<&'a 
 /// line toml_edit puts before a new `[section]`), so the existing spacing is kept
 /// rather than replaced.
 fn prepend_comment(decor: &mut toml_edit::Decor, comment: &str) {
-    let existing = decor.prefix().and_then(|s| s.as_str()).unwrap_or("");
+    let existing = decor.prefix().and_then(|raw| raw.as_str()).unwrap_or("");
     decor.set_prefix(format!("{}{}", existing, comment_prefix(comment)));
 }
 
@@ -1383,21 +1391,21 @@ pub fn load_config() -> anyhow::Result<Config> {
 
 impl Config {
     pub fn verify(&self) -> bool {
-        let gp = &self.states.gameplay;
-        let rm = &gp.entities_misc.map_specific.ravine_mist;
-        if !gp.banana.disable_timer && !gp.gmcycle.overhell && gp.ring_appearance_timer < gp.escape_time {
+        let gameplay = &self.states.gameplay;
+        let ravine_mist = &gameplay.entities_misc.map_specific.ravine_mist;
+        if !gameplay.banana.disable_timer && !gameplay.gmcycle.overhell && gameplay.ring_appearance_timer < gameplay.escape_time {
             log::error!("ring_appearance_timer must be >= escape_time when timer is enabled");
             return false;
         }
-        if rm.shards.amount > 12 {
+        if ravine_mist.shards.amount > 12 {
             log::error!("ravine_mist.shards.amount must be <= 12");
             return false;
         }
-        if rm.shards.amount < rm.shards.required_for_exit {
+        if ravine_mist.shards.amount < ravine_mist.shards.required_for_exit {
             log::error!("shards.amount must be >= required_for_exit");
             return false;
         }
-        if rm.slugs.ring_chance + rm.slugs.red_ring_chance > 100 {
+        if ravine_mist.slugs.ring_chance + ravine_mist.slugs.red_ring_chance > 100 {
             log::error!("slug ring chances sum must be <= 100");
             return false;
         }
@@ -1405,16 +1413,16 @@ impl Config {
             log::error!("lobby_ready_required_percentage must be <= 100");
             return false;
         }
-        if gp.gmcycle.ambush_force_demonization_percentage_on_start > 100 {
+        if gameplay.gmcycle.ambush_force_demonization_percentage_on_start > 100 {
             log::error!("gmcycle.ambush_force_demonization_percentage_on_start must be <= 100");
             return false;
         }
-        if gp.tournament_mode > 3 {
+        if gameplay.tournament_mode > 3 {
             log::error!("tournament_mode must be 0-3");
             return false;
         }
-        let crl = &self.states.lobby_misc.chat_rate_limit;
-        if crl.enable && (crl.burst < 1.0 || crl.messages_per_second <= 0.0) {
+        let rate_limit = &self.states.lobby_misc.chat_rate_limit;
+        if rate_limit.enable && (rate_limit.burst < 1.0 || rate_limit.messages_per_second <= 0.0) {
             log::error!("chat_rate_limit: burst must be >= 1.0 and messages_per_second > 0.0 when enabled");
             return false;
         }

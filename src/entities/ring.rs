@@ -3,13 +3,13 @@ use crate::packet::{Packet, PacketType};
 
 pub struct Ring {
     pub id: u16,
-    pub rid: u8,
+    pub ring_id: u8,
     pub red: bool,
 }
 
 impl Ring {
     pub fn new() -> Self {
-        Self { id: 0, rid: 0, red: false }
+        Self { id: 0, ring_id: 0, red: false }
     }
 }
 
@@ -25,27 +25,25 @@ impl Entity for Ring {
         use rand::Rng;
         let ring_count = ctx.map_ring_count as usize;
 
-
-        let cnt = ctx.rings[..ring_count].iter().filter(|&&r| r).count();
-        if cnt >= ring_count {
+        let taken_count = ctx.rings[..ring_count].iter().filter(|&&taken| taken).count();
+        if taken_count >= ring_count {
             return false;
         }
 
-
-        let mut rnd;
+        let mut roll;
         loop {
-            rnd = ctx.rand.gen_range(0..ring_count);
-            if !ctx.rings[rnd] { break; }
+            roll = ctx.rand.gen_range(0..ring_count);
+            if !ctx.rings[roll] { break; }
         }
 
-        ctx.rings[rnd] = true;
-        self.rid = rnd as u8;
+        ctx.rings[roll] = true;
+        self.ring_id = roll as u8;
         let cfg = crate::config::cfg();
         self.red = ctx.rand.gen_range(0..100) < cfg.states.gameplay.entities_misc.global.rings.red_ring_chance;
 
         let mut pkt = Packet::new(PacketType::SERVER_RING_STATE);
         let _ = pkt.write_u8(0);
-        let _ = pkt.write_u8(self.rid);
+        let _ = pkt.write_u8(self.ring_id);
         let _ = pkt.write_u16(self.id);
         let _ = pkt.write_u8(self.red as u8);
         ctx.broadcast(pkt, true);
@@ -53,11 +51,11 @@ impl Entity for Ring {
     }
 
     fn on_uninit(&mut self, ctx: &mut EntityCtx) {
-        ctx.rings[self.rid as usize] = false;
+        ctx.rings[self.ring_id as usize] = false;
 
         let mut pkt = Packet::new(PacketType::SERVER_RING_STATE);
         let _ = pkt.write_u8(1);
-        let _ = pkt.write_u8(self.rid);
+        let _ = pkt.write_u8(self.ring_id);
         let _ = pkt.write_u16(self.id);
         ctx.broadcast(pkt, true);
     }

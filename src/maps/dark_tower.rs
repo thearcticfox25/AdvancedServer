@@ -31,22 +31,22 @@ pub fn dt_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     game_spawn(server, outbox, DtBall::new());
     game_spawn(server, outbox, DtTailsDoll::new());
 
-    for &(sid, x, y) in &STALACTITE_POSITIONS {
-        game_spawn(server, outbox, DtStalactits::new(sid, x, y));
+    for &(stalactite_id, x, y) in &STALACTITE_POSITIONS {
+        game_spawn(server, outbox, DtStalactits::new(stalactite_id, x, y));
     }
 }
 
 pub fn dt_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let ptype = match packet.packet_type() { Some(t) => t, None => return };
-    match ptype {
+    let packet_type = match packet.packet_type() { Some(found) => found, None => return };
+    match packet_type {
         PacketType::CLIENT_DTASS_ACTIVATE => {
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
             packet.pos = 2;
-            let sid = match packet.read_u8() { Some(v) => v, None => return };
-            if sid >= 14 { return; }
+            let stalactite_id = match packet.read_u8() { Some(value) => value, None => return };
+            if stalactite_id >= 14 { return; }
             with_entity_op(server, outbox, |entities, ctx| {
-                if let Some(idx) = entities.iter().position(|e| e.dt_sid() == sid as i16) {
+                if let Some(idx) = entities.iter().position(|entity| entity.dt_sid() == stalactite_id as i16) {
                     entities[idx].dt_activate(ctx);
                 }
             });

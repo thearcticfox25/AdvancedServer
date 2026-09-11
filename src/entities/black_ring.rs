@@ -33,13 +33,12 @@ impl Entity for BlackRing {
         // Mirror the client's 0.5s fade-in before the ring can be collected, so a
         // survivor who legitimately leaves during the fade is never force-collected.
         match self.spawn {
-            Some(t) if t.elapsed().as_millis() >= 500 => Some(self.pos),
+            Some(spawned_at) if spawned_at.elapsed().as_millis() >= 500 => Some(self.pos),
             _ => None,
         }
     }
 
     fn on_init(&mut self, ctx: &mut EntityCtx) -> bool {
-
         self.spawn = Some(Instant::now());
         if self.pos.0 == MAP_BRING || self.pos.1 == MAP_BRING {
             let mut pkt = Packet::new(PacketType::SERVER_BRING_STATE);

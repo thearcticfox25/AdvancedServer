@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::net::{SocketAddr, UdpSocket};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -7,23 +7,14 @@ use std::time::{Duration, Instant};
 
 use rusty_enet as enet;
 
-use crate::connection::{handle_identity, send_preidentity};
+use crate::connection::{handle_identity, send_preidentity, PeerRegistry};
 use crate::terminal::ConsoleCmd;
 use crate::packet::{Packet as GamePacket, PacketType};
 use crate::server::{
-    apply_outbox, broadcast_chat, DisconnectReason, GameState, OutboxMsg, PeerSummary,
+    apply_outbox, broadcast_chat, DisconnectReason, OutboxMsg, PeerSummary,
     PendingPeer, Server, ServerShared,
 };
-use crate::states::{
-    char_select::{charselect_state_handle, charselect_state_left, charselect_state_tick},
-    game::{game_state_handle, game_state_left, game_state_tick},
-    lobby::{
-        handle_console_cmd, lobby_broadcast_init, lobby_init, lobby_state_handle,
-        lobby_state_left, lobby_state_tick,
-    },
-    map_vote::{mapvote_state_handle, mapvote_state_left, mapvote_state_tick},
-    results::{results_state_handle, results_state_left, results_state_tick},
-};
+use crate::states::lobby::{handle_console_cmd, lobby_broadcast_init, lobby_init};
 
 fn print_network_setup_tutorial(base_port: u16, server_count: u16) {
     log::info!("==========================================================");
@@ -100,6 +91,119 @@ fn print_network_setup_tutorial(base_port: u16, server_count: u16) {
     log::info!("==========================================================");
 }
 
+/// A new socket showed up. Send it an authentication ticket and wait for its
+/// IDENTITY packet; until then it is only "pending", not a player.
+fn on_peer_connect(
+    peer_id: enet::PeerID,
+    host: &mut enet::Host<UdpSocket>,
+    peers: &mut PeerRegistry,
+    server_id: u16,
+) {
+    let idx = peer_id.0;
+    let ip = host
+        .get_peer(peer_id)
+        .and_then(|enet_peer| enet_peer.address())
+        .map(|address| address.ip().to_string())
+        .unwrap_or_default();
+
+    log::debug!("[Server {}] New connection from {} (idx={})", server_id, ip, idx);
+
+    let mut pending = PendingPeer {
+        ip,
+        timeout: 5.0 * 60.0,
+        auth: crate::anticheat::auth::AuthData::default(),
+    };
+    send_preidentity(idx, host, &mut pending);
+    peers.pending.insert(idx, pending);
+}
+
+/// A socket went away. If it belonged to an identified player, tell the current
+/// state about it, start their reconnect timeout, and forget them.
+fn on_peer_disconnect(
+    idx: usize,
+    host: &mut enet::Host<UdpSocket>,
+    server: &mut Server,
+    peers: &mut PeerRegistry,
+) {
+    peers.pending.remove(&idx);
+
+    let game_id = match peers.game_id_of_slot.remove(&idx) {
+        Some(id) => id,
+        None     => return,
+    };
+    peers.slot_of_game_id.remove(&game_id);
+
+    let peer = match server.find_peer(game_id) {
+        Some(peer) => peer,
+        None     => return,
+    };
+    let nick           = peer.nickname.clone();
+    let udid           = peer.udid.clone();
+    let ip             = peer.ip.clone();
+    let op             = peer.op;
+    let should_timeout = peer.should_timeout;
+
+    peers.taken_addresses.remove(&ip);
+    peers.taken_addresses.remove(&udid);
+
+    log::info!(
+        "[Server {}] Player '{}' (id={}) disconnected",
+        server.id, crate::colors::colorize(&nick), game_id
+    );
+
+    let mut outbox: Vec<OutboxMsg> = Vec::new();
+    crate::states::state_left(game_id, server, &mut outbox);
+
+    // Leaving mid-round costs a short reconnect cooldown, so quitting is not a
+    // free way to dodge a bad round. Operators are exempt.
+    if op < 2 && should_timeout && crate::moderation::timeout_check(&udid, &ip).is_none() {
+        let window  = crate::config::cfg().server_config.pairing.rate_limit_window as u64;
+        let expires = crate::moderation::now_unix() + window;
+        crate::moderation::timeout_set(&nick, &udid, &ip, expires, &nick);
+    }
+
+    server.peers.retain(|peer| peer.id != game_id);
+    apply_outbox(host, server, &mut outbox);
+}
+
+/// A packet arrived. From an identified player it goes to the current state;
+/// from a pending connection only an IDENTITY packet is listened to.
+fn on_peer_receive(
+    idx: usize,
+    data: &[u8],
+    host: &mut enet::Host<UdpSocket>,
+    server: &mut Server,
+    peers: &mut PeerRegistry,
+    all_shared: &[Arc<ServerShared>],
+    base_port: u16,
+) {
+    if let Some(game_id) = peers.game_id_of_slot.get(&idx).copied() {
+        let rtt_ms = host
+            .get_peer(enet::PeerID(idx))
+            .map(|enet_peer| enet_peer.round_trip_time().as_millis() as u16)
+            .unwrap_or(0);
+        if let Some(peer) = server.find_peer_mut(game_id) {
+            peer.rtt = rtt_ms;
+        }
+
+        let mut pkt = GamePacket::from_data(data);
+        pkt.pos = 2;
+
+        let mut outbox: Vec<OutboxMsg> = Vec::new();
+        crate::states::state_handle(game_id, &mut pkt, server, &mut outbox);
+        apply_outbox(host, server, &mut outbox);
+        return;
+    }
+
+    if !peers.pending.contains_key(&idx) { return; }
+
+    let pkt = GamePacket::from_data(data);
+    if pkt.len < 2 { return; }
+    if pkt.packet_type() == Some(PacketType::IDENTITY) {
+        handle_identity(idx, data, host, server, peers, all_shared, base_port);
+    }
+}
+
 pub fn server_worker(
     server_id: u16,
     port: u16,
@@ -115,11 +219,11 @@ pub fn server_worker(
     let mut server = Server::new(server_id);
 
     let socket = match UdpSocket::bind(SocketAddr::from(([0, 0, 0, 0], port))) {
-        Ok(s) => s,
-        Err(e) => {
+        Ok(bound) => bound,
+        Err(error) => {
             log::error!(
                 "[Server {}] Failed to bind UDP socket on port {}: {}",
-                server_id, port, e
+                server_id, port, error
             );
             return;
         }
@@ -133,9 +237,9 @@ pub fn server_worker(
             ..Default::default()
         },
     ) {
-        Ok(h) => h,
-        Err(e) => {
-            log::error!("[Server {}] Failed to create ENet host: {:?}", server_id, e);
+        Ok(created) => created,
+        Err(error) => {
+            log::error!("[Server {}] Failed to create ENet host: {:?}", server_id, error);
             return;
         }
     };
@@ -152,15 +256,11 @@ pub fn server_worker(
     let target_tick = Duration::from_nanos((1_000_000_000.0 / 60.0) as u64);
     let mut next_tick = Instant::now() + target_tick;
 
-    let mut ip_set: HashSet<String> = HashSet::new();
-    let mut pending: HashMap<usize, PendingPeer> = HashMap::new();
-    let mut peer_index_map: HashMap<u16, usize> = HashMap::new();
-    let mut index_to_id: HashMap<usize, u16> = HashMap::new();
+    let mut peers = PeerRegistry::new();
 
     let cfg = crate::config::cfg();
     let base_port = cfg.server_config.networking.port;
     let server_count = cfg.server_config.networking.server_count;
-
 
     let mut empty_ticks: u64 = 0;
     let mut tutorial_shown = false;
@@ -183,152 +283,41 @@ pub fn server_worker(
             match host.service() {
                 Ok(Some(event)) => {
                     serviced_events += 1;
-                    let ev = event.no_ref();
-                    match ev {
+                    let event_kind = event.no_ref();
+                    match event_kind {
                         enet::EventNoRef::Connect { peer: peer_id, .. } => {
-                            let idx = peer_id.0;
-                            let ip = host
-                                .get_peer(peer_id)
-                                .and_then(|p| p.address())
-                                .map(|a| a.ip().to_string())
-                                .unwrap_or_default();
-
-                            log::debug!(
-                                "[Server {}] New connection from {} (idx={})",
-                                server_id, ip, idx
-                            );
-
-                            let mut pp = PendingPeer {
-                                ip,
-                                timeout: 5.0 * 60.0,
-                                auth: crate::anticheat::auth::AuthData::default(),
-                            };
-                            send_preidentity(idx, &mut host, &mut pp);
-                            pending.insert(idx, pp);
+                            on_peer_connect(peer_id, &mut host, &mut peers, server_id);
                         }
 
                         enet::EventNoRef::Disconnect { peer: peer_id, .. } => {
-                            let idx = peer_id.0;
-                            pending.remove(&idx);
-
-                            if let Some(game_id) = index_to_id.remove(&idx) {
-                                peer_index_map.remove(&game_id);
-
-                                if let Some(pd) = server.find_peer(game_id) {
-                                    let nick       = pd.nickname.clone();
-                                    let udid       = pd.udid.clone();
-                                    let ip         = pd.ip.clone();
-                                    let op         = pd.op;
-                                    let should_tmo = pd.should_timeout;
-
-                                    ip_set.remove(&ip);
-                                    ip_set.remove(&udid);
-
-                                    log::info!(
-                                        "[Server {}] Player '{}' (id={}) disconnected",
-                                        server_id, crate::colors::colorize(&nick), game_id
-                                    );
-
-                                    let mut outbox: Vec<OutboxMsg> = Vec::new();
-                                    match server.state {
-                                        GameState::Lobby => {
-                                            lobby_state_left(game_id, &mut server, &mut outbox)
-                                        }
-                                        GameState::MapVote => {
-                                            mapvote_state_left(game_id, &mut server, &mut outbox)
-                                        }
-                                        GameState::CharSelect => {
-                                            charselect_state_left(game_id, &mut server, &mut outbox)
-                                        }
-                                        GameState::Game => {
-                                            game_state_left(game_id, &mut server, &mut outbox)
-                                        }
-                                        GameState::Results => {
-                                            results_state_left(game_id, &mut server, &mut outbox)
-                                        }
-                                    }
-
-
-                                    if op < 2 && should_tmo {
-                                        if crate::moderation::timeout_check(&udid, &ip).is_none() {
-                                            let secs = cfg.server_config.pairing.rate_limit_window as u64;
-                                            let expires = crate::moderation::now_unix() + secs;
-                                            crate::moderation::timeout_set(&nick, &udid, &ip, expires, &nick);
-                                        }
-                                    }
-
-                                    server.peers.retain(|p| p.id != game_id);
-                                    apply_outbox(&mut host, &mut server, &mut outbox);
-                                }
-                            }
+                            on_peer_disconnect(peer_id.0, &mut host, &mut server, &mut peers);
                         }
 
                         enet::EventNoRef::Receive { peer: peer_id, packet, .. } => {
                             let idx = peer_id.0;
+                            // Flood cap, per peer and per tick: a client that keeps
+                            // shouting gets its extra packets dropped rather than
+                            // stalling the tick for everyone else.
                             let drained = peer_drained.entry(idx).or_insert(0);
                             *drained += 1;
                             if *drained > cfg.server_config.networking.vinny.max_packets_per_peer_per_tick {
                                 continue;
                             }
-                            let data = packet.data().to_vec();
-
-                            if let Some(game_id) = index_to_id.get(&idx).copied() {
-                                let rtt_ms = host
-                                    .get_peer(enet::PeerID(idx))
-                                    .map(|p| p.round_trip_time().as_millis() as u16)
-                                    .unwrap_or(0);
-                                if let Some(pd) = server.find_peer_mut(game_id) {
-                                    pd.rtt = rtt_ms;
-                                }
-
-                                let mut pkt = GamePacket::from_data(&data);
-                                pkt.pos = 2;
-
-                                let mut outbox: Vec<OutboxMsg> = Vec::new();
-                                match server.state {
-                                    GameState::Lobby => {
-                                        lobby_state_handle(game_id, &mut pkt, &mut server, &mut outbox)
-                                    }
-                                    GameState::MapVote => {
-                                        mapvote_state_handle(game_id, &mut pkt, &mut server, &mut outbox)
-                                    }
-                                    GameState::CharSelect => {
-                                        charselect_state_handle(game_id, &mut pkt, &mut server, &mut outbox)
-                                    }
-                                    GameState::Game => {
-                                        game_state_handle(game_id, &mut pkt, &mut server, &mut outbox)
-                                    }
-                                    GameState::Results => {
-                                        results_state_handle(game_id, &mut pkt, &mut server, &mut outbox)
-                                    }
-                                }
-                                apply_outbox(&mut host, &mut server, &mut outbox);
-                            } else if pending.contains_key(&idx) {
-                                let mut pkt = GamePacket::from_data(&data);
-                                if pkt.len < 2 {
-                                    continue;
-                                }
-                                if pkt.packet_type() == Some(PacketType::IDENTITY) {
-                                    handle_identity(
-                                        idx,
-                                        &data,
-                                        &mut host,
-                                        &mut server,
-                                        &mut pending,
-                                        &mut ip_set,
-                                        &mut peer_index_map,
-                                        &mut index_to_id,
-                                        &all_shared,
-                                        base_port,
-                                    );
-                                }
-                            }
+                            on_peer_receive(
+                                idx,
+                                &packet.data().to_vec(),
+                                &mut host,
+                                &mut server,
+                                &mut peers,
+                                &all_shared,
+                                base_port,
+                            );
                         }
                     }
                 }
                 Ok(None) => break,
-                Err(e) => {
-                    log::warn!("[Server {}] ENet service error: {:?}", server_id, e);
+                Err(error) => {
+                    log::warn!("[Server {}] ENet service error: {:?}", server_id, error);
                     break;
                 }
             }
@@ -352,7 +341,7 @@ pub fn server_worker(
             next_tick += target_tick;
 
             let delta = server.delta;
-            pending.retain(|idx, pp| {
+            peers.pending.retain(|idx, pp| {
                 pp.timeout -= delta * 60.0;
                 if pp.timeout <= 0.0 {
                     if let Some(peer) = host.get_peer_mut(enet::PeerID(*idx)) {
@@ -363,7 +352,6 @@ pub fn server_worker(
                     true
                 }
             });
-
 
             if server_id == 0 && !tutorial_shown && cfg.miscellaneous.other.instructor_enabled {
                 if !server.peers.is_empty() {
@@ -380,29 +368,22 @@ pub fn server_worker(
                 }
             }
 
-
             if empty_ticks % (60 * 60) == 0 || empty_ticks == 1 {
                 crate::moderation::cleanup_expired_timeouts();
             }
 
             let mut outbox: Vec<OutboxMsg> = Vec::new();
-            match server.state {
-                GameState::Lobby => lobby_state_tick(&mut server, &mut outbox),
-                GameState::MapVote => mapvote_state_tick(&mut server, &mut outbox),
-                GameState::CharSelect => charselect_state_tick(&mut server, &mut outbox),
-                GameState::Game => game_state_tick(&mut server, &mut outbox),
-                GameState::Results => results_state_tick(&mut server, &mut outbox),
-            }
+            crate::states::state_tick(&mut server, &mut outbox);
             apply_outbox(&mut host, &mut server, &mut outbox);
 
             let to_disconnect: Vec<u16> = server
                 .peers
                 .iter()
-                .filter(|p| p.disconnecting)
-                .map(|p| p.id)
+                .filter(|peer| peer.disconnecting)
+                .map(|peer| peer.id)
                 .collect();
             for id in to_disconnect {
-                if let Some(idx) = peer_index_map.get(&id).copied() {
+                if let Some(idx) = peers.slot_of_game_id.get(&id).copied() {
                     if let Some(peer) = host.get_peer_mut(enet::PeerID(idx)) {
                         peer.disconnect(DisconnectReason::KickedByHost as u32);
                     }
@@ -416,15 +397,15 @@ pub fn server_worker(
                 let summary: Vec<PeerSummary> = server
                     .peers
                     .iter()
-                    .map(|p| PeerSummary {
-                        id: p.id,
-                        ip: p.ip.clone(),
-                        udid: p.udid.clone(),
-                        nickname: p.nickname.clone(),
-                        op: p.op,
-                        mod_tool: p.mod_tool,
-                        is_mobile: p.is_mobile,
-                        in_game: p.in_game,
+                    .map(|peer| PeerSummary {
+                        id: peer.id,
+                        ip: peer.ip.clone(),
+                        udid: peer.udid.clone(),
+                        nickname: peer.nickname.clone(),
+                        op: peer.op,
+                        mod_tool: peer.mod_tool,
+                        is_mobile: peer.is_mobile,
+                        in_game: peer.in_game,
                     })
                     .collect();
                 if let Ok(mut guard) = shared.peers.write() {
@@ -436,9 +417,8 @@ pub fn server_worker(
         std::thread::sleep(Duration::from_millis(1));
     }
 
-
     let remaining_ids: Vec<(u16, usize)> = server.peers.iter()
-        .filter_map(|p| peer_index_map.get(&p.id).map(|&idx| (p.id, idx)))
+        .filter_map(|peer| peers.slot_of_game_id.get(&peer.id).map(|&idx| (peer.id, idx)))
         .collect();
     for (_id, idx) in remaining_ids {
         if let Some(peer) = host.get_peer_mut(enet::PeerID(idx)) {

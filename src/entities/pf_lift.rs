@@ -5,7 +5,7 @@ use crate::vote::TICKS_PER_SEC;
 pub struct PfLift {
     pub id: u16,
     pub pos_y: f32,
-    pub lid: u8,
+    pub lift_id: u8,
     pub timer: f64,
     pub start: f32,
     pub end: f32,
@@ -15,11 +15,11 @@ pub struct PfLift {
 }
 
 impl PfLift {
-    pub fn new(lid: u8, start: f32, end: f32) -> Self {
+    pub fn new(lift_id: u8, start: f32, end: f32) -> Self {
         Self {
             id: 0,
             pos_y: start,
-            lid,
+            lift_id,
             timer: 0.0,
             start,
             end,
@@ -42,7 +42,7 @@ impl PfLift {
 
         let mut pkt = Packet::new(PacketType::SERVER_PFLIFT_STATE);
         let _ = pkt.write_u8(0);
-        let _ = pkt.write_u8(self.lid);
+        let _ = pkt.write_u8(self.lift_id);
         let _ = pkt.write_u16(self.activator);
         ctx.broadcast(pkt, true);
     }
@@ -53,8 +53,8 @@ impl Entity for PfLift {
     fn id(&self) -> u16 { self.id }
     fn set_id(&mut self, id: u16) { self.id = id; }
     fn pos(&self) -> (f32, f32) { (0.0, self.pos_y) }
-    fn pf_lid(&self) -> i16 { self.lid as i16 }
-    fn pf_activate(&mut self, ctx: &mut EntityCtx, pid: u16) { self.activate(ctx, pid); }
+    fn pf_lid(&self) -> i16 { self.lift_id as i16 }
+    fn pf_activate(&mut self, ctx: &mut EntityCtx, player_id: u16) { self.activate(ctx, player_id); }
 
     fn on_init(&mut self, _ctx: &mut EntityCtx) -> bool {
         self.pos_y = self.start;
@@ -66,10 +66,9 @@ impl Entity for PfLift {
             if self.timer > 0.0 {
                 self.timer -= 1.0;
                 if self.timer <= 0.0 {
-
                     let mut pkt = Packet::new(PacketType::SERVER_PFLIFT_STATE);
                     let _ = pkt.write_u8(3);
-                    let _ = pkt.write_u8(self.lid);
+                    let _ = pkt.write_u8(self.lift_id);
                     let _ = pkt.write_u16(self.start as u16);
                     ctx.broadcast(pkt, true);
                 }
@@ -85,7 +84,7 @@ impl Entity for PfLift {
         } else {
             let mut pkt = Packet::new(PacketType::SERVER_PFLIFT_STATE);
             let _ = pkt.write_u8(2);
-            let _ = pkt.write_u8(self.lid);
+            let _ = pkt.write_u8(self.lift_id);
             let _ = pkt.write_u16(self.activator);
             let _ = pkt.write_u16(self.pos_y as u16);
             ctx.broadcast(pkt, true);
@@ -97,7 +96,7 @@ impl Entity for PfLift {
 
         let mut pkt = Packet::new(PacketType::SERVER_PFLIFT_STATE);
         let _ = pkt.write_u8(1);
-        let _ = pkt.write_u8(self.lid);
+        let _ = pkt.write_u8(self.lift_id);
         let _ = pkt.write_u16(self.activator);
         let _ = pkt.write_u16(self.pos_y as u16);
         ctx.broadcast(pkt, false);

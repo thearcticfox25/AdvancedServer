@@ -27,7 +27,7 @@ rusty_enet = { path = "./lib/rusty_enet/" }
 
 [profile.release]
 # opt-level 3: this is a 60Hz physics/anticheat server where throughput matters
-# more than binary size. (Was "z" — optimized for size, leaving speed on the table.)
+# more than binary size. (Was "z" - optimized for size, leaving speed on the table.)
 opt-level = 3
 lto = true
 strip = true

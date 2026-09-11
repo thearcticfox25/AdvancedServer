@@ -23,8 +23,8 @@ pub enum SlugRing {
 pub struct RmzSlug {
     pub id: u16,
     pub pos: (f32, f32),
-    pub sx: f32,
-    pub sy: f32,
+    pub spawn_x: f32,
+    pub spawn_y: f32,
     pub state: SlugState,
     pub ring: SlugRing,
 }
@@ -34,8 +34,8 @@ impl RmzSlug {
         Self {
             id: 0,
             pos: (x, y),
-            sx: x,
-            sy: y,
+            spawn_x: x,
+            spawn_y: y,
             state: SlugState::NoneRight,
             ring: SlugRing::NoRing,
         }
@@ -71,17 +71,17 @@ impl Entity for RmzSlug {
         let cfg = crate::config::cfg();
         let slugs = &cfg.states.gameplay.entities_misc.map_specific.ravine_mist.slugs;
 
-        let num = ctx.rand.gen_range(0u8..100);
-        if num < slugs.red_ring_chance {
+        let roll = ctx.rand.gen_range(0u8..100);
+        if roll < slugs.red_ring_chance {
             self.ring = SlugRing::RedRing;
-        } else if num < slugs.red_ring_chance + slugs.ring_chance {
+        } else if roll < slugs.red_ring_chance + slugs.ring_chance {
             self.ring = SlugRing::Ring;
         } else {
             self.ring = SlugRing::NoRing;
         }
 
-        self.sx = self.pos.0;
-        self.sy = self.pos.1;
+        self.spawn_x = self.pos.0;
+        self.spawn_y = self.pos.1;
 
         let dir = ctx.rand.gen_range(0u8..2) != 0;
         self.face(dir);
@@ -100,13 +100,13 @@ impl Entity for RmzSlug {
         match self.state {
             SlugState::NoneLeft | SlugState::RingLeft | SlugState::RedRingLeft => {
                 self.pos.0 -= 1.0;
-                if self.pos.0 <= self.sx - 100.0 {
+                if self.pos.0 <= self.spawn_x - 100.0 {
                     self.face(true);
                 }
             }
             SlugState::NoneRight | SlugState::RingRight | SlugState::RedRingRight => {
                 self.pos.0 += 1.0;
-                if self.pos.0 >= self.sx + 100.0 {
+                if self.pos.0 >= self.spawn_x + 100.0 {
                     self.face(false);
                 }
             }
@@ -127,11 +127,6 @@ impl Entity for RmzSlug {
         let _ = pkt.write_u8(2);
         let _ = pkt.write_u16(self.id);
         ctx.broadcast(pkt, true);
-        let my_id = self.id;
-        for eid in &ctx.entity_ids {
-            let _ = *eid;
-        }
-        let _ = my_id;
     }
 }
 
@@ -148,8 +143,8 @@ impl SlugSpawner {
     pub fn new(x: f32, y: f32) -> Self {
         use rand::Rng;
         let mut rng = rand::thread_rng();
-        let off = (rng.gen_range(0u32..2) as f64) * crate::vote::TICKS_PER_SEC;
-        Self { id: 0, pos: (x, y), slug_id: 0, timer: 0.0, offset: off, need_spawn: false }
+        let offset = (rng.gen_range(0u32..2) as f64) * crate::vote::TICKS_PER_SEC;
+        Self { id: 0, pos: (x, y), slug_id: 0, timer: 0.0, offset, need_spawn: false }
     }
 }
 
@@ -182,6 +177,10 @@ impl Entity for SlugSpawner {
 
     fn spawner_slug_id(&self) -> u16 { self.slug_id }
     fn spawner_set_slug(&mut self, id: u16) { self.slug_id = id; self.need_spawn = false; }
-    fn spawner_take_spawn(&mut self) -> bool { let v = self.need_spawn; self.need_spawn = false; v }
+    fn spawner_take_spawn(&mut self) -> bool {
+        let wanted = self.need_spawn;
+        self.need_spawn = false;
+        wanted
+    }
     fn spawner_pos(&self) -> Option<(f32, f32)> { Some(self.pos) }
 }

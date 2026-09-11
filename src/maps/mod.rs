@@ -58,7 +58,7 @@ pub static MAP_LIST: [MapDef; MAP_COUNT] = [
     MapDef { name: "Fart Zone",          ring_count: 15, init: fart_zone::ft_init,              tick: map_tick, tcp_msg: fart_zone::ft_tcpmsg,          left: map_left },
 ];
 
-pub fn map_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
+pub fn map_init(server: &mut Server, _outbox: &mut Vec<OutboxMsg>) {
     map_time_ex(server, 180, 20);
     map_ring(server, 5);
     server.game.bring_state = BigRingState::None;
@@ -75,16 +75,13 @@ pub fn map_time_ex(server: &mut Server, base_sec: usize, mul_sec: usize) {
     map_time(server, time_sec);
 }
 
-pub fn map_tick(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-
+pub fn map_tick(_server: &mut Server, _outbox: &mut Vec<OutboxMsg>) {
 }
 
 pub fn map_tcpmsg(_peer_id: u16, _packet: &mut Packet, _server: &mut Server, _outbox: &mut Vec<OutboxMsg>) {
-
 }
 
 pub fn map_left(_peer_id: u16, _server: &mut Server, _outbox: &mut Vec<OutboxMsg>) {
-
 }
 
 pub fn map_time(server: &mut Server, time_sec: u16) {
@@ -94,6 +91,6 @@ pub fn map_time(server: &mut Server, time_sec: u16) {
 
 pub fn map_ring(server: &mut Server, ring_coff: u8) {
     let ingame = server.ingame_count();
-    let coff = if ingame > 3 && ring_coff > 1 { ring_coff - 1 } else { ring_coff };
-    server.game.ring_coff = coff.max(1);
+    let adjusted = if ingame > 3 && ring_coff > 1 { ring_coff - 1 } else { ring_coff };
+    server.game.ring_coff = adjusted.max(1);
 }

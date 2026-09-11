@@ -155,9 +155,9 @@ impl PacketType {
     /// Safe `u8 -> PacketType`. Replaces a former `mem::transmute`, which would have
     /// become UB the moment anyone introduced a gap in the discriminants. This relies
     /// only on the layout being contiguous for validity (no `unsafe`).
-    pub fn from_u8(v: u8) -> Option<PacketType> {
-        if v <= Self::MAX {
-            Some(PACKET_TYPE_TABLE[v as usize])
+    pub fn from_u8(raw: u8) -> Option<PacketType> {
+        if raw <= Self::MAX {
+            Some(PACKET_TYPE_TABLE[raw as usize])
         } else {
             None
         }
@@ -316,21 +316,21 @@ const fn build_packet_type_table() -> [PacketType; PacketType::MAX as usize + 1]
         PacketType::CLIENT_PLAYER_POTATER,
     ];
 
-    let n = PacketType::MAX as usize + 1;
+    let variant_count = PacketType::MAX as usize + 1;
     assert!(
-        VARIANTS.len() == n,
+        VARIANTS.len() == variant_count,
         "PACKET_TYPE_TABLE variant list out of sync with PacketType repr"
     );
     let mut table = [PacketType::IDENTITY; PacketType::MAX as usize + 1];
-    let mut i = 0;
-    while i < n {
-        let v = VARIANTS[i];
+    let mut type_id = 0;
+    while type_id < variant_count {
+        let variant = VARIANTS[type_id];
         assert!(
-            v as usize == i,
+            variant as usize == type_id,
             "PacketType discriminants are not contiguous from 0 (gap detected)"
         );
-        table[i] = v;
-        i += 1;
+        table[type_id] = variant;
+        type_id += 1;
     }
     table
 }
@@ -345,49 +345,33 @@ pub struct Packet {
 }
 
 impl Packet {
-
     pub fn new(ptype: PacketType) -> Self {
-        let mut p = Self { buf: [0u8; PACKET_MAXSIZE], pos: 0, len: 0 };
-        p.write_u8(0).ok();
-        p.write_u8(ptype as u8).ok();
-        p
+        let mut packet = Self { buf: [0u8; PACKET_MAXSIZE], pos: 0, len: 0 };
+        packet.write_u8(0).ok();
+        packet.write_u8(ptype as u8).ok();
+        packet
     }
-
 
     pub fn from_data(data: &[u8]) -> Self {
         let len = data.len().min(PACKET_MAXSIZE);
-        let mut p = Self { buf: [0u8; PACKET_MAXSIZE], pos: 0, len };
-        p.buf[..len].copy_from_slice(&data[..len]);
-        p
+        let mut packet = Self { buf: [0u8; PACKET_MAXSIZE], pos: 0, len };
+        packet.buf[..len].copy_from_slice(&data[..len]);
+        packet
     }
 
     pub fn packet_type(&self) -> Option<PacketType> {
         if self.len >= 2 { PacketType::from_u8(self.buf[1]) } else { None }
     }
 
-    pub fn raw_type_byte(&self) -> u8 {
-        if self.len >= 2 { self.buf[1] } else { 0 }
-    }
-
-    pub fn seek(&mut self, pos: usize) -> bool {
-        if pos < self.len {
-            self.pos = pos;
-            true
-        } else {
-            false
-        }
-    }
-
     pub fn data(&self) -> &[u8] {
         &self.buf[..self.len]
     }
 
-
     pub fn read_u8(&mut self) -> Option<u8> {
         if self.pos < self.len {
-            let v = self.buf[self.pos];
+            let value = self.buf[self.pos];
             self.pos += 1;
-            Some(v)
+            Some(value)
         } else {
             None
         }
@@ -395,60 +379,43 @@ impl Packet {
 
     pub fn read_u16(&mut self) -> Option<u16> {
         if self.pos + 2 > self.len { return None; }
-        let v = u16::from_le_bytes([self.buf[self.pos], self.buf[self.pos + 1]]);
+        let value = u16::from_le_bytes([self.buf[self.pos], self.buf[self.pos + 1]]);
         self.pos += 2;
-        Some(v)
+        Some(value)
     }
 
     pub fn read_i16(&mut self) -> Option<i16> {
-        self.read_u16().map(|v| v as i16)
+        self.read_u16().map(|word| word as i16)
     }
 
     pub fn read_u32(&mut self) -> Option<u32> {
         if self.pos + 4 > self.len { return None; }
-        let v = u32::from_le_bytes(self.buf[self.pos..self.pos + 4].try_into().unwrap());
+        let value = u32::from_le_bytes(self.buf[self.pos..self.pos + 4].try_into().unwrap());
         self.pos += 4;
-        Some(v)
+        Some(value)
     }
 
     pub fn read_i32(&mut self) -> Option<i32> {
-        self.read_u32().map(|v| v as i32)
+        self.read_u32().map(|dword| dword as i32)
     }
 
     pub fn read_u64(&mut self) -> Option<u64> {
         if self.pos + 8 > self.len { return None; }
-        let v = u64::from_le_bytes(self.buf[self.pos..self.pos + 8].try_into().unwrap());
+        let value = u64::from_le_bytes(self.buf[self.pos..self.pos + 8].try_into().unwrap());
         self.pos += 8;
-        Some(v)
+        Some(value)
     }
 
     pub fn read_f32(&mut self) -> Option<f32> {
         if self.pos + 4 > self.len { return None; }
-        let v = f32::from_le_bytes(self.buf[self.pos..self.pos + 4].try_into().unwrap());
+        let value = f32::from_le_bytes(self.buf[self.pos..self.pos + 4].try_into().unwrap());
         self.pos += 4;
-        Some(v)
-    }
-
-
-    pub fn read_double_compat(&mut self) -> Option<f64> {
-        if self.pos + 8 > self.len { return None; }
-        let v = f32::from_le_bytes(self.buf[self.pos..self.pos + 4].try_into().unwrap()) as f64;
-        self.pos += 8;
-        Some(v)
-    }
-
-
-    pub fn read_f64(&mut self) -> Option<f64> {
-        if self.pos + 8 > self.len { return None; }
-        let v = f64::from_le_bytes(self.buf[self.pos..self.pos + 8].try_into().unwrap());
-        self.pos += 8;
-        Some(v)
+        Some(value)
     }
 
     pub fn read_i8(&mut self) -> Option<i8> {
-        self.read_u8().map(|v| v as i8)
+        self.read_u8().map(|byte| byte as i8)
     }
-
 
     pub fn read_str(&mut self) -> Option<String> {
         let mut bytes = Vec::new();
@@ -463,89 +430,64 @@ impl Packet {
         Some(String::from_utf8_lossy(&bytes).into_owned())
     }
 
-
-    pub fn write_u8(&mut self, v: u8) -> Result<(), ()> {
+    pub fn write_u8(&mut self, value: u8) -> Result<(), ()> {
         if self.pos + 1 >= PACKET_MAXSIZE { return Err(()); }
         if self.pos + 1 >= self.len { self.len += 1; }
-        self.buf[self.pos] = v;
+        self.buf[self.pos] = value;
         self.pos += 1;
         Ok(())
     }
 
-    pub fn write_i8(&mut self, v: i8) -> Result<(), ()> {
-        self.write_u8(v as u8)
+    pub fn write_i8(&mut self, value: i8) -> Result<(), ()> {
+        self.write_u8(value as u8)
     }
 
-    pub fn write_u16(&mut self, v: u16) -> Result<(), ()> {
+    pub fn write_u16(&mut self, value: u16) -> Result<(), ()> {
         if self.pos + 2 >= PACKET_MAXSIZE { return Err(()); }
         if self.pos + 2 >= self.len { self.len += 2; }
-        let bytes = v.to_le_bytes();
+        let bytes = value.to_le_bytes();
         self.buf[self.pos] = bytes[0];
         self.buf[self.pos + 1] = bytes[1];
         self.pos += 2;
         Ok(())
     }
 
-    pub fn write_i16(&mut self, v: i16) -> Result<(), ()> {
-        self.write_u16(v as u16)
-    }
-
-    pub fn write_u32(&mut self, v: u32) -> Result<(), ()> {
+    pub fn write_u32(&mut self, value: u32) -> Result<(), ()> {
         if self.pos + 4 >= PACKET_MAXSIZE { return Err(()); }
         if self.pos + 4 >= self.len { self.len += 4; }
-        let bytes = v.to_le_bytes();
+        let bytes = value.to_le_bytes();
         self.buf[self.pos..self.pos + 4].copy_from_slice(&bytes);
         self.pos += 4;
         Ok(())
     }
 
-    pub fn write_u64(&mut self, v: u64) -> Result<(), ()> {
-        if self.pos + 8 >= PACKET_MAXSIZE { return Err(()); }
-        if self.pos + 8 >= self.len { self.len += 8; }
-        let bytes = v.to_le_bytes();
-        self.buf[self.pos..self.pos + 8].copy_from_slice(&bytes);
-        self.pos += 8;
-        Ok(())
-    }
-
-    pub fn write_f32(&mut self, v: f32) -> Result<(), ()> {
+    pub fn write_f32(&mut self, value: f32) -> Result<(), ()> {
         if self.pos + 4 >= PACKET_MAXSIZE { return Err(()); }
         if self.pos + 4 >= self.len { self.len += 4; }
-        let bytes = v.to_le_bytes();
+        let bytes = value.to_le_bytes();
         self.buf[self.pos..self.pos + 4].copy_from_slice(&bytes);
         self.pos += 4;
         Ok(())
     }
 
-    pub fn write_f64(&mut self, v: f64) -> Result<(), ()> {
+    pub fn write_f64(&mut self, value: f64) -> Result<(), ()> {
         if self.pos + 8 >= PACKET_MAXSIZE { return Err(()); }
         if self.pos + 8 >= self.len { self.len += 8; }
-        let bytes = v.to_le_bytes();
+        let bytes = value.to_le_bytes();
         self.buf[self.pos..self.pos + 8].copy_from_slice(&bytes);
         self.pos += 8;
         Ok(())
     }
 
-
-    pub fn write_str(&mut self, s: &str) -> Result<(), ()> {
-        for b in s.bytes() {
-            self.write_u8(b)?;
+    pub fn write_str(&mut self, text: &str) -> Result<(), ()> {
+        for byte in text.bytes() {
+            self.write_u8(byte)?;
         }
         self.write_u8(0)?;
         Ok(())
     }
-
-
-    pub fn write_str_lower(&mut self, s: &str) -> Result<(), ()> {
-        let lower = s.to_lowercase();
-        self.write_str(&lower)
-    }
 }
 
-pub fn str_unicode_len(s: &str) -> usize {
-    s.chars().count()
-}
-
-pub fn str_to_lower(s: &str) -> String {
-    s.to_lowercase()
+pub fn str_unicode_len(text: &str) -> usize {
+    text.chars().count()
 }

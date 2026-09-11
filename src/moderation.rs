@@ -18,7 +18,7 @@ fn db() -> &'static Mutex<Connection> {
 /// connection itself stays valid after a panic, so we take the inner guard and
 /// carry on. (`shared.peers` is handled the same way in worker.rs.)
 fn db_lock() -> MutexGuard<'static, Connection> {
-    db().lock().unwrap_or_else(|e| e.into_inner())
+    db().lock().unwrap_or_else(|poisoned| poisoned.into_inner())
 }
 
 pub fn init_moderation() {
@@ -137,14 +137,6 @@ pub fn ban_revoke_by_ip(ip: &str) -> bool {
     conn.execute("DELETE FROM blacklist WHERE ip = ?1 AND ip != ''", params![ip]).unwrap_or(0) > 0
 }
 
-pub fn ban_revoke(argument: &str) -> bool {
-    let conn = db_lock();
-    conn.execute(
-        "DELETE FROM blacklist WHERE (ip = ?1 AND ip != '') OR (udid = ?1 AND udid != '') OR (nickname = ?1 AND nickname != '')",
-        params![argument],
-    ).unwrap_or(0) > 0
-}
-
 pub fn ban_check(nickname: &str, udid: &str, ip: &str) -> bool {
     let cfg = crate::config::cfg();
     let conn = db_lock();
@@ -175,7 +167,7 @@ pub fn list_blacklist() -> Vec<BlacklistEntry> {
     let conn = db_lock();
     let mut stmt = match conn.prepare(
         "SELECT ip, udid, nickname, note FROM blacklist ORDER BY id DESC"
-    ) { Ok(s) => s, Err(_) => return vec![] };
+    ) { Ok(stmt) => stmt, Err(_) => return vec![] };
     let Ok(rows) = stmt.query_map([], |row| Ok(BlacklistEntry {
         ip:       row.get(0)?,
         udid:     row.get(1)?,
@@ -183,14 +175,6 @@ pub fn list_blacklist() -> Vec<BlacklistEntry> {
         note:     row.get(3)?,
     })) else { return vec![]; };
     rows.flatten().collect()
-}
-
-pub fn whitelist_add(ip: &str) -> bool {
-    let conn = db_lock();
-    conn.execute(
-        "INSERT INTO whitelist (ip, udid, nickname, note) VALUES (?1, '', '', '')",
-        params![ip],
-    ).is_ok()
 }
 
 pub fn whitelist_add_full(nickname: &str, udid: &str, ip: &str, note: &str) -> bool {
@@ -218,7 +202,7 @@ pub fn whitelist_revoke_full(nickname: &str, udid: &str, ip: &str) -> bool {
     ).unwrap_or(0) > 0
 }
 
-/// Matched only by udid and ip, never by nickname — see op_check's doc
+/// Matched only by udid and ip, never by nickname - see op_check's doc
 /// comment. Matching on nickname would let anyone bypass the whitelist gate by
 /// connecting under a whitelisted player's unauthenticated display name.
 pub fn whitelist_check(udid: &str, ip: &str) -> bool {
@@ -228,27 +212,6 @@ pub fn whitelist_check(udid: &str, ip: &str) -> bool {
         params![ip, udid],
         |_| Ok(true),
     ).unwrap_or(false)
-}
-
-pub struct WhitelistEntry {
-    pub ip:       String,
-    pub udid:     String,
-    pub nickname: String,
-    pub note:     String,
-}
-
-pub fn list_whitelist() -> Vec<WhitelistEntry> {
-    let conn = db_lock();
-    let mut stmt = match conn.prepare(
-        "SELECT ip, udid, nickname, note FROM whitelist ORDER BY id DESC"
-    ) { Ok(s) => s, Err(_) => return vec![] };
-    let Ok(rows) = stmt.query_map([], |row| Ok(WhitelistEntry {
-        ip:       row.get(0)?,
-        udid:     row.get(1)?,
-        nickname: row.get(2)?,
-        note:     row.get(3)?,
-    })) else { return vec![]; };
-    rows.flatten().collect()
 }
 
 pub fn timeout_set(nickname: &str, udid: &str, ip: &str, expires_at: u64, note: &str) -> bool {
@@ -310,7 +273,7 @@ pub fn list_timeouts() -> Vec<TimeoutEntry> {
     let conn = db_lock();
     let mut stmt = match conn.prepare(
         "SELECT ip, udid, nickname, note, expires_at FROM timeouts WHERE expires_at > ?1 ORDER BY expires_at"
-    ) { Ok(s) => s, Err(_) => return vec![] };
+    ) { Ok(stmt) => stmt, Err(_) => return vec![] };
     let Ok(rows) = stmt.query_map(params![now_unix_i64()], |row| Ok(TimeoutEntry {
         ip:         row.get(0)?,
         udid:       row.get(1)?,
@@ -325,7 +288,7 @@ pub fn op_add(nickname: &str, udid: &str, ip: &str, note: &str) -> bool {
     let cfg = crate::config::cfg();
     let level = cfg.states.lobby_misc.moderation.op_default_level as i64;
     let conn = db_lock();
-    // Match existing operators by udid/ip only — never by nickname. The op grant is
+    // Match existing operators by udid/ip only - never by nickname. The op grant is
     // anchored to udid+ip (the same keys op_check uses); the nickname column is stored
     // for display only and must not influence privilege (see op_check).
     let updated = conn.execute(
@@ -388,16 +351,11 @@ pub fn op_set_full(nickname: &str, udid: &str, ip: &str, level: u8, note: &str) 
     }
 }
 
-pub fn op_revoke(ip: &str) -> bool {
-    let conn = db_lock();
-    conn.execute("DELETE FROM ops WHERE ip = ?1 AND ip != ''", params![ip]).unwrap_or(0) > 0
-}
-
 /// Resolve a connecting player's operator level.
 ///
 /// Operator status is matched **only by udid and ip**, never by nickname.
 /// The nickname is an unauthenticated, publicly-visible string from the identity
-/// packet — matching on it would let anyone inherit an operator's level simply by
+/// packet - matching on it would let anyone inherit an operator's level simply by
 /// connecting under that operator's display name (privilege escalation, including
 /// op>=2 which bypasses ip_validation and grants ban/kick). udid is per-device and
 /// not publicly displayed, so udid+ip is the trust anchor. The default localhost op
@@ -411,7 +369,7 @@ pub fn op_check(udid: &str, ip: &str) -> u8 {
     )
     .ok()
     .flatten()
-    .map(|n| n.clamp(0, 255) as u8)
+    .map(|level| level.clamp(0, 255) as u8)
     .unwrap_or(0)
 }
 
@@ -427,7 +385,7 @@ pub fn list_ops() -> Vec<OpEntry> {
     let conn = db_lock();
     let mut stmt = match conn.prepare(
         "SELECT ip, udid, nickname, note, level FROM ops ORDER BY level DESC, ip"
-    ) { Ok(s) => s, Err(_) => return vec![] };
+    ) { Ok(stmt) => stmt, Err(_) => return vec![] };
     let Ok(rows) = stmt.query_map([], |row| Ok(OpEntry {
         ip:       row.get(0)?,
         udid:     row.get(1)?,
@@ -441,7 +399,7 @@ pub fn list_ops() -> Vec<OpEntry> {
 fn now_unix_i64() -> i64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_secs())
+        .map(|since_epoch| since_epoch.as_secs())
         .unwrap_or(0) as i64
 }
 

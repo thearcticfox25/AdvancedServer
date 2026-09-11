@@ -35,7 +35,6 @@ impl Entity for SpikeController {
         if self.frame == 0 || self.frame == 2 {
             self.timer = cfg.states.gameplay.entities_misc.global.spikes.timer as f64 * TICKS_PER_SEC;
         } else {
-
             self.timer = 0.25;
         }
 

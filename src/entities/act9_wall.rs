@@ -7,13 +7,13 @@ const ACT9_ROOM_WIDTH: f64 = 3072.0;
 pub struct Act9Wall {
     pub id: u16,
     pub pos: (f32, f32),
-    pub wid: u8,
+    pub wall_id: u8,
     pub start_time: f64,
 }
 
 impl Act9Wall {
-    pub fn new(wid: u8, x: f32, y: f32) -> Self {
-        Self { id: 0, pos: (x, y), wid, start_time: 0.0 }
+    pub fn new(wall_id: u8, x: f32, y: f32) -> Self {
+        Self { id: 0, pos: (x, y), wall_id, start_time: 0.0 }
     }
 }
 
@@ -30,36 +30,36 @@ impl Entity for Act9Wall {
 
     fn on_tick(&mut self, ctx: &mut EntityCtx) -> bool {
         let time = ctx.game_time;
-        let off = if self.start_time > 0.0 {
+        let scale = if self.start_time > 0.0 {
             (self.start_time - time) / self.start_time
         } else {
             0.0
         };
 
-        let x = self.pos.0 as f64 * off;
-        let y = self.pos.1 as f64 * off;
+        let x = self.pos.0 as f64 * scale;
+        let y = self.pos.1 as f64 * scale;
 
         let mut pkt = Packet::new(PacketType::SERVER_ACT9WALL_STATE);
-        let _ = pkt.write_u8(self.wid);
+        let _ = pkt.write_u8(self.wall_id);
         let _ = pkt.write_u16(x as u16);
         let _ = pkt.write_u16(y as u16);
         ctx.broadcast(pkt, false);
 
         let cfg = crate::config::cfg();
         if cfg.states.gameplay.anticheat.zone_anticheat {
-            let (wx_min, wy_min, wx_max, wy_max): (f64, f64, f64, f64) = match self.wid {
+            let (wx_min, wy_min, wx_max, wy_max): (f64, f64, f64, f64) = match self.wall_id {
                 0 => {
-                    let bx = -2240.0_f64;
-                    let by = y - 768.0;
-                    (bx, by, bx + 64.0 * 117.0, by + 64.0 * 12.0)
+                    let box_x = -2240.0_f64;
+                    let box_y = y - 768.0;
+                    (box_x, box_y, box_x + 64.0 * 117.0, box_y + 64.0 * 12.0)
                 }
                 1 => {
-                    let bx = x - 2240.0;
-                    (bx, y, bx + 64.0 * 34.0, y + 64.0 * 19.5)
+                    let box_x = x - 2240.0;
+                    (box_x, y, box_x + 64.0 * 34.0, y + 64.0 * 19.5)
                 }
                 2 => {
-                    let bx = (ACT9_ROOM_WIDTH - x) + 64.0;
-                    (bx, y, bx + 64.0 * 34.0, y + 64.0 * 19.5)
+                    let box_x = (ACT9_ROOM_WIDTH - x) + 64.0;
+                    (box_x, y, box_x + 64.0 * 34.0, y + 64.0 * 19.5)
                 }
                 _ => { log::error!("Invalid wall id!"); return false; }
             };

@@ -28,8 +28,6 @@ impl Entity for TailsProjectile {
     fn pos(&self) -> (f32, f32) { self.pos }
 
     fn on_init(&mut self, ctx: &mut EntityCtx) -> bool {
-
-
         let mut pkt = Packet::new(PacketType::SERVER_TPROJECTILE_STATE);
         let _ = pkt.write_u8(0);
         let _ = pkt.write_u16(self.pos.0 as u16);
@@ -48,7 +46,6 @@ impl Entity for TailsProjectile {
             return false;
         }
 
-
         if ctx.map_id != 13 {
             if self.pos.0 <= 0.0 {
                 return false;
@@ -61,13 +58,11 @@ impl Entity for TailsProjectile {
             }
         }
 
-
         let mut pkt = Packet::new(PacketType::SERVER_TPROJECTILE_STATE);
         let _ = pkt.write_u8(1);
         let _ = pkt.write_u16(self.pos.0 as u16);
         let _ = pkt.write_u16(self.pos.1 as u16);
         ctx.broadcast(pkt, false);
-
 
         let cfg = crate::config::cfg();
         let speed = cfg.states.gameplay.entities_misc.character_specific.tails.projectile_speed as f32;
@@ -78,7 +73,6 @@ impl Entity for TailsProjectile {
     }
 
     fn on_uninit(&mut self, ctx: &mut EntityCtx) {
-
         let mut pkt = Packet::new(PacketType::SERVER_TPROJECTILE_STATE);
         let _ = pkt.write_u8(2);
         ctx.broadcast(pkt, true);

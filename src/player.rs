@@ -1,7 +1,6 @@
 use std::time::Instant;
 
 pub mod flags {
-    pub const NONE: u8 = 0;
     pub const ESCAPED: u8 = 0x01;
     pub const DEAD: u8 = 0x02;
     pub const DEMONIZED: u8 = 0x04;
@@ -16,7 +15,6 @@ pub struct PlayerStats {
     pub survive_time: f64,
     pub danger_time: f64,
     pub camp_time: f64,
-    pub braindead_time: f64,
     pub brain_damage: bool,
     pub stun_time: u16,
     pub stuns: u16,
@@ -29,15 +27,12 @@ pub struct PlayerStats {
 
 #[derive(Debug, Clone)]
 pub struct Player {
-    pub ready: bool,
-    pub seq: u16,
     pub errors: u16,
     pub ex_teleport: u8,
     pub timeout: f64,
 
     pub mod_tool: bool,
     pub mod_tool_timer: u32,
-    pub chunk: u32,
     pub last_packet: Option<Instant>,
 
     pub is_attacking: bool,
@@ -79,14 +74,11 @@ pub struct Player {
 impl Default for Player {
     fn default() -> Self {
         Self {
-            ready: false,
-            seq: 0,
             errors: 0,
             ex_teleport: 0,
             timeout: 0.0,
             mod_tool: false,
             mod_tool_timer: 0,
-            chunk: 0,
             last_packet: None,
             is_attacking: false,
             attack_timer: 0.0,
@@ -120,15 +112,8 @@ impl Default for Player {
     }
 }
 
-pub fn vec2_dist(a: (f32, f32), b: (f32, f32)) -> f32 {
-    let dx = a.0 - b.0;
-    let dy = a.1 - b.1;
+pub fn vec2_dist(from: (f32, f32), to: (f32, f32)) -> f32 {
+    let dx = from.0 - to.0;
+    let dy = from.1 - to.1;
     (dx * dx + dy * dy).sqrt()
-}
-
-pub fn vec2_dir(a: (f32, f32), b: (f32, f32)) -> (f32, f32) {
-    let dx = b.0 - a.0;
-    let dy = b.1 - a.1;
-    let len = (dx * dx + dy * dy).sqrt();
-    if len == 0.0 { (0.0, 0.0) } else { (dx / len, dy / len) }
 }

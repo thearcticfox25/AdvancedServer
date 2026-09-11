@@ -20,7 +20,6 @@ pub struct MjJudger {
 
 impl MjJudger {
     pub fn new() -> Self {
-
         Self {
             id: 0,
             next_time: 10.0 * TICKS_PER_SEC,

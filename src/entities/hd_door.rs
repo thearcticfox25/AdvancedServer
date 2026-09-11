@@ -27,10 +27,10 @@ impl HdDoor {
         let _ = pkt.write_u8(self.state);
         ctx.broadcast(pkt, true);
 
-        let mut pkt2 = Packet::new(PacketType::SERVER_HDDOOR_STATE);
-        let _ = pkt2.write_u8(1);
-        let _ = pkt2.write_u8(0);
-        ctx.broadcast(pkt2, true);
+        let mut door_state_pkt = Packet::new(PacketType::SERVER_HDDOOR_STATE);
+        let _ = door_state_pkt.write_u8(1);
+        let _ = door_state_pkt.write_u8(0);
+        ctx.broadcast(door_state_pkt, true);
 
         true
     }

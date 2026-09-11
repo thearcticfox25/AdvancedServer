@@ -31,10 +31,10 @@ pub fn init_status() {
 
 fn load_status() -> Status {
     match std::fs::read_to_string(STATUS_FILE) {
-        Ok(s) => match serde_json::from_str(&s) {
+        Ok(text) => match serde_json::from_str(&text) {
             Ok(status) => status,
-            Err(e) => {
-                log::error!("Failed to parse status file: {}", e);
+            Err(error) => {
+                log::error!("Failed to parse status file: {}", error);
                 Status::default()
             }
         },
@@ -47,11 +47,11 @@ const STATUS_FILE: &str = "Status.json";
 /// Shared by save_status/save_status_best_effort. `log_errors` is a caller
 /// choice, not an oversight: log::warn! itself isn't async-signal-safe, so
 /// the crash-handler path must stay silent (see save_status_best_effort).
-fn write_status(s: &Status, log_errors: bool) {
-    if let Ok(json) = serde_json::to_string_pretty(s) {
-        if let Err(e) = std::fs::write(STATUS_FILE, json) {
+fn write_status(status: &Status, log_errors: bool) {
+    if let Ok(json) = serde_json::to_string_pretty(status) {
+        if let Err(error) = std::fs::write(STATUS_FILE, json) {
             if log_errors {
-                log::warn!("Could not open status file {} for writing: {}", STATUS_FILE, e);
+                log::warn!("Could not open status file {} for writing: {}", STATUS_FILE, error);
             }
         }
     }
@@ -59,8 +59,8 @@ fn write_status(s: &Status, log_errors: bool) {
 
 pub fn save_status() {
     if let Some(mutex) = STATUS.get() {
-        if let Ok(s) = mutex.lock() {
-            write_status(&s, true);
+        if let Ok(status) = mutex.lock() {
+            write_status(&status, true);
         }
     }
 }
@@ -71,17 +71,17 @@ pub fn save_status() {
 /// never logs on failure (see write_status).
 pub fn save_status_best_effort() {
     if let Some(mutex) = STATUS.get() {
-        if let Ok(s) = mutex.try_lock() {
-            write_status(&s, false);
+        if let Ok(status) = mutex.try_lock() {
+            write_status(&status, false);
         }
     }
 }
 
-pub fn with_status<F, R>(f: F) -> R
+pub fn with_status<F, R>(edit: F) -> R
 where
     F: FnOnce(&mut Status) -> R,
 {
     let mutex = STATUS.get().expect("Status not initialized");
-    let mut s = mutex.lock().unwrap();
-    f(&mut s)
+    let mut status = mutex.lock().unwrap();
+    edit(&mut status)
 }

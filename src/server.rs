@@ -4,12 +4,13 @@ use std::time::Instant;
 
 use rusty_enet as enet;
 
-pub const SERVER_VERSION: &str  = "1.1.0.1.psi-testing-3";
+pub const SERVER_VERSION: &str  = "1.1.0.1.psi-testing-4";
 
 use crate::anticheat::auth::AuthData;
 use crate::entities::Entity;
 use crate::packet::{Packet as GamePacket, PacketType};
 use crate::player::Player;
+use crate::states::spectate::Spectate;
 use crate::vote::Vote;
 
 #[repr(u32)]
@@ -48,8 +49,8 @@ pub enum SurvChar {
 }
 
 impl SurvChar {
-    pub fn from_i8(v: i8) -> Self {
-        match v {
+    pub fn from_i8(raw: i8) -> Self {
+        match raw {
             0 => Self::Tails,
             1 => Self::Knux,
             2 => Self::Eggman,
@@ -72,8 +73,8 @@ pub enum ExeChar {
 }
 
 impl ExeChar {
-    pub fn from_i8(v: i8) -> Self {
-        match v {
+    pub fn from_i8(raw: i8) -> Self {
+        match raw {
             0 => Self::Original,
             1 => Self::Chaos,
             2 => Self::Exetior,
@@ -131,6 +132,9 @@ pub struct PeerData {
     pub timeout: f64,
     pub vote_cooldown: f64,
     pub rtt: u16,
+    /// Whether this peer is watching the round from the waiting room instead of
+    /// waiting it out, and how far along it is. See states::spectate.
+    pub spectate: Spectate,
     // Per-peer chat token bucket (anti-flood). Refilled on demand from
     // wall-clock time, so no per-tick bookkeeping is needed.
     pub chat_tokens: f64,
@@ -152,6 +156,14 @@ impl PeerData {
         } else {
             false
         }
+    }
+
+    /// Whether this peer's client is following the round: playing it, or
+    /// watching it from the waiting room. Every stage that addresses "the
+    /// round" rather than "everyone connected" asks this, so a spectator is
+    /// shown the same screens the round's players are shown.
+    pub fn follows_round(&self) -> bool {
+        self.in_game || self.spectate != Spectate::No
     }
 
     pub fn new(id: u16, ip: String) -> Self {
@@ -180,6 +192,7 @@ impl PeerData {
             timeout: 0.0,
             vote_cooldown: 0.0,
             rtt: 0,
+            spectate: Spectate::No,
             // Start with a full bucket so a fresh peer can chat immediately; the cap is
             // re-applied from config on the first take.
             chat_tokens: crate::config::cfg().states.lobby_misc.chat_rate_limit.burst,
@@ -199,7 +212,7 @@ pub struct LobbyData {
     pub votes: [u8; 3],
     pub map: i8,
     pub exe: u16,
-    pub avail: [bool; 6],
+    pub chars_available: [bool; 6],
     // legacy (v1.0.0 C#) votekick state, used only when
     // states.lobby_misc.votekick.use_legacy_voting is enabled
     pub legacy_votekick_ongoing: bool,
@@ -209,11 +222,12 @@ pub struct LobbyData {
     // legacy (v1.0.0 C#) votepractice state
     pub legacy_practice_ongoing: bool,
     pub legacy_practice_votes: Vec<u16>,
-    /// Set by tournament_advance instead of calling mapvote_init directly, so
-    /// the countdown this tick started actually elapses in real time -- giving
-    /// every client's freshly-entered Lobby room time to finish loading -- before
-    /// lobby_state_tick's normal countdown-expiry branch moves on to MapVote.
-    pub tournament_pending: bool,
+    /// How many players still owe the CLIENT_LOBBY_PLAYERS_REQUEST that hands a
+    /// tournament round over to the next one, and the fallback deadline for a
+    /// client that never sends it. Both are zero outside that hand-off. See
+    /// results::tournament_advance.
+    pub tournament_owed: u16,
+    pub tournament_wait: f64,
 }
 
 impl Default for LobbyData {
@@ -229,14 +243,15 @@ impl Default for LobbyData {
             votes: [0; 3],
             map: -1,
             exe: 0,
-            avail: [true; 6],
+            chars_available: [true; 6],
             legacy_votekick_ongoing: false,
             legacy_votekick_target: None,
             legacy_votekick_timer: 0.0,
             legacy_votekick_votes: Vec::new(),
             legacy_practice_ongoing: false,
             legacy_practice_votes: Vec::new(),
-            tournament_pending: false,
+            tournament_owed: 0,
+            tournament_wait: 0.0,
         }
     }
 }
@@ -254,7 +269,7 @@ pub struct GameData {
     pub ending: Ending,
     pub bring_state: BigRingState,
     pub bring_loc: u8,
-    pub entid: u16,
+    pub next_entity_id: u16,
     pub entities: Vec<Box<dyn Entity>>,
     pub rings: [bool; 256],
     pub ring_coff: u8,
@@ -276,7 +291,7 @@ impl Default for GameData {
             ending: Ending::TimeOver,
             bring_state: BigRingState::None,
             bring_loc: 0,
-            entid: 0,
+            next_entity_id: 0,
             entities: Vec::new(),
             rings: [false; 256],
             ring_coff: 5,
@@ -287,16 +302,11 @@ impl Default for GameData {
 
 pub struct ResultsData {
     pub countdown: f64,
-    /// Decided once in results_init and read again in results_uninit's
-    /// tournament_advance, so the two stay in sync: whether spectators will be
-    /// let into Lobby once this Results screen ends. Always true outside
-    /// tournament_mode.
-    pub open_lobby_after: bool,
 }
 
 impl Default for ResultsData {
     fn default() -> Self {
-        Self { countdown: 0.0, open_lobby_after: true }
+        Self { countdown: 0.0 }
     }
 }
 
@@ -330,7 +340,7 @@ impl Server {
     }
 
     pub fn ingame_count(&self) -> usize {
-        self.peers.iter().filter(|p| p.in_game).count()
+        self.peers.iter().filter(|peer| peer.in_game).count()
     }
 
     pub fn total_count(&self) -> usize {
@@ -338,30 +348,26 @@ impl Server {
     }
 
     pub fn find_peer(&self, id: u16) -> Option<&PeerData> {
-        self.peers.iter().find(|p| p.id == id)
+        self.peers.iter().find(|peer| peer.id == id)
     }
 
     pub fn find_peer_mut(&mut self, id: u16) -> Option<&mut PeerData> {
-        self.peers.iter_mut().find(|p| p.id == id)
+        self.peers.iter_mut().find(|peer| peer.id == id)
     }
 
     /// Whether `id` is allowed to send a chat message right now. Operators at or
     /// above the configured `exempt_op_level` bypass the limit so moderation messaging is
     /// never throttled. When the limit is disabled this is a no-op (always allows).
     pub fn chat_rate_allow(&mut self, id: u16) -> bool {
-        let rl = &crate::config::cfg().states.lobby_misc.chat_rate_limit;
-        if !rl.enable {
+        let rate_limit = &crate::config::cfg().states.lobby_misc.chat_rate_limit;
+        if !rate_limit.enable {
             return true;
         }
-        let (burst, refill, exempt) = (rl.burst, rl.messages_per_second, rl.exempt_op_level);
+        let (burst, refill, exempt) = (rate_limit.burst, rate_limit.messages_per_second, rate_limit.exempt_op_level);
         match self.find_peer_mut(id) {
-            Some(p) => p.op >= exempt || p.chat_token_take(burst, refill),
+            Some(peer) => peer.op >= exempt || peer.chat_token_take(burst, refill),
             None => false,
         }
-    }
-
-    pub fn find_peer_idx(&self, id: u16) -> Option<usize> {
-        self.peers.iter().position(|p| p.id == id)
     }
 }
 
@@ -410,7 +416,7 @@ pub fn broadcast_chat(outbox: &mut Vec<OutboxMsg>, msg: &str) {
 
 pub fn apply_outbox(
     host: &mut enet::Host<UdpSocket>,
-    server: &mut Server,
+    _server: &mut Server,
     outbox: &mut Vec<OutboxMsg>,
 ) {
     for msg in outbox.drain(..) {

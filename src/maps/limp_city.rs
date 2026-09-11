@@ -15,22 +15,22 @@ pub fn lc_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 }
 
 pub fn lc_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let ptype = match packet.packet_type() { Some(t) => t, None => return };
-    match ptype {
+    let packet_type = match packet.packet_type() { Some(found) => found, None => return };
+    match packet_type {
         PacketType::CLIENT_LCEYE_REQUEST_ACTIVATE => {
             packet.pos = 2;
-            let val    = match packet.read_u8() { Some(v) => v, None => return };
-            let nid    = match packet.read_u8() { Some(v) => v, None => return };
-            let target = match packet.read_u8() { Some(v) => v, None => return };
-            if nid >= 2 { return; }
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let activating = match packet.read_u8() { Some(value) => value, None => return };
+            let eye_id     = match packet.read_u8() { Some(value) => value, None => return };
+            let target     = match packet.read_u8() { Some(value) => value, None => return };
+            if eye_id >= 2 { return; }
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
 
             with_entity_op(server, outbox, |entities, ctx| {
-                if let Some(idx) = entities.iter().position(|e| e.lceye_nid() == nid as i16) {
-                    let (used, charge) = entities[idx].lceye_get();
-                    if val != 0 {
-                        if used { return; }
+                if let Some(idx) = entities.iter().position(|entity| entity.lceye_nid() == eye_id as i16) {
+                    let (already_used, charge) = entities[idx].lceye_get();
+                    if activating != 0 {
+                        if already_used { return; }
                         if charge < 20 { return; }
                         entities[idx].lceye_set_used(true, peer_id, target, ctx);
                     } else {

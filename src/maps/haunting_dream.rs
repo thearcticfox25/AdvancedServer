@@ -12,13 +12,13 @@ pub fn hd_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 }
 
 pub fn hd_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let ptype = match packet.packet_type() { Some(t) => t, None => return };
-    match ptype {
+    let packet_type = match packet.packet_type() { Some(found) => found, None => return };
+    match packet_type {
         PacketType::CLIENT_HDDOOR_TOGGLE => {
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
             with_entity_op(server, outbox, |entities, ctx| {
-                if let Some(door) = entities.iter_mut().find(|e| e.tag() == "hddoor") {
+                if let Some(door) = entities.iter_mut().find(|entity| entity.tag() == "hddoor") {
                     door.hd_toggle(ctx);
                 }
             });

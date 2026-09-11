@@ -37,8 +37,8 @@ pub struct DtTailsDoll {
     pub state: TdState,
     pub target: i32,
     pub timer: f64,
-    pub velx: f64,
-    pub vely: f64,
+    pub vel_x: f64,
+    pub vel_y: f64,
 }
 
 impl DtTailsDoll {
@@ -49,14 +49,14 @@ impl DtTailsDoll {
             state: TdState::None,
             target: -1,
             timer: 0.0,
-            velx: 0.0,
-            vely: 0.0,
+            vel_x: 0.0,
+            vel_y: 0.0,
         }
     }
 
-    fn dist(a: (f32, f32), b: (f32, f32)) -> f32 {
-        let dx = a.0 - b.0;
-        let dy = a.1 - b.1;
+    fn dist(from: (f32, f32), to: (f32, f32)) -> f32 {
+        let dx = from.0 - to.0;
+        let dy = from.1 - to.1;
         (dx * dx + dy * dy).sqrt()
     }
 
@@ -84,9 +84,9 @@ impl DtTailsDoll {
 
     fn is_valid_target(&self, ctx: &EntityCtx) -> bool {
         if self.target < 0 { return false; }
-        let tid = self.target as u16;
+        let target_id = self.target as u16;
         ctx.ingame_peers.iter().any(|(id, _, flags, _, _, _)| {
-            *id == tid
+            *id == target_id
                 && *id != ctx.exe_id as u16
                 && flags & PLAYER_DEAD == 0
                 && flags & PLAYER_DEMONIZED == 0
@@ -109,8 +109,8 @@ impl DtTailsDoll {
         false
     }
 
-    fn sign(v: f64) -> f64 {
-        if v > 0.0 { 1.0 } else if v < 0.0 { -1.0 } else { 0.0 }
+    fn sign(value: f64) -> f64 {
+        if value > 0.0 { 1.0 } else if value < 0.0 { -1.0 } else { 0.0 }
     }
 }
 
@@ -176,16 +176,16 @@ impl Entity for DtTailsDoll {
                     let dy = (target_pos.1 - self.pos.1) as i32;
 
                     if dx.abs() >= 4 {
-                        self.velx += Self::sign(dx as f64) * 0.512;
-                        self.velx = self.velx.clamp(-5.0, 5.0);
+                        self.vel_x += Self::sign(dx as f64) * 0.512;
+                        self.vel_x = self.vel_x.clamp(-5.0, 5.0);
                     }
                     if dy.abs() >= 5 {
-                        self.vely += Self::sign(dy as f64) * 0.480;
-                        self.vely = self.vely.clamp(-5.0, 5.0);
+                        self.vel_y += Self::sign(dy as f64) * 0.480;
+                        self.vel_y = self.vel_y.clamp(-5.0, 5.0);
                     }
 
-                    self.pos.0 += self.velx as f32;
-                    self.pos.1 += self.vely as f32;
+                    self.pos.0 += self.vel_x as f32;
+                    self.pos.1 += self.vel_y as f32;
 
                     if Self::dist(self.pos, target_pos) < 12.0 {
                         if self.target >= 0 {

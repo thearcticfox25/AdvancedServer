@@ -23,16 +23,16 @@ pub fn ft_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 }
 
 pub fn ft_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let ptype = match packet.packet_type() { Some(t) => t, None => return };
-    match ptype {
+    let packet_type = match packet.packet_type() { Some(found) => found, None => return };
+    match packet_type {
         PacketType::CLIENT_FART_PUSH => {
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
             packet.pos = 2;
-            let spd = match packet.read_i8() { Some(v) => v, None => return };
+            let speed = match packet.read_i8() { Some(value) => value, None => return };
             with_entity_op(server, outbox, |entities, _ctx| {
-                if let Some(dum) = entities.iter_mut().find(|e| e.tag() == "dummy") {
-                    dum.dummy_push(spd);
+                if let Some(dum) = entities.iter_mut().find(|entity| entity.tag() == "dummy") {
+                    dum.dummy_push(speed);
                 }
             });
         }

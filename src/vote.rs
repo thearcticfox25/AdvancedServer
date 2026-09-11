@@ -36,7 +36,6 @@ impl Default for Vote {
 }
 
 impl Vote {
-
     pub fn init(&mut self, participants: &[u16], excluded_id: u16, vote_type: VoteType) -> bool {
         self.votes.clear();
         self.votetotal = 0;

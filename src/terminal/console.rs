@@ -20,25 +20,37 @@ static CURRENT_LOBBY_IDX: AtomicUsize = AtomicUsize::new(0);
 static LOG_FILE: Mutex<Option<File>> = Mutex::new(None);
 
 fn prompt_str() -> String {
-    let n = CURRENT_LOBBY_IDX.load(Ordering::Relaxed) + 1;
-    format!("[Lobby {}] $> ", n)
+    let lobby_number = CURRENT_LOBBY_IDX.load(Ordering::Relaxed) + 1;
+    format!("[Lobby {}] $> ", lobby_number)
 }
 
-fn print_log_line(s: &str) {
-    let input = INPUT_LINE
-        .lock()
-        .map(|g| g.clone())
-        .unwrap_or_default();
-    let cursor = CURSOR_POS.load(Ordering::Relaxed);
+/// Repaints the prompt line, optionally printing `above` on its own line first.
+///
+/// The prompt is a single line that log output keeps having to scroll past, so
+/// every write goes through here: clear the line, print what has to be printed,
+/// draw the prompt with whatever the admin has typed so far, and leave the
+/// terminal cursor where they left it.
+fn redraw(above: Option<&str>, input: &str, cursor: usize) {
     let prompt = prompt_str();
-    let mut out = std::io::stdout().lock();
     let chars_after = input.chars().count().saturating_sub(cursor);
+    let mut out = std::io::stdout().lock();
+
+    match above {
+        Some(line) => { let _ = write!(out, "\r\x1B[K{}\r\n{}{}", line, prompt, input); }
+        None       => { let _ = write!(out, "\r\x1B[K{}{}", prompt, input); }
+    }
     if chars_after > 0 {
-        let _ = write!(out, "\r\x1B[K{}\r\n{}{}\x1B[{}D", s, prompt, input, chars_after);
-    } else {
-        let _ = write!(out, "\r\x1B[K{}\r\n{}{}", s, prompt, input);
+        let _ = write!(out, "\x1B[{}D", chars_after);
     }
     let _ = out.flush();
+}
+
+/// Prints one log line above the prompt. Called from whichever thread logged it,
+/// so the current input is read back from the shared copy rather than passed in.
+fn print_log_line(line: &str) {
+    let input = INPUT_LINE.lock().map(|guard| guard.clone()).unwrap_or_default();
+    let cursor = CURSOR_POS.load(Ordering::Relaxed);
+    redraw(Some(line), &input, cursor);
 }
 
 struct ConsoleLogger {
@@ -65,15 +77,15 @@ impl Log for ConsoleLogger {
 /// writes it to the console and (if open) the log file.
 fn emit_line(level: &str, target: &str, msg: &str) {
     let now = chrono::Local::now();
-    let off = now.offset().local_minus_utc() / 3600;
-    let tz = if off >= 0 { format!("UTC+{}", off) } else { format!("UTC{}", off) };
-    let ts = format!(
+    let utc_offset_hours = now.offset().local_minus_utc() / 3600;
+    let timezone = if utc_offset_hours >= 0 { format!("UTC+{}", utc_offset_hours) } else { format!("UTC{}", utc_offset_hours) };
+    let timestamp = format!(
         "{}Y{:02}M{:02}D {:02}:{:02}:{:02} ({})",
         now.year(), now.month(), now.day(),
         now.hour(), now.minute(), now.second(),
-        tz,
+        timezone,
     );
-    let line = format!("[{} | {} | {}] {}", level, ts, target, msg);
+    let line = format!("[{} | {} | {}] {}", level, timestamp, target, msg);
     print_log_line(&line);
 
     if let Ok(mut guard) = LOG_FILE.lock() {
@@ -95,7 +107,7 @@ pub fn print_always(target: &str, msg: &str) {
 pub fn init_logger() {
     let level = std::env::var("RUST_LOG")
         .ok()
-        .and_then(|s| s.parse().ok())
+        .and_then(|text| text.parse().ok())
         .unwrap_or(LevelFilter::Info);
     log::set_boxed_logger(Box::new(ConsoleLogger { level })).ok();
     log::set_max_level(level);
@@ -130,8 +142,8 @@ pub fn init_file_logging() {
             }
             log::info!("Logging to file: {}", filename);
         }
-        Err(e) => {
-            log::error!("failed to open log file {}: {}", filename, e);
+        Err(error) => {
+            log::error!("failed to open log file {}: {}", filename, error);
         }
     }
 }
@@ -160,84 +172,65 @@ impl Console {
     pub fn run(&mut self, running: Arc<AtomicBool>) {
         terminal::enable_raw_mode().ok();
 
-        loop {
-            if self.should_exit || !running.load(Ordering::Relaxed) {
-                break;
-            }
+        while !self.should_exit && running.load(Ordering::Relaxed) {
             if !event::poll(std::time::Duration::from_millis(50)).unwrap_or(false) {
                 continue;
             }
-            match event::read() {
-                Ok(Event::Key(key)) if key.kind == KeyEventKind::Press => match key.code {
-                    KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                        break;
-                    }
-                    KeyCode::Enter => {
-                        let line = self.input.trim().to_string();
-                        self.input.clear();
-                        self.cursor = 0;
-                        self.sync_input_global();
-                        self.redraw_input();
-                        if !line.is_empty() {
-                            self.process(&line);
-                        }
-                    }
-                    KeyCode::Backspace => {
-                        if self.cursor > 0 {
-                            self.cursor -= 1;
-                            let byte_idx = char_to_byte(&self.input, self.cursor);
-                            self.input.remove(byte_idx);
-                            self.sync_input_global();
-                            self.redraw_input();
-                        }
-                    }
-                    KeyCode::Delete => {
-                        let char_count = self.input.chars().count();
-                        if self.cursor < char_count {
-                            let byte_idx = char_to_byte(&self.input, self.cursor);
-                            self.input.remove(byte_idx);
-                            self.sync_input_global();
-                            self.redraw_input();
-                        }
-                    }
-                    KeyCode::Left => {
-                        if self.cursor > 0 {
-                            self.cursor -= 1;
-                            self.sync_input_global();
-                            self.redraw_input();
-                        }
-                    }
-                    KeyCode::Right => {
-                        if self.cursor < self.input.chars().count() {
-                            self.cursor += 1;
-                            self.sync_input_global();
-                            self.redraw_input();
-                        }
-                    }
-                    KeyCode::Home => {
-                        self.cursor = 0;
-                        self.sync_input_global();
-                        self.redraw_input();
-                    }
-                    KeyCode::End => {
-                        self.cursor = self.input.chars().count();
-                        self.sync_input_global();
-                        self.redraw_input();
-                    }
-                    KeyCode::Char(c) => {
-                        let byte_idx = char_to_byte(&self.input, self.cursor);
-                        self.input.insert(byte_idx, c);
-                        self.cursor += 1;
-                        self.sync_input_global();
-                        self.redraw_input();
-                    }
-                    _ => {}
-                },
-                _ => {}
+            let key = match event::read() {
+                Ok(Event::Key(key)) if key.kind == KeyEventKind::Press => key,
+                _ => continue,
+            };
+            if key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL) {
+                break;
+            }
+
+            let submitted = self.edit(key.code);
+
+            // Every key ends the same way: publish the new input line for the
+            // logger thread, repaint the prompt, and only then run whatever the
+            // admin just pressed Enter on -- so its output lands below the prompt.
+            self.sync_input_global();
+            self.redraw_input();
+            if let Some(line) = submitted {
+                self.process(&line);
             }
         }
 
         terminal::disable_raw_mode().ok();
+    }
+
+    /// Applies one keypress to the input line. Returns the finished line when the
+    /// key was Enter and there is something to run.
+    fn edit(&mut self, code: KeyCode) -> Option<String> {
+        let char_count = self.input.chars().count();
+        match code {
+            KeyCode::Enter => {
+                let line = self.input.trim().to_string();
+                self.input.clear();
+                self.cursor = 0;
+                return if line.is_empty() { None } else { Some(line) };
+            }
+            KeyCode::Backspace if self.cursor > 0 => {
+                self.cursor -= 1;
+                let byte_idx = char_to_byte(&self.input, self.cursor);
+                self.input.remove(byte_idx);
+            }
+            KeyCode::Delete if self.cursor < char_count => {
+                let byte_idx = char_to_byte(&self.input, self.cursor);
+                self.input.remove(byte_idx);
+            }
+            KeyCode::Left if self.cursor > 0            => self.cursor -= 1,
+            KeyCode::Right if self.cursor < char_count  => self.cursor += 1,
+            KeyCode::Home                               => self.cursor = 0,
+            KeyCode::End                                => self.cursor = char_count,
+            KeyCode::Char(typed) => {
+                let byte_idx = char_to_byte(&self.input, self.cursor);
+                self.input.insert(byte_idx, typed);
+                self.cursor += 1;
+            }
+            _ => {}
+        }
+        None
     }
 
     fn sync_input_global(&self) {
@@ -248,31 +241,10 @@ impl Console {
     }
 
     fn redraw_input(&self) {
-        let prompt = prompt_str();
-        let mut out = std::io::stdout().lock();
-        let chars_after = self.input.chars().count().saturating_sub(self.cursor);
-        if chars_after > 0 {
-            let _ = write!(out, "\r\x1B[K{}{}\x1B[{}D", prompt, self.input, chars_after);
-        } else {
-            let _ = write!(out, "\r\x1B[K{}{}", prompt, self.input);
-        }
-        let _ = out.flush();
-    }
-
-    fn terminal_print(&self, s: &str) {
-        let prompt = prompt_str();
-        let mut out = std::io::stdout().lock();
-        let chars_after = self.input.chars().count().saturating_sub(self.cursor);
-        if chars_after > 0 {
-            let _ = write!(out, "\r\x1B[K{}\r\n{}{}\x1B[{}D", s, prompt, self.input, chars_after);
-        } else {
-            let _ = write!(out, "\r\x1B[K{}\r\n{}{}", s, prompt, self.input);
-        }
-        let _ = out.flush();
+        redraw(None, &self.input, self.cursor);
     }
 
     fn process(&mut self, line: &str) {
-
         if let Some(cmd) = parse_terminal_cmd(line) {
             let senders = &self.senders;
             let shared = &self.shared;
@@ -280,12 +252,8 @@ impl Console {
             let should_exit = &mut self.should_exit;
 
             let input_snap = self.input.clone();
-            let mut print_fn = |s: &str| {
-                let prompt = prompt_str();
-                let mut out = std::io::stdout().lock();
-                let _ = write!(out, "\r\x1B[K{}\r\n{}{}", s, prompt, input_snap);
-                let _ = out.flush();
-            };
+            let cursor_snap = self.cursor;
+            let mut print_fn = |line: &str| redraw(Some(line), &input_snap, cursor_snap);
             let mut ctx = TerminalCtx {
                 senders,
                 shared,
@@ -299,16 +267,15 @@ impl Console {
             return;
         }
 
-
         if let Some(tx) = self.senders.get(self.current_lobby) {
             let _ = tx.send(ConsoleCmd::ExecAsServer(line.to_string()));
         }
     }
 }
 
-fn char_to_byte(s: &str, char_idx: usize) -> usize {
-    s.char_indices()
+fn char_to_byte(text: &str, char_idx: usize) -> usize {
+    text.char_indices()
         .nth(char_idx)
-        .map(|(b, _)| b)
-        .unwrap_or(s.len())
+        .map(|(byte_idx, _)| byte_idx)
+        .unwrap_or(text.len())
 }

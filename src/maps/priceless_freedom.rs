@@ -27,15 +27,15 @@ pub fn pf_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
 }
 
 pub fn pf_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let ptype = match packet.packet_type() { Some(t) => t, None => return };
-    match ptype {
+    let packet_type = match packet.packet_type() { Some(found) => found, None => return };
+    match packet_type {
         PacketType::CLIENT_PFLIT_ACTIVATE => {
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
             packet.pos = 2;
-            let lid = match packet.read_u8() { Some(v) => v, None => return };
+            let lift_id = match packet.read_u8() { Some(value) => value, None => return };
             with_entity_op(server, outbox, |entities, ctx| {
-                if let Some(idx) = entities.iter().position(|e| e.pf_lid() == lid as i16) {
+                if let Some(idx) = entities.iter().position(|entity| entity.pf_lid() == lift_id as i16) {
                     entities[idx].pf_activate(ctx, peer_id);
                 }
             });

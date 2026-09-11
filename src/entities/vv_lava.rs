@@ -15,7 +15,7 @@ pub enum LavaState {
 
 pub struct VvLava {
     pub id: u16,
-    pub lid: u8,
+    pub lava_id: u8,
     pub state: LavaState,
     pub timer: f64,
     pub pos_y: f32,
@@ -25,12 +25,10 @@ pub struct VvLava {
 }
 
 impl VvLava {
-    pub fn new(lid: u8, start: f32, dist: f32) -> Self {
-
-
+    pub fn new(lava_id: u8, start: f32, dist: f32) -> Self {
         Self {
             id: 0,
-            lid,
+            lava_id,
             state: LavaState::Idle,
             timer: 20.0 * TICKS_PER_SEC,
             pos_y: start,
@@ -48,7 +46,6 @@ impl Entity for VvLava {
     fn pos(&self) -> (f32, f32) { (0.0, self.pos_y) }
 
     fn on_init(&mut self, ctx: &mut EntityCtx) -> bool {
-
         let extra = ctx.rand.gen_range(0u32..5) as f64;
         self.timer = (20.0 + extra) * TICKS_PER_SEC;
         true
@@ -114,7 +111,7 @@ impl Entity for VvLava {
         }
 
         let mut pkt = Packet::new(PacketType::SERVER_VVLCOLUMN_STATE);
-        let _ = pkt.write_u8(self.lid);
+        let _ = pkt.write_u8(self.lava_id);
         let _ = pkt.write_u8(self.state as u8);
         let _ = pkt.write_f32(self.pos_y);
         ctx.broadcast(pkt, false);

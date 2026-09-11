@@ -39,12 +39,11 @@ pub trait Entity: Send {
     fn set_id(&mut self, id: u16);
     fn pos(&self) -> (f32, f32);
 
+    fn on_init(&mut self, _ctx: &mut EntityCtx) -> bool { true }
 
-    fn on_init(&mut self, ctx: &mut EntityCtx) -> bool { true }
+    fn on_tick(&mut self, _ctx: &mut EntityCtx) -> bool { true }
 
-    fn on_tick(&mut self, ctx: &mut EntityCtx) -> bool { true }
-
-    fn on_uninit(&mut self, ctx: &mut EntityCtx) {}
+    fn on_uninit(&mut self, _ctx: &mut EntityCtx) {}
 
     fn set_activ_id(&mut self, _id: u16) {}
 
@@ -83,20 +82,21 @@ pub trait Entity: Send {
 
     fn rmz_slug_ring(&self) -> Option<u8> { None }
 
-    fn spawner_slug_id(&self) -> u16 { 0 }
-    fn spawner_clear_slug(&mut self, _slug_id: u16) {}
-    fn spawner_pos(&self) -> Option<(f32, f32)> { None }
-    fn spawner_take_spawn(&mut self) -> bool { false }
+    // Ravine Mist's slug spawner. Only spawner_set_slug is wired up so far
+    // (tick_entities tells a spawner the id of what it just spawned); the rest
+    // are implemented on RmzSlug and waiting for the slug-respawn logic.
+    #[allow(dead_code)] fn spawner_slug_id(&self) -> u16 { 0 }
+    #[allow(dead_code)] fn spawner_clear_slug(&mut self, _slug_id: u16) {}
+    #[allow(dead_code)] fn spawner_pos(&self) -> Option<(f32, f32)> { None }
+    #[allow(dead_code)] fn spawner_take_spawn(&mut self) -> bool { false }
     fn spawner_set_slug(&mut self, _id: u16) {}
 }
 
 pub struct EntityCtx<'a> {
     pub outbox: &'a mut Vec<OutboxMsg>,
-    pub server_id: u16,
     pub map_id: i8,
     pub map_ring_count: u8,
     pub rings: &'a mut [bool; 256],
-    pub ring_coff: u8,
 
     pub ingame_peers: Vec<(u16, (f32, f32), u8, i8, i8, u8)>,
     pub entity_ids: Vec<u16>,

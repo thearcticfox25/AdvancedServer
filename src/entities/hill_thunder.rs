@@ -11,7 +11,6 @@ pub struct HillThunder {
 
 impl HillThunder {
     pub fn new() -> Self {
-
         Self { id: 0, timer: 15.0 * TICKS_PER_SEC, flag: false }
     }
 }
@@ -40,14 +39,14 @@ impl Entity for HillThunder {
             ctx.broadcast(pkt, true);
 
             let cfg = crate::config::cfg();
-            let th = &cfg.states.gameplay.entities_misc.map_specific.hills.thunder;
-            let offset = if th.timer_offset == 0 {
+            let thunder = &cfg.states.gameplay.entities_misc.map_specific.hills.thunder;
+            let offset = if thunder.timer_offset == 0 {
                 0u32
             } else {
-                ctx.rand.gen_range(0u32..th.timer_offset as u32)
+                ctx.rand.gen_range(0u32..thunder.timer_offset as u32)
             };
 
-            self.timer = (th.timer as f64 + offset as f64) * TICKS_PER_SEC;
+            self.timer = (thunder.timer as f64 + offset as f64) * TICKS_PER_SEC;
             self.flag = false;
             return true;
         }

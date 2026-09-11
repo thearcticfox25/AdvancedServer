@@ -91,24 +91,25 @@ static PALETTES_CUSTOM: &[&[u32]] = &[
     &[0x177aff, 0x0f47c0, 0x102676],
 ];
 
-fn palette_within_epsilon(a: u8, b: u8) -> bool {
-    a >= b.saturating_sub(PALETTE_EPSILON) && a <= b.saturating_add(PALETTE_EPSILON)
+fn palette_within_epsilon(reported: u8, expected: u8) -> bool {
+    reported >= expected.saturating_sub(PALETTE_EPSILON)
+        && reported <= expected.saturating_add(PALETTE_EPSILON)
 }
 
-fn palette_matches(colors: &[[u8; 3]], pal: &[u32]) -> bool {
-    let count = colors.len().min(pal.len());
+fn palette_matches(colors: &[[u8; 3]], palette: &[u32]) -> bool {
+    let count = colors.len().min(palette.len());
     if count == 0 {
         return false;
     }
     let mut match_count = 0usize;
-    for i in 0..count {
-        let rgb = pal[i];
-        let r = ((rgb >> 16) & 0xFF) as u8;
-        let g = ((rgb >> 8) & 0xFF) as u8;
-        let b = (rgb & 0xFF) as u8;
-        if palette_within_epsilon(colors[i][0], r)
-            && palette_within_epsilon(colors[i][1], g)
-            && palette_within_epsilon(colors[i][2], b)
+    for slot in 0..count {
+        let rgb = palette[slot];
+        let red   = ((rgb >> 16) & 0xFF) as u8;
+        let green = ((rgb >> 8)  & 0xFF) as u8;
+        let blue  = (rgb        & 0xFF) as u8;
+        if palette_within_epsilon(colors[slot][0], red)
+            && palette_within_epsilon(colors[slot][1], green)
+            && palette_within_epsilon(colors[slot][2], blue)
         {
             match_count += 1;
         }
@@ -116,14 +117,14 @@ fn palette_matches(colors: &[[u8; 3]], pal: &[u32]) -> bool {
     match_count != 0 && match_count == count
 }
 
-pub fn palette_player_validate(v_id: u16, packet: &mut Packet) -> bool {
-    let from  = match packet.read_u8()  { Some(v) => v, None => return false };
-    let id    = match packet.read_u16() { Some(v) => v, None => return false };
-    let name  = match packet.read_str() { Some(v) => v, None => return false };
-    let size  = match packet.read_u8()  { Some(v) => v, None => return false };
+pub fn palette_player_validate(player_id: u16, packet: &mut Packet) -> bool {
+    let from  = match packet.read_u8()  { Some(value) => value, None => return false };
+    let id    = match packet.read_u16() { Some(value) => value, None => return false };
+    let name  = match packet.read_str() { Some(value) => value, None => return false };
+    let size  = match packet.read_u8()  { Some(value) => value, None => return false };
 
     if size == 0 { return false; }
-    if id != v_id { return false; }
+    if id != player_id { return false; }
 
     let count = (size / 4) as usize;
     if count > 19 { return false; }
@@ -131,26 +132,26 @@ pub fn palette_player_validate(v_id: u16, packet: &mut Packet) -> bool {
     let is_custom = name.starts_with("custom");
 
     let mut colors = [[0u8; 3]; 19];
-    for i in 0..count {
-        let r = match packet.read_u8() { Some(v) => v, None => return false };
-        let g = match packet.read_u8() { Some(v) => v, None => return false };
-        let b = match packet.read_u8() { Some(v) => v, None => return false };
+    for slot in 0..count {
+        let red   = match packet.read_u8() { Some(value) => value, None => return false };
+        let green = match packet.read_u8() { Some(value) => value, None => return false };
+        let blue  = match packet.read_u8() { Some(value) => value, None => return false };
         let _ =       packet.read_u8();
-        colors[i] = [r, g, b];
+        colors[slot] = [red, green, blue];
     }
     let colors = &colors[..count];
 
     if from != 0 {
         let palettes = if is_custom { PALETTES_CUSTOM } else { PALETTES_FROM };
-        for pal in palettes {
-            if palette_matches(colors, pal) {
+        for palette in palettes {
+            if palette_matches(colors, palette) {
                 return true;
             }
         }
     } else {
         if is_custom { return true; }
-        for pal in PALETTES_TO {
-            if palette_matches(colors, pal) {
+        for palette in PALETTES_TO {
+            if palette_matches(colors, palette) {
                 return true;
             }
         }

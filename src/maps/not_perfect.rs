@@ -5,6 +5,6 @@ use crate::states::game::game_spawn;
 
 pub fn np_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     map_init(server, outbox);
-    let ctrl = NotPerfect::new();
-    game_spawn(server, outbox, ctrl);
+    let controller = NotPerfect::new();
+    game_spawn(server, outbox, controller);
 }

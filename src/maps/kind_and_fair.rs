@@ -8,24 +8,24 @@ pub fn kaf_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     map_time_ex(server, 180, 20);
     map_ring(server, 5);
     server.game.bring_state = BigRingState::None;
-    for nid in 0..11u8 {
-        game_spawn(server, outbox, KafSpeedbox::new(nid));
+    for box_id in 0..11u8 {
+        game_spawn(server, outbox, KafSpeedbox::new(box_id));
     }
 }
 
 pub fn kaf_tcpmsg(peer_id: u16, packet: &mut Packet, server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
-    let ptype = match packet.packet_type() { Some(t) => t, None => return };
-    match ptype {
+    let packet_type = match packet.packet_type() { Some(found) => found, None => return };
+    match packet_type {
         PacketType::CLIENT_KAFMONITOR_ACTIVATE => {
-            let peer = match server.find_peer(peer_id) { Some(p) => p, None => return };
+            let peer = match server.find_peer(peer_id) { Some(peer) => peer, None => return };
             if !peer.in_game { return; }
             packet.pos = 2;
-            let nid  = match packet.read_u8() { Some(v) => v, None => return };
-            let proj = match packet.read_u8() { Some(v) => v, None => return };
-            if nid >= 11 { return; }
-            let is_proj = proj != 0;
+            let box_id  = match packet.read_u8() { Some(value) => value, None => return };
+            let by_projectile = match packet.read_u8() { Some(value) => value, None => return };
+            if box_id >= 11 { return; }
+            let is_proj = by_projectile != 0;
             with_entity_op(server, outbox, |entities, ctx| {
-                if let Some(idx) = entities.iter().position(|e| e.kaf_nid() == nid as i16) {
+                if let Some(idx) = entities.iter().position(|entity| entity.kaf_nid() == box_id as i16) {
                     entities[idx].kaf_activate(ctx, peer_id, is_proj);
                 }
             });

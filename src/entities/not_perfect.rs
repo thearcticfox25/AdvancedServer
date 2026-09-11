@@ -30,10 +30,9 @@ impl Entity for NotPerfect {
 
     fn on_tick(&mut self, ctx: &mut EntityCtx) -> bool {
         let cfg = crate::config::cfg();
-        let gp = &cfg.states.gameplay;
+        let gameplay = &cfg.states.gameplay;
 
-
-        if ctx.game_time_sec <= gp.ring_appearance_timer as u16 && !self.balls {
+        if ctx.game_time_sec <= gameplay.ring_appearance_timer as u16 && !self.balls {
             self.timer = 5.0 * TICKS_PER_SEC;
             self.state = NpcState::Prepare;
             self.balls = true;
@@ -41,14 +40,14 @@ impl Entity for NotPerfect {
 
         match self.state {
             NpcState::None => {
-                let disable_timer = gp.banana.disable_timer;
-                let intr1 = if ctx.game_time_sec < gp.ring_appearance_timer as u16 && !disable_timer {
-                    gp.entities_misc.map_specific.not_perfect.switch_warning_timer_chase as f64
+                let disable_timer = gameplay.banana.disable_timer;
+                let switch_interval = if ctx.game_time_sec < gameplay.ring_appearance_timer as u16 && !disable_timer {
+                    gameplay.entities_misc.map_specific.not_perfect.switch_warning_timer_chase as f64
                 } else {
-                    gp.entities_misc.map_specific.not_perfect.switch_warning_timer as f64
+                    gameplay.entities_misc.map_specific.not_perfect.switch_warning_timer as f64
                 };
 
-                if self.timer >= intr1 * TICKS_PER_SEC {
+                if self.timer >= switch_interval * TICKS_PER_SEC {
                     let mut pkt = Packet::new(PacketType::SERVER_NPCONTROLLER_STATE);
                     let _ = pkt.write_u8(0);
                     let _ = pkt.write_u8(0);
@@ -61,14 +60,14 @@ impl Entity for NotPerfect {
             }
 
             NpcState::Prepare => {
-                let disable_timer = gp.banana.disable_timer;
-                let intr2 = if ctx.game_time_sec < gp.ring_appearance_timer as u16 && !disable_timer {
-                    gp.entities_misc.map_specific.not_perfect.switch_timer_chase as f64
+                let disable_timer = gameplay.banana.disable_timer;
+                let warning_interval = if ctx.game_time_sec < gameplay.ring_appearance_timer as u16 && !disable_timer {
+                    gameplay.entities_misc.map_specific.not_perfect.switch_timer_chase as f64
                 } else {
-                    gp.entities_misc.map_specific.not_perfect.switch_timer as f64
+                    gameplay.entities_misc.map_specific.not_perfect.switch_timer as f64
                 };
 
-                if self.timer >= intr2 * TICKS_PER_SEC {
+                if self.timer >= warning_interval * TICKS_PER_SEC {
                     self.stage = self.stage.wrapping_add(1);
 
                     let prev = if self.stage == 0 { 0u8 } else { self.stage - 1 };

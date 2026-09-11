@@ -22,12 +22,11 @@ impl Entity for Dummy {
     fn id(&self) -> u16 { self.id }
     fn set_id(&mut self, id: u16) { self.id = id; }
     fn pos(&self) -> (f32, f32) { self.pos }
-    fn dummy_push(&mut self, spd: i8) { self.activate(spd); }
+    fn dummy_push(&mut self, speed: i8) { self.activate(speed); }
 
     fn on_tick(&mut self, ctx: &mut EntityCtx) -> bool {
         self.pos.0 += self.vel as f32;
         self.pos.0 = self.pos.0.min(2944.0).max(1282.0);
-
 
         let friction = self.vel.abs().min(0.046875 * 4.0);
         let sign = if self.vel > 0.0 { 1.0 } else if self.vel < 0.0 { -1.0 } else { 0.0 };

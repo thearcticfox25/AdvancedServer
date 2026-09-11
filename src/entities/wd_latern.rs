@@ -7,14 +7,13 @@ pub struct WdLatern {
     pub id: u16,
     pub side: bool,
     pub timer: f64,
-    pub lid: u8,
+    pub lantern_id: u8,
     pub time: u16,
 }
 
 impl WdLatern {
     pub fn new() -> Self {
-
-        Self { id: 0, side: false, timer: 0.0, lid: 0, time: 7 }
+        Self { id: 0, side: false, timer: 0.0, lantern_id: 0, time: 7 }
     }
 }
 
@@ -34,11 +33,11 @@ impl Entity for WdLatern {
 
         if !self.side {
             if self.timer >= self.time as f64 * TICKS_PER_SEC {
-                self.lid = ctx.rand.gen_range(0u8..7);
+                self.lantern_id = ctx.rand.gen_range(0u8..7);
 
                 let mut pkt = Packet::new(PacketType::SERVER_WDLATERN_ACTIVATE);
                 let _ = pkt.write_u8(1);
-                let _ = pkt.write_u8(self.lid);
+                let _ = pkt.write_u8(self.lantern_id);
                 ctx.broadcast(pkt, true);
 
                 self.side = true;
@@ -48,7 +47,7 @@ impl Entity for WdLatern {
         } else if self.timer >= self.time as f64 * TICKS_PER_SEC {
             let mut pkt = Packet::new(PacketType::SERVER_WDLATERN_ACTIVATE);
             let _ = pkt.write_u8(0);
-            let _ = pkt.write_u8(self.lid);
+            let _ = pkt.write_u8(self.lantern_id);
             ctx.broadcast(pkt, true);
 
             self.side = false;

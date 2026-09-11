@@ -5,6 +5,6 @@ use crate::states::game::game_spawn;
 
 pub fn tc_init(server: &mut Server, outbox: &mut Vec<OutboxMsg>) {
     map_init(server, outbox);
-    let acid = TcAcid::new();
-    game_spawn(server, outbox, acid);
+    let acid_cfg = TcAcid::new();
+    game_spawn(server, outbox, acid_cfg);
 }

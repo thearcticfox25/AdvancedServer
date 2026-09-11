@@ -7,7 +7,7 @@ const ROLL_START: f64 = 16.0;
 
 pub struct NapSnowball {
     pub id: u16,
-    pub sid: u8,
+    pub snowball_id: u8,
     pub active: bool,
     pub state: usize,
     pub stage_prog: f64,
@@ -21,10 +21,10 @@ pub struct NapSnowball {
 }
 
 impl NapSnowball {
-    pub fn new(sid: u8, p_count: usize, dir: i8) -> Self {
-        let mut sb = Self {
+    pub fn new(snowball_id: u8, p_count: usize, dir: i8) -> Self {
+        let mut snowball = Self {
             id: 0,
-            sid,
+            snowball_id,
             active: false,
             state: 0,
             stage_prog: 0.0,
@@ -37,11 +37,11 @@ impl NapSnowball {
             p_anim: [0.0; 20],
         };
 
-        for i in 0..20 {
-            sb.p_move[i] = 0.05;
-            sb.p_anim[i] = 0.35;
+        for step in 0..20 {
+            snowball.p_move[step] = 0.05;
+            snowball.p_anim[step] = 0.35;
         }
-        sb
+        snowball
     }
 
     pub fn activate(&mut self, ctx: &mut EntityCtx) {
@@ -57,7 +57,7 @@ impl NapSnowball {
 
         let mut pkt = Packet::new(PacketType::SERVER_NAPBALL_STATE);
         let _ = pkt.write_u8(0);
-        let _ = pkt.write_u8(self.sid);
+        let _ = pkt.write_u8(self.snowball_id);
         let _ = pkt.write_u8(self.dir as u8);
         ctx.broadcast(pkt, true);
     }
@@ -103,7 +103,7 @@ impl Entity for NapSnowball {
 
                     let mut pkt = Packet::new(PacketType::SERVER_NAPBALL_STATE);
                     let _ = pkt.write_u8(2);
-                    let _ = pkt.write_u8(self.sid);
+                    let _ = pkt.write_u8(self.snowball_id);
                     ctx.broadcast(pkt, true);
 
                     return true;
@@ -112,7 +112,7 @@ impl Entity for NapSnowball {
 
             let mut pkt = Packet::new(PacketType::SERVER_NAPBALL_STATE);
             let _ = pkt.write_u8(1);
-            let _ = pkt.write_u8(self.sid);
+            let _ = pkt.write_u8(self.snowball_id);
             let _ = pkt.write_u8(self.state as u8);
             let _ = pkt.write_u8(self.frame as u8);
             let _ = pkt.write_f64(self.stage_prog);

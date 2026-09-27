@@ -1,0 +1,923 @@
+[[glyph]]
+character = 100
+x = 18
+y = 2
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 101
+x = 9
+y = 2
+w = 7
+h = 18
+shift = 6
+offset = 0
+
+[[glyph]]
+character = 102
+x = 94
+y = 2
+w = 6
+h = 18
+shift = 4
+offset = 0
+
+[[glyph]]
+character = 103
+x = 232
+y = 2
+w = 7
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 104
+x = 71
+y = 22
+w = 7
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 105
+x = 241
+y = 2
+w = 3
+h = 18
+shift = 3
+offset = 0
+
+[[glyph]]
+character = 106
+x = 159
+y = 22
+w = 7
+h = 18
+shift = 4
+offset = -3
+
+[[glyph]]
+character = 107
+x = 150
+y = 22
+w = 7
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 108
+x = 144
+y = 22
+w = 4
+h = 18
+shift = 4
+offset = 0
+
+[[glyph]]
+character = 109
+x = 132
+y = 22
+w = 10
+h = 18
+shift = 11
+offset = 0
+
+[[glyph]]
+character = 110
+x = 123
+y = 22
+w = 7
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 111
+x = 114
+y = 22
+w = 7
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 112
+x = 105
+y = 22
+w = 7
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 113
+x = 95
+y = 22
+w = 8
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 114
+x = 87
+y = 22
+w = 6
+h = 18
+shift = 6
+offset = 0
+
+[[glyph]]
+character = 115
+x = 168
+y = 22
+w = 7
+h = 18
+shift = 6
+offset = 0
+
+[[glyph]]
+character = 116
+x = 80
+y = 22
+w = 5
+h = 18
+shift = 4
+offset = 0
+
+[[glyph]]
+character = 117
+x = 61
+y = 22
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 118
+x = 52
+y = 22
+w = 7
+h = 18
+shift = 6
+offset = 0
+
+[[glyph]]
+character = 119
+x = 42
+y = 22
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 120
+x = 32
+y = 22
+w = 8
+h = 18
+shift = 6
+offset = -1
+
+[[glyph]]
+character = 121
+x = 24
+y = 22
+w = 6
+h = 18
+shift = 6
+offset = 0
+
+[[glyph]]
+character = 122
+x = 14
+y = 22
+w = 8
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 123
+x = 7
+y = 22
+w = 5
+h = 18
+shift = 5
+offset = 1
+
+[[glyph]]
+character = 124
+x = 2
+y = 22
+w = 3
+h = 18
+shift = 6
+offset = 1
+
+[[glyph]]
+character = 125
+x = 246
+y = 2
+w = 5
+h = 18
+shift = 5
+offset = 0
+
+[[glyph]]
+character = 126
+x = 132
+y = 62
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 32
+x = 2
+y = 2
+w = 5
+h = 18
+shift = 5
+offset = 0
+
+[[glyph]]
+character = 33
+x = 133
+y = 42
+w = 2
+h = 18
+shift = 4
+offset = 1
+
+[[glyph]]
+character = 34
+x = 125
+y = 42
+w = 6
+h = 18
+shift = 5
+offset = -1
+
+[[glyph]]
+character = 35
+x = 115
+y = 42
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 36
+x = 104
+y = 42
+w = 9
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 37
+x = 93
+y = 42
+w = 9
+h = 18
+shift = 11
+offset = 1
+
+[[glyph]]
+character = 38
+x = 80
+y = 42
+w = 11
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 39
+x = 74
+y = 42
+w = 4
+h = 18
+shift = 3
+offset = -1
+
+[[glyph]]
+character = 40
+x = 65
+y = 42
+w = 7
+h = 18
+shift = 5
+offset = 0
+
+[[glyph]]
+character = 41
+x = 57
+y = 42
+w = 6
+h = 18
+shift = 5
+offset = -1
+
+[[glyph]]
+character = 42
+x = 137
+y = 42
+w = 7
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 43
+x = 48
+y = 42
+w = 7
+h = 18
+shift = 8
+offset = 1
+
+[[glyph]]
+character = 44
+x = 33
+y = 42
+w = 3
+h = 18
+shift = 4
+offset = 0
+
+[[glyph]]
+character = 45
+x = 25
+y = 42
+w = 6
+h = 18
+shift = 9
+offset = 2
+
+[[glyph]]
+character = 46
+x = 21
+y = 42
+w = 2
+h = 18
+shift = 4
+offset = 1
+
+[[glyph]]
+character = 47
+x = 12
+y = 42
+w = 7
+h = 18
+shift = 6
+offset = 0
+
+[[glyph]]
+character = 48
+x = 2
+y = 42
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 49
+x = 242
+y = 22
+w = 3
+h = 18
+shift = 4
+offset = 1
+
+[[glyph]]
+character = 50
+x = 232
+y = 22
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 51
+x = 222
+y = 22
+w = 8
+h = 18
+shift = 8
+offset = -1
+
+[[glyph]]
+character = 52
+x = 212
+y = 22
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 53
+x = 38
+y = 42
+w = 8
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 54
+x = 146
+y = 42
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 55
+x = 156
+y = 42
+w = 8
+h = 18
+shift = 6
+offset = -2
+
+[[glyph]]
+character = 56
+x = 166
+y = 42
+w = 8
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 57
+x = 123
+y = 62
+w = 7
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 58
+x = 119
+y = 62
+w = 2
+h = 18
+shift = 4
+offset = 1
+
+[[glyph]]
+character = 59
+x = 114
+y = 62
+w = 3
+h = 18
+shift = 4
+offset = 0
+
+[[glyph]]
+character = 60
+x = 107
+y = 62
+w = 5
+h = 18
+shift = 9
+offset = 2
+
+[[glyph]]
+character = 61
+x = 99
+y = 62
+w = 6
+h = 18
+shift = 9
+offset = 2
+
+[[glyph]]
+character = 62
+x = 92
+y = 62
+w = 5
+h = 18
+shift = 9
+offset = 2
+
+[[glyph]]
+character = 63
+x = 83
+y = 62
+w = 7
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 64
+x = 72
+y = 62
+w = 9
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 65
+x = 60
+y = 62
+w = 10
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 66
+x = 47
+y = 62
+w = 11
+h = 18
+shift = 10
+offset = 0
+
+[[glyph]]
+character = 67
+x = 35
+y = 62
+w = 10
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 68
+x = 24
+y = 62
+w = 9
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 69
+x = 12
+y = 62
+w = 10
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 70
+x = 2
+y = 62
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 71
+x = 241
+y = 42
+w = 11
+h = 18
+shift = 10
+offset = 0
+
+[[glyph]]
+character = 72
+x = 230
+y = 42
+w = 9
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 73
+x = 224
+y = 42
+w = 4
+h = 18
+shift = 4
+offset = 0
+
+[[glyph]]
+character = 74
+x = 213
+y = 42
+w = 9
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 75
+x = 201
+y = 42
+w = 10
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 76
+x = 190
+y = 42
+w = 9
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 77
+x = 176
+y = 42
+w = 12
+h = 18
+shift = 12
+offset = 0
+
+[[glyph]]
+character = 78
+x = 199
+y = 22
+w = 11
+h = 18
+shift = 11
+offset = 0
+
+[[glyph]]
+character = 79
+x = 188
+y = 22
+w = 9
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 80
+x = 177
+y = 22
+w = 9
+h = 18
+shift = 8
+offset = -1
+
+[[glyph]]
+character = 81
+x = 220
+y = 2
+w = 10
+h = 18
+shift = 10
+offset = 0
+
+[[glyph]]
+character = 82
+x = 200
+y = 2
+w = 11
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 83
+x = 189
+y = 2
+w = 9
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 84
+x = 178
+y = 2
+w = 9
+h = 18
+shift = 8
+offset = -1
+
+[[glyph]]
+character = 85
+x = 167
+y = 2
+w = 9
+h = 18
+shift = 9
+offset = 0
+
+[[glyph]]
+character = 86
+x = 157
+y = 2
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 87
+x = 144
+y = 2
+w = 11
+h = 18
+shift = 11
+offset = 0
+
+[[glyph]]
+character = 88
+x = 133
+y = 2
+w = 9
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 89
+x = 123
+y = 2
+w = 8
+h = 18
+shift = 7
+offset = -1
+
+[[glyph]]
+character = 90
+x = 111
+y = 2
+w = 10
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 91
+x = 213
+y = 2
+w = 5
+h = 18
+shift = 5
+offset = 1
+
+[[glyph]]
+character = 92
+x = 102
+y = 2
+w = 7
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 93
+x = 87
+y = 2
+w = 5
+h = 18
+shift = 5
+offset = -1
+
+[[glyph]]
+character = 94
+x = 80
+y = 2
+w = 5
+h = 18
+shift = 5
+offset = 0
+
+[[glyph]]
+character = 95
+x = 61
+y = 2
+w = 17
+h = 18
+shift = 15
+offset = -1
+
+[[glyph]]
+character = 96
+x = 55
+y = 2
+w = 4
+h = 18
+shift = 4
+offset = 0
+
+[[glyph]]
+character = 9647
+x = 142
+y = 62
+w = 10
+h = 18
+shift = 16
+offset = 3
+
+[[glyph]]
+character = 97
+x = 47
+y = 2
+w = 6
+h = 18
+shift = 7
+offset = 0
+
+[[glyph]]
+character = 98
+x = 37
+y = 2
+w = 8
+h = 18
+shift = 8
+offset = 0
+
+[[glyph]]
+character = 99
+x = 28
+y = 2
+w = 7
+h = 18
+shift = 6
+offset = 0
+
+[[kerning]]
+first = 40
+second = 106
+amount = 1
+
+[[kerning]]
+first = 63
+second = 8218
+amount = -1
+
+[[kerning]]
+first = 63
+second = 8222
+amount = -1
+
+[[kerning]]
+first = 66
+second = 191
+amount = -1
+
+[[kerning]]
+first = 74
+second = 402
+amount = -1
+
+[[kerning]]
+first = 80
+second = 44
+amount = -1
+
+[[kerning]]
+first = 80
+second = 46
+amount = -1
+
+[[kerning]]
+first = 80
+second = 8218
+amount = -1
+
+[[kerning]]
+first = 80
+second = 8222
+amount = -1
+
+[[kerning]]
+first = 80
+second = 8230
+amount = -1
+
+[[kerning]]
+first = 90
+second = 42
+amount = -1
+
+[[kerning]]
+first = 98
+second = 176
+amount = -1

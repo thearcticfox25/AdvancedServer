@@ -1,0 +1,474 @@
+use std::net::UdpSocket;
+use std::sync::RwLock;
+use std::time::Instant;
+
+use rusty_enet as enet;
+
+use crate::packet::{Packet as GamePacket, PacketType};
+use crate::player::Player;
+use crate::vote::Vote;
+
+#[repr(u32)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DisconnectReason {
+    Other           = 255,
+    KickedByHost    = 1,
+    BannedByHost    = 2,
+    VersionMismatch = 3,
+    ServerTimeout   = 4,
+    PacketsNotRecv  = 5,
+    AfkTimeout      = 7,
+    LobbyFull       = 8,
+    RateLimited     = 9,
+    Shutdown        = 10,
+    IpInUse         = 11,
+}
+
+pub enum OutboxMsg {
+    Broadcast(Vec<u8>, bool),
+    BroadcastEx(Vec<u8>, bool, u16),
+    SendTo(u16, Vec<u8>, bool),
+    Disconnect(u16, u32),
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[repr(i8)]
+pub enum SurvChar {
+    None   = -1,
+    Tails  =  0,
+    Knux   =  1,
+    Eggman =  2,
+    Amy    =  3,
+    Cream  =  4,
+    Sally  =  5,
+}
+
+impl SurvChar {
+    pub fn from_i8(raw: i8) -> Self {
+        match raw {
+            0 => Self::Tails,
+            1 => Self::Knux,
+            2 => Self::Eggman,
+            3 => Self::Amy,
+            4 => Self::Cream,
+            5 => Self::Sally,
+            _ => Self::None,
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[repr(i8)]
+pub enum ExeChar {
+    None     = -1,
+    Original =  0,
+    Chaos    =  1,
+    Exetior  =  2,
+    Exeller  =  3,
+}
+
+impl ExeChar {
+    pub fn from_i8(raw: i8) -> Self {
+        match raw {
+            0 => Self::Original,
+            1 => Self::Chaos,
+            2 => Self::Exetior,
+            3 => Self::Exeller,
+            _ => Self::None,
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, PartialOrd, Ord)]
+pub enum BigRingState {
+    None        = 0,
+    Deactivated = 1,
+    Activated   = 2,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Ending {
+    ExeWin  = 0,
+    SurvWin = 1,
+    TimeOver = 2,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum GameState {
+    Lobby,
+    MapVote,
+    Game,
+    Results,
+}
+
+/// How lobby `id` (counted from 0 inside the server) is named in the logs and the
+/// console: "[Lobby 1]" for the first, as the terminal and the .lobby command count.
+pub fn lobby_tag(id: u16) -> String {
+    format!("[Lobby {}]", id + 1)
+}
+
+pub struct PeerData {
+    pub id: u16,
+    pub ip: String,
+    pub plr: Player,
+    pub nickname: String,
+    pub udid: String,
+    pub lobby_icon: u8,
+    pub pet: i8,
+    pub verified: bool,
+    pub in_game: bool,
+    pub op: u8,
+    pub ready: bool,
+    pub can_vote: bool,
+    pub voted: bool,
+    pub disconnecting: bool,
+    pub surv_char: SurvChar,
+    pub exe_char: ExeChar,
+    /// The characters this player's preference cards asked for when getting ready.
+    /// The round gives them these instead of a character select stage.
+    pub preferred_exe: ExeChar,
+    pub preferred_survivor: SurvChar,
+    /// The EXE card says "not me": drawn as EXE only when nobody else is left.
+    pub refuses_exe: bool,
+    pub should_timeout: bool,
+    pub exe_chance: u8,
+    pub timeout: f64,
+    pub vote_cooldown: f64,
+    pub rtt: u16,
+    /// Whether this peer is watching the round from the waiting room instead of
+    /// waiting it out. See states::spectate.
+    pub is_spectating: bool,
+    // Per-peer chat token bucket (anti-flood). Refilled on demand from
+    // wall-clock time, so no per-tick bookkeeping is needed.
+    pub chat_tokens: f64,
+    pub chat_last: Instant,
+}
+
+impl PeerData {
+    /// Consume one chat token. `burst`/`refill_per_sec` come from config
+    /// (`states.lobby_misc.chat_rate_limit`). Returns true if the message is allowed,
+    /// false if the peer is currently rate-limited and the message should be dropped.
+    pub fn chat_token_take(&mut self, burst: f64, refill_per_sec: f64) -> bool {
+        let now = Instant::now();
+        let elapsed = now.duration_since(self.chat_last).as_secs_f64();
+        self.chat_last = now;
+        self.chat_tokens = (self.chat_tokens + elapsed * refill_per_sec).min(burst);
+        if self.chat_tokens >= 1.0 {
+            self.chat_tokens -= 1.0;
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Whether this peer's client is following the round: playing it, or
+    /// watching it from the waiting room. Every stage that addresses "the
+    /// round" rather than "everyone connected" asks this, so a spectator is
+    /// shown the same screens the round's players are shown.
+    pub fn follows_round(&self) -> bool {
+        self.in_game || self.is_spectating
+    }
+
+    pub fn new(id: u16, ip: String) -> Self {
+        Self {
+            id,
+            ip,
+            plr: Player::default(),
+            nickname: String::new(),
+            udid: String::new(),
+            lobby_icon: 0,
+            pet: -1,
+            verified: false,
+            in_game: false,
+            op: 0,
+            ready: false,
+            can_vote: true,
+            voted: false,
+            disconnecting: false,
+            surv_char: SurvChar::None,
+            exe_char: ExeChar::None,
+            preferred_exe: ExeChar::None,
+            preferred_survivor: SurvChar::None,
+            refuses_exe: false,
+            should_timeout: false,
+            exe_chance: 1,
+            timeout: 0.0,
+            vote_cooldown: 0.0,
+            rtt: 0,
+            is_spectating: false,
+            // Start with a full bucket so a fresh peer can chat immediately; the cap is
+            // re-applied from config on the first take.
+            chat_tokens: crate::config::cfg().states.lobby_misc.chat_rate_limit.burst,
+            chat_last: Instant::now(),
+        }
+    }
+}
+
+pub struct LobbyData {
+    pub countdown: f64,
+    pub prac_countdown: f64,
+    pub countdown_sec: u8,
+    pub vote: Vote,
+    pub kick_target: Option<PeerData>,
+    pub voting_map: i8,
+    pub maps: [u8; 3],
+    pub votes: [u8; 3],
+    pub map: i8,
+    /// The round's EXE players, in the order they were drawn.
+    pub exes: Vec<u16>,
+    // legacy (v1.0.0 C#) votekick state, used only when
+    // states.lobby_misc.votekick.use_legacy_voting is enabled
+    pub legacy_votekick_ongoing: bool,
+    pub legacy_votekick_target: Option<u16>,
+    pub legacy_votekick_timer: f64,
+    pub legacy_votekick_votes: Vec<u16>,
+    // legacy (v1.0.0 C#) votepractice state
+    pub legacy_practice_ongoing: bool,
+    pub legacy_practice_votes: Vec<u16>,
+    /// How many players still owe the CLIENT_LOBBY_PLAYERS_REQUEST that hands a
+    /// tournament round over to the next one, and the fallback deadline for a
+    /// client that never sends it. Both are zero outside that hand-off. See
+    /// results::tournament_advance.
+    pub tournament_owed: u16,
+    pub tournament_wait: f64,
+}
+
+impl LobbyData {
+    /// The EXE that the original protocol and the round rules (states::game) know:
+    /// they were written for one EXE per round.
+    pub fn main_exe(&self) -> u16 {
+        self.exes.first().copied().unwrap_or(0)
+    }
+
+    pub fn is_exe(&self, player_id: u16) -> bool {
+        self.exes.contains(&player_id)
+    }
+}
+
+impl Default for LobbyData {
+    fn default() -> Self {
+        Self {
+            countdown: 0.0,
+            prac_countdown: 0.0,
+            countdown_sec: 0,
+            vote: Vote::default(),
+            kick_target: None,
+            voting_map: -1,
+            maps: [0; 3],
+            votes: [0; 3],
+            map: -1,
+            exes: Vec::new(),
+            legacy_votekick_ongoing: false,
+            legacy_votekick_target: None,
+            legacy_votekick_timer: 0.0,
+            legacy_votekick_votes: Vec::new(),
+            legacy_practice_ongoing: false,
+            legacy_practice_votes: Vec::new(),
+            tournament_owed: 0,
+            tournament_wait: 0.0,
+        }
+    }
+}
+
+pub struct GameData {
+    pub exe: i32,
+    pub map: i8,
+    pub started: bool,
+    pub sudden_death: bool,
+    pub start_timeout: f64,
+    pub time: f64,
+    pub elapsed: f64,
+    pub time_sec: u16,
+    pub end: f64,
+    pub ending: Ending,
+    pub bring_state: BigRingState,
+    pub bring_loc: u8,
+    /// Ravine Mist: shards the simulation says are no longer on the map, which the map's
+    /// rules open the big ring by (states::round::sync_level_to_rules).
+    pub shards_found: u8,
+    pub next_entity_id: u16,
+    pub ring_coff: u8,
+    pub left: Vec<PeerData>,
+    /// The simulation of an authoritative round (states.gameplay.authoritative_round).
+    pub round: Option<crate::states::round::Round>,
+}
+
+impl Default for GameData {
+    fn default() -> Self {
+        Self {
+            exe: -1,
+            map: 0,
+            started: false,
+            sudden_death: false,
+            start_timeout: 0.0,
+            time: 0.0,
+            elapsed: 0.0,
+            time_sec: 0,
+            end: 0.0,
+            ending: Ending::TimeOver,
+            bring_state: BigRingState::None,
+            shards_found: 0,
+            bring_loc: 0,
+            next_entity_id: 0,
+            ring_coff: 5,
+            left: Vec::new(),
+            round: None,
+        }
+    }
+}
+
+pub struct ResultsData {
+    pub countdown: f64,
+}
+
+impl Default for ResultsData {
+    fn default() -> Self {
+        Self { countdown: 0.0 }
+    }
+}
+
+pub struct Server {
+    pub id: u16,
+    pub running: bool,
+    pub state: GameState,
+    pub lobby: LobbyData,
+    pub game: GameData,
+    pub results: ResultsData,
+    pub last_map: i8,
+    pub map_pickrates: [i16; 30],
+    pub delta: f64,
+    pub peers: Vec<PeerData>,
+}
+
+impl Server {
+    pub fn new(id: u16) -> Self {
+        Self {
+            id,
+            running: true,
+            state: GameState::Lobby,
+            lobby: LobbyData::default(),
+            game: GameData::default(),
+            results: ResultsData::default(),
+            last_map: -1,
+            map_pickrates: [255i16; 30],
+            delta: 1.0 / crate::core::config::ticks_per_second(),
+            peers: Vec::new(),
+        }
+    }
+
+    pub fn ingame_count(&self) -> usize {
+        self.peers.iter().filter(|peer| peer.in_game).count()
+    }
+
+    pub fn total_count(&self) -> usize {
+        self.peers.len()
+    }
+
+    pub fn find_peer(&self, id: u16) -> Option<&PeerData> {
+        self.peers.iter().find(|peer| peer.id == id)
+    }
+
+    pub fn find_peer_mut(&mut self, id: u16) -> Option<&mut PeerData> {
+        self.peers.iter_mut().find(|peer| peer.id == id)
+    }
+
+    /// Whether `id` is allowed to send a chat message right now. Operators at or
+    /// above the configured `exempt_op_level` bypass the limit so moderation messaging is
+    /// never throttled. When the limit is disabled this is a no-op (always allows).
+    pub fn chat_rate_allow(&mut self, id: u16) -> bool {
+        let rate_limit = &crate::config::cfg().states.lobby_misc.chat_rate_limit;
+        if !rate_limit.enable {
+            return true;
+        }
+        let (burst, refill, exempt) = (rate_limit.burst, rate_limit.messages_per_second, rate_limit.exempt_op_level);
+        match self.find_peer_mut(id) {
+            Some(peer) => peer.op >= exempt || peer.chat_token_take(burst, refill),
+            None => false,
+        }
+    }
+}
+
+pub struct PendingPeer {
+    pub ip: String,
+    pub timeout: f64,
+}
+
+pub struct PeerSummary {
+    pub id: u16,
+    pub ip: String,
+    pub udid: String,
+    pub nickname: String,
+    pub op: u8,
+    pub in_game: bool,
+}
+
+pub struct ServerShared {
+    pub peers: RwLock<Vec<PeerSummary>>,
+}
+
+impl ServerShared {
+    pub fn new() -> Self {
+        Self {
+            peers: RwLock::new(Vec::new()),
+        }
+    }
+}
+
+pub fn send_chat(outbox: &mut Vec<OutboxMsg>, target: u16, msg: &str) {
+    let mut pkt = GamePacket::new(PacketType::CLIENT_CHAT_MESSAGE);
+    let _ = pkt.write_u16(0);
+    let _ = pkt.write_str(&msg.to_lowercase());
+    outbox.push(OutboxMsg::SendTo(target, pkt.data().to_vec(), true));
+}
+
+pub fn broadcast_chat(outbox: &mut Vec<OutboxMsg>, msg: &str) {
+    let mut pkt = GamePacket::new(PacketType::CLIENT_CHAT_MESSAGE);
+    let _ = pkt.write_u16(0);
+    let _ = pkt.write_str(&msg.to_lowercase());
+    outbox.push(OutboxMsg::Broadcast(pkt.data().to_vec(), true));
+}
+
+pub fn apply_outbox(
+    host: &mut enet::Host<UdpSocket>,
+    _server: &mut Server,
+    outbox: &mut Vec<OutboxMsg>,
+) {
+    for msg in outbox.drain(..) {
+        match msg {
+            OutboxMsg::Broadcast(data, reliable) => {
+                let pkt = make_enet_packet(&data, reliable);
+                host.broadcast(0, &pkt);
+            }
+            OutboxMsg::BroadcastEx(data, reliable, exclude_id) => {
+                let pkt = make_enet_packet(&data, reliable);
+                let exclude_idx = (exclude_id as usize).wrapping_sub(1);
+                for peer in host.connected_peers_mut() {
+                    if peer.id().0 != exclude_idx {
+                        let _ = peer.send(0, &pkt);
+                    }
+                }
+            }
+            OutboxMsg::SendTo(id, data, reliable) => {
+                let idx = (id as usize).wrapping_sub(1);
+                let pkt = make_enet_packet(&data, reliable);
+                if let Some(peer) = host.get_peer_mut(enet::PeerID(idx)) {
+                    let _ = peer.send(0, &pkt);
+                }
+            }
+            OutboxMsg::Disconnect(id, reason) => {
+                let idx = (id as usize).wrapping_sub(1);
+                if let Some(peer) = host.get_peer_mut(enet::PeerID(idx)) {
+                    peer.disconnect(reason);
+                }
+            }
+        }
+    }
+}
+
+fn make_enet_packet(data: &[u8], reliable: bool) -> enet::Packet {
+    if reliable {
+        enet::Packet::reliable(data)
+    } else {
+        enet::Packet::unreliable(data)
+    }
+}

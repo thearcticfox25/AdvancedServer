@@ -1,0 +1,2269 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "infinite": false,
+  "width": 152,
+  "height": 40,
+  "tilewidth": 32,
+  "tileheight": 32,
+  "nextlayerid": 13,
+  "nextobjectid": 129,
+  "properties": [
+    {
+      "name": "persistent",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "views_enabled",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "clear_view_background",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "view_visible",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "view_x",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "view_y",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "view_width",
+      "type": "int",
+      "value": 480
+    },
+    {
+      "name": "view_height",
+      "type": "int",
+      "value": 270
+    },
+    {
+      "name": "port_x",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "port_y",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "port_width",
+      "type": "int",
+      "value": 480
+    },
+    {
+      "name": "port_height",
+      "type": "int",
+      "value": 270
+    }
+  ],
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "source": "Tilesets/objects.tsj"
+    },
+    {
+      "firstgid": 10000,
+      "source": "Tilesets/sprites.tsj"
+    }
+  ],
+  "layers": [
+    {
+      "type": "imagelayer",
+      "id": 1,
+      "name": "Backgrounds_1",
+      "image": "",
+      "imagewidth": 0,
+      "imageheight": 0,
+      "repeatx": false,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 0.0,
+      "opacity": 1.0,
+      "visible": true,
+      "tintcolor": "#ff000000",
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 600
+        }
+      ]
+    },
+    {
+      "type": "imagelayer",
+      "id": 2,
+      "name": "Background",
+      "image": "../Textures/Zones/Abadon Mines/am.apng",
+      "imagewidth": 512,
+      "imageheight": 256,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 0.0,
+      "parallaxx": 0.1,
+      "parallaxy": 0.01,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 500
+        }
+      ]
+    },
+    {
+      "type": "imagelayer",
+      "id": 3,
+      "name": "Background2",
+      "image": "../Textures/Zones/Abadon Mines/am2.apng",
+      "imagewidth": 512,
+      "imageheight": 256,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 0.0,
+      "parallaxx": 0.2,
+      "parallaxy": 0.01,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 400
+        }
+      ]
+    },
+    {
+      "type": "imagelayer",
+      "id": 4,
+      "name": "Background3",
+      "image": "../Textures/Zones/Abadon Mines/am3.png",
+      "imagewidth": 512,
+      "imageheight": 368,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": -59.4,
+      "parallaxx": 0.3,
+      "parallaxy": 0.01,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 300
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 5,
+      "name": "Instances_1",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "",
+          "type": "obj_am_collision",
+          "gid": 15,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 4864.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 200
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 12,
+      "name": "LevelArt am_tiles3",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 125,
+          "name": "",
+          "type": "",
+          "gid": 10104,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 126,
+          "name": "",
+          "type": "",
+          "gid": 10104,
+          "x": 1216.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 127,
+          "name": "",
+          "type": "",
+          "gid": 10104,
+          "x": 2432.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 128,
+          "name": "",
+          "type": "",
+          "gid": 10104,
+          "x": 3648.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 102
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 6,
+      "name": "Assets_1",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 110,
+          "name": "",
+          "type": "",
+          "gid": 10097,
+          "x": 4544.0,
+          "y": 960.0,
+          "width": 256.0,
+          "height": 256.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 111,
+          "name": "",
+          "type": "",
+          "gid": 10097,
+          "x": 3424.0,
+          "y": 1216.0,
+          "width": 352.0,
+          "height": 256.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 112,
+          "name": "",
+          "type": "",
+          "gid": 10097,
+          "x": 2336.0,
+          "y": 903.0,
+          "width": 363.0000128,
+          "height": 256.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 113,
+          "name": "",
+          "type": "",
+          "gid": 10097,
+          "x": 1312.0,
+          "y": 1103.0,
+          "width": 459.0000128,
+          "height": 256.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 114,
+          "name": "",
+          "type": "",
+          "gid": 10097,
+          "x": 928.0,
+          "y": 1164.0,
+          "width": 267.0000128,
+          "height": 256.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 115,
+          "name": "",
+          "type": "",
+          "gid": 10097,
+          "x": 288.0,
+          "y": 581.0,
+          "width": 299.0000128,
+          "height": 96.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 116,
+          "name": "",
+          "type": "",
+          "gid": 10097,
+          "x": 256.0,
+          "y": 1216.0,
+          "width": 395.0000384,
+          "height": 256.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 100
+        },
+        {
+          "name": "effect",
+          "type": "string",
+          "value": "_filter_underwater"
+        },
+        {
+          "name": "effect.g_Distort1Speed",
+          "type": "float",
+          "value": 0.1
+        },
+        {
+          "name": "effect.g_Distort2Speed",
+          "type": "float",
+          "value": 0.025
+        },
+        {
+          "name": "effect.g_Distort1Scale",
+          "type": "float",
+          "value": 1.0
+        },
+        {
+          "name": "effect.g_Distort2Scale",
+          "type": "float",
+          "value": 10.0
+        },
+        {
+          "name": "effect.g_Distort1Amount",
+          "type": "float",
+          "value": 3.0
+        },
+        {
+          "name": "effect.g_Distort2Amount",
+          "type": "float",
+          "value": 6.0
+        },
+        {
+          "name": "effect.g_ChromaSpreadAmount",
+          "type": "float",
+          "value": 0.0
+        },
+        {
+          "name": "effect.g_CamOffsetScale",
+          "type": "float",
+          "value": 0.0
+        },
+        {
+          "name": "effect.g_GlintCol",
+          "type": "string",
+          "value": "#FF191919"
+        },
+        {
+          "name": "effect.g_TintCol",
+          "type": "string",
+          "value": "#FFFFFFFF"
+        },
+        {
+          "name": "effect.g_AddCol",
+          "type": "string",
+          "value": "#FF422100"
+        },
+        {
+          "name": "effect.g_DistortTexture",
+          "type": "string",
+          "value": "_filter_underwater_noise_sprite"
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 7,
+      "name": "Instances",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 2,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 3687.0,
+          "y": 1024.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 3,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 655.0,
+          "y": 925.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 4,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 584.0,
+          "y": 544.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 5,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 1167.0,
+          "y": -464.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 6,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 1223.0,
+          "y": -424.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 7,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 1111.0,
+          "y": -424.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 8,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 1311.0,
+          "y": 864.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 9,
+          "name": "",
+          "type": "obj_spring_up",
+          "gid": 265,
+          "x": 136.0,
+          "y": 861.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 10,
+          "name": "",
+          "type": "obj_yspring_up",
+          "gid": 299,
+          "x": 880.0,
+          "y": 1117.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 11,
+          "name": "",
+          "type": "obj_spring_left",
+          "gid": 262,
+          "x": 1668.0,
+          "y": 1052.0,
+          "width": 44.0,
+          "height": 44.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 12,
+          "name": "",
+          "type": "obj_yspring_up",
+          "gid": 299,
+          "x": 2784.0,
+          "y": 733.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 13,
+          "name": "",
+          "type": "obj_parallax",
+          "gid": 211,
+          "x": 0.0,
+          "y": -16.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 14,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 2023.0,
+          "y": 925.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 15,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 1063.0,
+          "y": 1072.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 16,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 608.0,
+          "y": 544.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 17,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 368.0,
+          "y": 1184.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 18,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 392.0,
+          "y": 1184.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 19,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 416.0,
+          "y": 1184.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 20,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1904.0,
+          "y": 992.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 21,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1928.0,
+          "y": 992.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 22,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2496.0,
+          "y": 800.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 23,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2520.0,
+          "y": 800.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 24,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2704.0,
+          "y": 544.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 25,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2584.0,
+          "y": 480.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 26,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2248.0,
+          "y": 544.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 27,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1024.0,
+          "y": 928.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 28,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1848.0,
+          "y": 544.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 29,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1312.0,
+          "y": 552.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 30,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 760.0,
+          "y": 480.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 31,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 256.0,
+          "y": 864.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 32,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 960.0,
+          "y": -504.0,
+          "width": 128.0,
+          "height": 504.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 33,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1280.0,
+          "y": -504.0,
+          "width": 128.0,
+          "height": 504.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 34,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 960.0,
+          "y": -520.0,
+          "width": 448.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 35,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 1167.0,
+          "y": 448.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 36,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 2407.0,
+          "y": 840.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 37,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 1607.0,
+          "y": 1032.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 38,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1023.97723,
+          "y": 509.0,
+          "width": 272.0,
+          "height": 16.0,
+          "rotation": 14.0,
+          "visible": true
+        },
+        {
+          "id": 39,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2304.0,
+          "y": 573.0,
+          "width": 264.0,
+          "height": 16.0,
+          "rotation": 346.0,
+          "visible": true
+        },
+        {
+          "id": 40,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1632.0,
+          "y": 736.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 41,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 928.0,
+          "y": 736.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 43,
+          "name": "",
+          "type": "obj_abandon_face",
+          "gid": 2,
+          "x": 880.0,
+          "y": 800.0,
+          "width": 38.00000256,
+          "height": 25.999999759999998,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 44,
+          "name": "",
+          "type": "obj_abandon_face",
+          "gid": 2,
+          "x": 208.0,
+          "y": 1088.0,
+          "width": 22.000001400000002,
+          "height": 25.999999759999998,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 45,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 3695.0,
+          "y": -480.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 46,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 3735.0,
+          "y": -424.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 47,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 3663.0,
+          "y": -424.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 48,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3520.0,
+          "y": -504.0,
+          "width": 128.0,
+          "height": 504.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 49,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3776.0,
+          "y": -504.0,
+          "width": 128.0,
+          "height": 504.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 50,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3520.0,
+          "y": -520.0,
+          "width": 384.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 51,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3008.0,
+          "y": 800.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 52,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3032.0,
+          "y": 800.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 53,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 3911.0,
+          "y": 987.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 54,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3856.0,
+          "y": 768.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 55,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3880.0,
+          "y": 768.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 56,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3864.0,
+          "y": 608.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 57,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 4184.0,
+          "y": 640.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 58,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 4504.0,
+          "y": 928.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 59,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 4080.0,
+          "y": 800.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 60,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 4000.0,
+          "y": 832.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 61,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3288.0,
+          "y": 1160.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 62,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3864.0,
+          "y": 1024.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 63,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 4536.0,
+          "y": 928.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 64,
+          "name": "",
+          "type": "obj_bspring_up",
+          "gid": 34,
+          "x": 3808.0,
+          "y": 795.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 65,
+          "name": "",
+          "type": "obj_abandon_face",
+          "gid": 2,
+          "x": 928.0,
+          "y": 752.0,
+          "width": 38.00000256,
+          "height": 25.999999759999998,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 66,
+          "name": "",
+          "type": "obj_abandon_face",
+          "gid": 2,
+          "x": 2000.0,
+          "y": 816.0,
+          "width": 38.00000256,
+          "height": 25.999999759999998,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 67,
+          "name": "",
+          "type": "obj_abandon_face",
+          "gid": 2,
+          "x": 3264.0,
+          "y": 1032.0,
+          "width": 22.00000296,
+          "height": 57.9999966,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 68,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3760.0,
+          "y": 1112.0,
+          "width": 32.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 69,
+          "name": "",
+          "type": "obj_spring_right",
+          "gid": 264,
+          "x": 3264.0,
+          "y": 1108.0,
+          "width": 44.0,
+          "height": 44.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 70,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3808.0,
+          "y": 864.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 71,
+          "name": "",
+          "type": "obj_abyss_target",
+          "gid": 5,
+          "x": 919.0,
+          "y": 1112.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 72,
+          "name": "",
+          "type": "obj_abyss",
+          "gid": 4,
+          "x": 960.0,
+          "y": 1180.0,
+          "width": 192.0,
+          "height": 28.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "shouldStun",
+              "type": "bool",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": 73,
+          "name": "",
+          "type": "obj_abyss_target",
+          "gid": 5,
+          "x": 1807.0,
+          "y": 1016.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 74,
+          "name": "",
+          "type": "obj_abyss",
+          "gid": 4,
+          "x": 1344.0,
+          "y": 1118.0,
+          "width": 368.0,
+          "height": 26.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "shouldStun",
+              "type": "bool",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": 75,
+          "name": "",
+          "type": "obj_abyss",
+          "gid": 4,
+          "x": 2368.0,
+          "y": 918.0,
+          "width": 320.0,
+          "height": 26.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "shouldStun",
+              "type": "bool",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": 76,
+          "name": "",
+          "type": "obj_abyss_target",
+          "gid": 5,
+          "x": 2191.0,
+          "y": 888.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 77,
+          "name": "",
+          "type": "obj_abyss_target",
+          "gid": 5,
+          "x": 3343.0,
+          "y": 1176.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 78,
+          "name": "",
+          "type": "obj_abyss_target",
+          "gid": 5,
+          "x": 3783.0,
+          "y": 1051.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 79,
+          "name": "",
+          "type": "obj_abyss",
+          "gid": 4,
+          "x": 3440.0,
+          "y": 1231.0,
+          "width": 304.0,
+          "height": 25.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "shouldStun",
+              "type": "bool",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": 80,
+          "name": "",
+          "type": "obj_abyss_target",
+          "gid": 5,
+          "x": 4559.0,
+          "y": 922.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 81,
+          "name": "",
+          "type": "obj_soundemitter",
+          "gid": 258,
+          "x": 1039.0,
+          "y": 1136.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "stype",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 82,
+          "name": "",
+          "type": "obj_soundemitter",
+          "gid": 258,
+          "x": 1519.0,
+          "y": 1072.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "stype",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 83,
+          "name": "",
+          "type": "obj_soundemitter",
+          "gid": 258,
+          "x": 2415.0,
+          "y": 872.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "stype",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 84,
+          "name": "",
+          "type": "obj_soundemitter",
+          "gid": 258,
+          "x": 4655.0,
+          "y": 928.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "stype",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 85,
+          "name": "",
+          "type": "obj_soundemitter",
+          "gid": 258,
+          "x": 3575.0,
+          "y": 1184.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "stype",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 86,
+          "name": "",
+          "type": "obj_soundemitter",
+          "gid": 258,
+          "x": 423.0,
+          "y": 538.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "stype",
+              "type": "float",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": 87,
+          "name": "",
+          "type": "obj_abandon_mine",
+          "gid": 3,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 512.0,
+          "height": 512.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 88,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 3344.0,
+          "y": 827.0,
+          "width": 400.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 89,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3232.0,
+          "y": 1168.0,
+          "width": 128.0,
+          "height": 48.0,
+          "rotation": 35.0,
+          "visible": true
+        },
+        {
+          "id": 90,
+          "name": "",
+          "type": "obj_soundemitter",
+          "gid": 258,
+          "x": 431.0,
+          "y": 1176.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "stype",
+              "type": "float",
+              "value": 6.0
+            }
+          ]
+        },
+        {
+          "id": 91,
+          "name": "",
+          "type": "obj_am_controller",
+          "gid": 16,
+          "x": 16.0,
+          "y": -16.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 92,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 4608.0,
+          "y": 954.0,
+          "width": 128.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 93,
+          "name": "",
+          "type": "obj_am_hideobject",
+          "gid": 17,
+          "x": 1312.0,
+          "y": 592.0,
+          "width": 32.0,
+          "height": 48.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 94,
+          "name": "",
+          "type": "obj_am_hideobject",
+          "gid": 17,
+          "x": 1984.0,
+          "y": 976.0,
+          "width": 32.0,
+          "height": 48.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 95,
+          "name": "",
+          "type": "obj_am_hideobject",
+          "gid": 17,
+          "x": 3744.0,
+          "y": 1184.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 8,
+      "name": "Instances_3",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 96,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 1344.0,
+          "y": 974.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 97,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 2516.0,
+          "y": 774.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 98,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 1528.0,
+          "y": 974.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 99,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 440.0,
+          "y": 1086.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 6.0
+            }
+          ]
+        },
+        {
+          "id": 100,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 404.0,
+          "y": 450.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": 101,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 256.0,
+          "y": 1086.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 6.0
+            }
+          ]
+        },
+        {
+          "id": 102,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 288.0,
+          "y": 450.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": 103,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 928.0,
+          "y": 1034.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 104,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 2336.0,
+          "y": 774.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 105,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 3420.0,
+          "y": 1086.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 106,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 4528.0,
+          "y": 830.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 107,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 3604.0,
+          "y": 1086.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 108,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 4712.0,
+          "y": 830.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 109,
+          "name": "",
+          "type": "obj_abadon_cloud",
+          "gid": 1,
+          "x": 1012.0,
+          "y": 1034.0,
+          "width": 184.0,
+          "height": 138.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": -20
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 9,
+      "name": "Instances_2",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": false,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 42,
+          "name": "",
+          "type": "obj_angleanuller_eggsafe",
+          "gid": 21,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 4864.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": -120
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 11,
+      "name": "LevelArt am_tiles",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 121,
+          "name": "",
+          "type": "",
+          "gid": 10102,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 122,
+          "name": "",
+          "type": "",
+          "gid": 10102,
+          "x": 1216.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 123,
+          "name": "",
+          "type": "",
+          "gid": 10102,
+          "x": 2432.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 124,
+          "name": "",
+          "type": "",
+          "gid": 10102,
+          "x": 3648.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": -199
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 10,
+      "name": "LevelArt am_tiles2",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 117,
+          "name": "",
+          "type": "",
+          "gid": 10103,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "image_blend",
+              "type": "string",
+              "value": "#ccffffff"
+            }
+          ]
+        },
+        {
+          "id": 118,
+          "name": "",
+          "type": "",
+          "gid": 10103,
+          "x": 1216.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "image_blend",
+              "type": "string",
+              "value": "#ccffffff"
+            }
+          ]
+        },
+        {
+          "id": 119,
+          "name": "",
+          "type": "",
+          "gid": 10103,
+          "x": 2432.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "image_blend",
+              "type": "string",
+              "value": "#ccffffff"
+            }
+          ]
+        },
+        {
+          "id": 120,
+          "name": "",
+          "type": "",
+          "gid": 10103,
+          "x": 3648.0,
+          "y": 0.0,
+          "width": 1216.0,
+          "height": 1280.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "image_blend",
+              "type": "string",
+              "value": "#ccffffff"
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": -200
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+origin = [27, 36]
+bbox_mode = "manual"
+bbox = [10, 5, 40, 53]

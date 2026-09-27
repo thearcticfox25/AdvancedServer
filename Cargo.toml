@@ -1,0 +1,57 @@
+[package]
+name = "AdvancedServer"
+version = "1.1.0"
+edition = "2021"
+license = "AGPL-3.0"
+
+[[bin]]
+name = "AdvancedServer"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+toml_edit = "0.22"
+signal-hook = "0.3"
+rand = { version = "0.8", features = ["small_rng"] }
+log = { version = "0.4", features = ["std"] }
+chrono = "0.4"
+crossterm = "0.28"
+rusty_enet = { path = "./lib/rusty_enet/" }
+rusqlite = { version = "0.31", features = ["bundled"] }
+png = "0.18"
+postcard = { version = "1.1", default-features = false, features = ["alloc"] }
+macroquad = "0.4.16"
+# Without the realtime thread features, which need the D-Bus development files to build.
+kira = { version = "0.12.4", default-features = false, features = ["cpal", "mp3", "ogg", "vorbis", "wav", "pcm", "isomp4", "aac"] }
+# Only to turn on kira's PipeWire output: through ALSA the mixer lists the game as
+# "ALSA plug-in [AdvancedServer]" and the taskbar has no speaker on its window.
+cpal = { version = "0.18", features = ["pipewire"] }
+# Release builds keep Resources in one Resources.tar (see build.rs and core/resources).
+# Without default features: those only restore extended file attributes on unpacking.
+tar = { version = "0.4", default-features = false }
+
+
+# PNG inflate and audio decoding are painfully slow without optimizations,
+# so dependencies are optimized even in debug builds. The project's own code
+# itself stays debuggable.
+[profile.dev.package."*"]
+opt-level = 3
+debug = false
+
+# Line tables are enough for backtraces; full debug info made target/ grow to gigabytes.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.release]
+# opt-level 3: this is a 60Hz physics/anticheat server where throughput matters
+# more than binary size. (Was "z" - optimized for size, leaving speed on the table.)
+opt-level = 3
+lto = true
+strip = true
+
+[build-dependencies]
+# Packs Resources into Resources.tar for release builds.
+tar = { version = "0.4", default-features = false }

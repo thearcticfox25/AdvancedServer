@@ -1,0 +1,5 @@
+origin = [48, 96]
+collision = "ellipse"
+bbox_mode = "manual"
+bbox = [8, 14, 88, 95]
+fps = 0

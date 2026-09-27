@@ -1,0 +1,45 @@
+{
+ "type": "tileset",
+ "version": "1.10",
+ "tiledversion": "1.10.2",
+ "name": "level1",
+ "objectalignment": "topleft",
+ "columns": 0,
+ "margin": 0,
+ "spacing": 0,
+ "tilecount": 5,
+ "tilewidth": 3167,
+ "tileheight": 534,
+ "tiles": [
+  {
+   "id": 0,
+   "image": "../../Textures/Zones/Level1/lobby_tile1.png",
+   "imagewidth": 128,
+   "imageheight": 128
+  },
+  {
+   "id": 1,
+   "image": "../../Textures/Zones/Level1/lobby_tile2.png",
+   "imagewidth": 128,
+   "imageheight": 128
+  },
+  {
+   "id": 2,
+   "image": "../../Textures/Zones/Level1/lobby_tile5.png",
+   "imagewidth": 128,
+   "imageheight": 128
+  },
+  {
+   "id": 3,
+   "image": "../../Textures/Zones/Level1/lobby_fog.png",
+   "imagewidth": 3167,
+   "imageheight": 534
+  },
+  {
+   "id": 4,
+   "image": "../../Textures/Zones/Level1/background_test.apng",
+   "imagewidth": 96,
+   "imageheight": 96
+  }
+ ]
+}

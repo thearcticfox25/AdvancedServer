@@ -1,0 +1,1484 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "infinite": false,
+  "width": 456,
+  "height": 128,
+  "tilewidth": 8,
+  "tileheight": 8,
+  "nextlayerid": 8,
+  "nextobjectid": 102,
+  "properties": [
+    {
+      "name": "persistent",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "views_enabled",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "clear_view_background",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "view_visible",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "view_x",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "view_y",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "view_width",
+      "type": "int",
+      "value": 1366
+    },
+    {
+      "name": "view_height",
+      "type": "int",
+      "value": 768
+    },
+    {
+      "name": "port_x",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "port_y",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "port_width",
+      "type": "int",
+      "value": 1366
+    },
+    {
+      "name": "port_height",
+      "type": "int",
+      "value": 768
+    }
+  ],
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "source": "Tilesets/objects.tsj"
+    },
+    {
+      "firstgid": 10000,
+      "source": "Tilesets/sprites.tsj"
+    }
+  ],
+  "layers": [
+    {
+      "type": "imagelayer",
+      "id": 1,
+      "name": "Background",
+      "image": "../Textures/Zones/Majong forest/majong.png",
+      "imagewidth": 576,
+      "imageheight": 516,
+      "repeatx": true,
+      "repeaty": true,
+      "offsetx": 0.0,
+      "offsety": 0.0,
+      "parallaxx": 0.1,
+      "parallaxy": 0.0,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 600
+        }
+      ]
+    },
+    {
+      "type": "imagelayer",
+      "id": 2,
+      "name": "Background2",
+      "image": "../Textures/Zones/Majong forest/majong2.apng",
+      "imagewidth": 760,
+      "imageheight": 270,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 0.0,
+      "parallaxx": 0.2,
+      "parallaxy": 0.0,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 500
+        }
+      ]
+    },
+    {
+      "type": "imagelayer",
+      "id": 3,
+      "name": "Background3",
+      "image": "../Textures/Zones/Majong forest/majong3.apng",
+      "imagewidth": 760,
+      "imageheight": 270,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 0.0,
+      "parallaxx": 0.3,
+      "parallaxy": 0.0,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 400
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 4,
+      "name": "Assets_2",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 74,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 0.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 75,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 128.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 76,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 256.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 77,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 384.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 78,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 512.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 79,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 640.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 80,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 768.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 81,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 2600.0,
+          "y": 896.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 82,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 0.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 83,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 128.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 84,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 256.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 85,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 384.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 86,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 512.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 87,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 640.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 88,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 768.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 89,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 1304.0,
+          "y": 896.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 90,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 0.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 91,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 128.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 92,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 256.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 93,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 384.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 94,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 512.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 95,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 640.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 96,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 768.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 97,
+          "name": "",
+          "type": "",
+          "gid": 10535,
+          "x": 632.0,
+          "y": 896.0,
+          "width": 32.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 300
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 7,
+      "name": "LevelArt majong_tiles",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 100,
+          "name": "",
+          "type": "",
+          "gid": 10533,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 1824.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 101,
+          "name": "",
+          "type": "",
+          "gid": 10533,
+          "x": 1824.0,
+          "y": 0.0,
+          "width": 1824.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 200
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 5,
+      "name": "Instances",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "",
+          "type": "obj_parallax",
+          "gid": 211,
+          "x": 0.0,
+          "y": -16.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 2,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 0.0,
+          "y": 224.0,
+          "width": 792.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 3,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 928.0,
+          "y": 288.0,
+          "width": 288.0,
+          "height": 192.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 4,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1216.0,
+          "y": 352.78885,
+          "width": 160.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 5,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1728.0,
+          "y": 334.0,
+          "width": 192.0,
+          "height": 98.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 6,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1984.0,
+          "y": 270.0,
+          "width": 320.0,
+          "height": 99.99999232,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 7,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2464.0,
+          "y": 224.0,
+          "width": 192.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 8,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2912.0,
+          "y": 224.0,
+          "width": 736.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 9,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2912.0,
+          "y": 736.0,
+          "width": 744.0,
+          "height": 192.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 10,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2656.0,
+          "y": 672.0,
+          "width": 192.0,
+          "height": 324.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 11,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 0.0,
+          "y": 736.0,
+          "width": 738.0,
+          "height": 192.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 12,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 738.0,
+          "y": 736.0,
+          "width": 318.0,
+          "height": 192.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 13,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 1147.0,
+          "y": 672.0,
+          "width": 266.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 14,
+          "name": "",
+          "type": "obj_damage",
+          "gid": 49,
+          "x": 1240.0,
+          "y": 664.0,
+          "width": 76.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 15,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 1467.0,
+          "y": 608.0,
+          "width": 133.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 16,
+          "name": "",
+          "type": "obj_yspring_up",
+          "gid": 299,
+          "x": 1520.0,
+          "y": 576.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 17,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 1376.0,
+          "y": 416.0,
+          "width": 293.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 18,
+          "name": "",
+          "type": "obj_damage",
+          "gid": 49,
+          "x": 1376.0,
+          "y": 408.0,
+          "width": 80.0,
+          "height": 35.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 19,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 2315.0,
+          "y": 224.0,
+          "width": 138.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 20,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 2656.0,
+          "y": 288.0,
+          "width": 256.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 21,
+          "name": "",
+          "type": "obj_damage",
+          "gid": 49,
+          "x": 2712.0,
+          "y": 275.0,
+          "width": 75.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 22,
+          "name": "",
+          "type": "obj_spring_up",
+          "gid": 265,
+          "x": 2832.0,
+          "y": 544.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 23,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 2808.0,
+          "y": 576.0,
+          "width": 77.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 24,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 2363.0,
+          "y": 704.0,
+          "width": 202.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 25,
+          "name": "",
+          "type": "obj_damage",
+          "gid": 49,
+          "x": 2424.0,
+          "y": 691.0,
+          "width": 76.0,
+          "height": 41.0000032,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 26,
+          "name": "",
+          "type": "obj_platform_jumptrough",
+          "gid": 221,
+          "x": 2171.0,
+          "y": 736.0,
+          "width": 138.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 27,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 983.0,
+          "y": 704.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 28,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 2543.0,
+          "y": 192.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 29,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 3007.0,
+          "y": 704.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 30,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 1295.0,
+          "y": 320.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 31,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 2088.0,
+          "y": 238.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 32,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 2223.0,
+          "y": 704.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 33,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 663.0,
+          "y": 192.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 34,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 1807.0,
+          "y": 272.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 35,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 2223.0,
+          "y": 664.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 36,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 1359.0,
+          "y": 616.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 37,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 2199.0,
+          "y": 192.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 38,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 1439.0,
+          "y": 272.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 39,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 592.0,
+          "y": 704.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 40,
+          "name": "",
+          "type": "obj_majong_slope",
+          "gid": 142,
+          "x": 1588.0,
+          "y": 607.0,
+          "width": 328.0,
+          "height": 274.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 41,
+          "name": "",
+          "type": "obj_angleallower",
+          "gid": 19,
+          "x": 1915.0,
+          "y": 824.0,
+          "width": 29.0,
+          "height": 36.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 42,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2048.0,
+          "y": 846.0,
+          "width": 192.0,
+          "height": 95.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 43,
+          "name": "",
+          "type": "obj_bspring_up",
+          "gid": 34,
+          "x": 2176.0,
+          "y": 814.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 44,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 480.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 45,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 3136.0,
+          "y": 0.0,
+          "width": 512.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 46,
+          "name": "",
+          "type": "obj_majong_controller",
+          "gid": 141,
+          "x": 16.0,
+          "y": -16.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 47,
+          "name": "",
+          "type": "obj_majong_trigger",
+          "gid": 144,
+          "x": -48.0,
+          "y": 992.0,
+          "width": 3712.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 48,
+          "name": "",
+          "type": "obj_majong_trigger_point",
+          "gid": 145,
+          "x": 992.0,
+          "y": 704.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 49,
+          "name": "",
+          "type": "obj_majong_trigger_point",
+          "gid": 145,
+          "x": 1192.0,
+          "y": 640.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 50,
+          "name": "",
+          "type": "obj_majong_trigger_point",
+          "gid": 145,
+          "x": 1336.0,
+          "y": 640.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 51,
+          "name": "",
+          "type": "obj_majong_trigger_point",
+          "gid": 145,
+          "x": 1488.0,
+          "y": 576.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 52,
+          "name": "",
+          "type": "obj_majong_trigger_point",
+          "gid": 145,
+          "x": 2064.0,
+          "y": 816.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 53,
+          "name": "",
+          "type": "obj_majong_trigger_point",
+          "gid": 145,
+          "x": 2368.0,
+          "y": 672.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 54,
+          "name": "",
+          "type": "obj_majong_trigger_point",
+          "gid": 145,
+          "x": 3008.0,
+          "y": 704.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 55,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 936.0,
+          "y": 704.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 56,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1248.0,
+          "y": 632.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 57,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1288.0,
+          "y": 632.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 58,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 856.0,
+          "y": 192.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 59,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1512.0,
+          "y": 392.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 60,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1552.0,
+          "y": 392.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 61,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1872.0,
+          "y": 848.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 62,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2144.0,
+          "y": 240.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 63,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2672.0,
+          "y": 648.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 64,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2432.0,
+          "y": 664.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 65,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2472.0,
+          "y": 664.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 66,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2868.0,
+          "y": 540.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 67,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2720.0,
+          "y": 248.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 68,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2768.0,
+          "y": 248.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 69,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3016.0,
+          "y": 192.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 70,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2376.0,
+          "y": 192.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 71,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1016.0,
+          "y": 256.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 72,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1136.0,
+          "y": 256.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 73,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 536.0,
+          "y": 200.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 6,
+      "name": "Assets_1",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 98,
+          "name": "",
+          "type": "",
+          "gid": 10534,
+          "x": -32.0,
+          "y": 0.0,
+          "width": 512.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 99,
+          "name": "",
+          "type": "",
+          "gid": 10534,
+          "x": 3136.0,
+          "y": 0.0,
+          "width": 512.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": -200
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+bbox_mode = "manual"
+bbox = [-6, -7, 71, 11]

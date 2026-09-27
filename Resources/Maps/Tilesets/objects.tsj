@@ -1,0 +1,2107 @@
+{
+ "type": "tileset",
+ "version": "1.10",
+ "name": "objects",
+ "tilewidth": 4864,
+ "tileheight": 1984,
+ "tilecount": 299,
+ "columns": 0,
+ "margin": 0,
+ "spacing": 0,
+ "objectalignment": "topleft",
+ "tiles": [
+  {
+   "id": 0,
+   "image": "../../Textures/Zones/Abadon Mines/am_cloud.apng",
+   "imagewidth": 184,
+   "imageheight": 138,
+   "type": "obj_abadon_cloud"
+  },
+  {
+   "id": 1,
+   "image": "../../Textures/Zones/Abadon Mines/am_face.png",
+   "imagewidth": 78,
+   "imageheight": 98,
+   "type": "obj_abandon_face"
+  },
+  {
+   "id": 2,
+   "image": "../../Textures/Zones/Abadon Mines/am_ooh.png",
+   "imagewidth": 512,
+   "imageheight": 512,
+   "type": "obj_abandon_mine"
+  },
+  {
+   "id": 3,
+   "image": "../../Textures/Special/abyss.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_abyss"
+  },
+  {
+   "id": 4,
+   "image": "../../Textures/Special/abyss_target.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_abyss_target"
+  },
+  {
+   "id": 5,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_achivements"
+  },
+  {
+   "id": 6,
+   "image": "../../Textures/Zones/Act9/act9_dead.apng",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_act9_bodies"
+  },
+  {
+   "id": 7,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_act9_instakill"
+  },
+  {
+   "id": 8,
+   "image": "../../Textures/Zones/Act9/act9_wall.png",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_act9_wall"
+  },
+  {
+   "id": 9,
+   "image": "../../Textures/Zones/Angel Island/aiz_decor2.png",
+   "imagewidth": 68,
+   "imageheight": 51,
+   "type": "obj_aiz_bush"
+  },
+  {
+   "id": 10,
+   "image": "../../Textures/Zones/Angel Island/aiz_decor.png",
+   "imagewidth": 104,
+   "imageheight": 154,
+   "type": "obj_aiz_palm"
+  },
+  {
+   "id": 11,
+   "image": "../../Textures/Zones/Angel Island/aiz_zipline.png",
+   "imagewidth": 24,
+   "imageheight": 19,
+   "type": "obj_aiz_zipline"
+  },
+  {
+   "id": 12,
+   "image": "../../Textures/Zones/Angel Island/aiz_zipline.png",
+   "imagewidth": 24,
+   "imageheight": 19,
+   "type": "obj_aiz_zipline_end"
+  },
+  {
+   "id": 13,
+   "image": "../../Textures/Zones/Angel Island/aiz_zipline.png",
+   "imagewidth": 24,
+   "imageheight": 19,
+   "type": "obj_aiz_zipline_start"
+  },
+  {
+   "id": 14,
+   "image": "../../Textures/Zones/Abadon Mines/am_collision.png",
+   "imagewidth": 4864,
+   "imageheight": 1280,
+   "type": "obj_am_collision"
+  },
+  {
+   "id": 15,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_am_controller"
+  },
+  {
+   "id": 16,
+   "image": "../../Textures/Special/green293.png",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_am_hideobject"
+  },
+  {
+   "id": 17,
+   "image": "../../Textures/Player/Survivors/Amy/amy_idle.apng",
+   "imagewidth": 39,
+   "imageheight": 39,
+   "type": "obj_amy"
+  },
+  {
+   "id": 18,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_angleallower"
+  },
+  {
+   "id": 19,
+   "image": "../../Textures/Special/ramphelper_right.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_angleanuller"
+  },
+  {
+   "id": 20,
+   "image": "../../Textures/Special/ramphelper_right.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_angleanuller_eggsafe"
+  },
+  {
+   "id": 21,
+   "image": "../../Textures/Minigame/sota2.png",
+   "imagewidth": 26,
+   "imageheight": 26,
+   "type": "obj_asteroid"
+  },
+  {
+   "id": 22,
+   "image": "../../Textures/Minigame/sota.png",
+   "imagewidth": 27,
+   "imageheight": 29,
+   "type": "obj_asteroid_breakable"
+  },
+  {
+   "id": 23,
+   "image": "../../Textures/Minigame/sota3.png",
+   "imagewidth": 10,
+   "imageheight": 9,
+   "type": "obj_asteroid_part"
+  },
+  {
+   "id": 24,
+   "image": "../../Textures/Objects/bigring.apng",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_bigring"
+  },
+  {
+   "id": 25,
+   "image": "../../Textures/Effects/ring_teleport.apng",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_bigring_teleport"
+  },
+  {
+   "id": 26,
+   "image": "../../Textures/GUI/Screens/black.png",
+   "imagewidth": 490,
+   "imageheight": 276,
+   "type": "obj_blackfadein"
+  },
+  {
+   "id": 27,
+   "image": "../../Textures/GUI/Screens/black.png",
+   "imagewidth": 490,
+   "imageheight": 276,
+   "type": "obj_blackfadeout"
+  },
+  {
+   "id": 28,
+   "image": "../../Textures/Objects/Rings/blackring.apng",
+   "imagewidth": 30,
+   "imageheight": 30,
+   "type": "obj_blackring"
+  },
+  {
+   "id": 29,
+   "image": "../../Textures/Objects/Rings/blackring.apng",
+   "imagewidth": 30,
+   "imageheight": 30,
+   "type": "obj_blackring_spawner"
+  },
+  {
+   "id": 30,
+   "image": "../../Textures/Zones/BlueSpheres/blueshperes_sphere.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_bluespheres_sphere"
+  },
+  {
+   "id": 31,
+   "image": "../../Textures/Objects/Springs/bspring_left.apng",
+   "imagewidth": 44,
+   "imageheight": 44,
+   "type": "obj_bspring_left"
+  },
+  {
+   "id": 32,
+   "image": "../../Textures/Objects/Springs/bspring_right.apng",
+   "imagewidth": 44,
+   "imageheight": 44,
+   "type": "obj_bspring_right"
+  },
+  {
+   "id": 33,
+   "image": "../../Textures/Objects/Springs/bspring_up.apng",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_bspring_up"
+  },
+  {
+   "id": 34,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_camera"
+  },
+  {
+   "id": 35,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_camerachecker"
+  },
+  {
+   "id": 36,
+   "image": "../../Textures/Player/Exes/Chaos/chaos_emotion1.apng",
+   "imagewidth": 30,
+   "imageheight": 45,
+   "type": "obj_chaos"
+  },
+  {
+   "id": 37,
+   "image": "../../Textures/Player/Exes/Chaos/chaos_liquid.apng",
+   "imagewidth": 9,
+   "imageheight": 10,
+   "type": "obj_chaos_liquid"
+  },
+  {
+   "id": 38,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_config"
+  },
+  {
+   "id": 39,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_connecting"
+  },
+  {
+   "id": 40,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_controls"
+  },
+  {
+   "id": 41,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_corpse"
+  },
+  {
+   "id": 42,
+   "image": "../../Textures/Player/Survivors/Corpses/corpse_amy.apng",
+   "imagewidth": 98,
+   "imageheight": 247,
+   "type": "obj_corpse_amy"
+  },
+  {
+   "id": 43,
+   "image": "../../Textures/Player/Survivors/Corpses/corpse_cream.apng",
+   "imagewidth": 32,
+   "imageheight": 58,
+   "type": "obj_corpse_cream"
+  },
+  {
+   "id": 44,
+   "image": "../../Textures/Player/Survivors/Corpses/corpse_eggman.apng",
+   "imagewidth": 86,
+   "imageheight": 89,
+   "type": "obj_corpse_eggman"
+  },
+  {
+   "id": 45,
+   "image": "../../Textures/Player/Survivors/Corpses/corpse_knux.png",
+   "imagewidth": 59,
+   "imageheight": 29,
+   "type": "obj_corpse_knux"
+  },
+  {
+   "id": 46,
+   "image": "../../Textures/Player/Survivors/Corpses/corpse_tails.png",
+   "imagewidth": 80,
+   "imageheight": 59,
+   "type": "obj_corpse_tails"
+  },
+  {
+   "id": 47,
+   "image": "../../Textures/Player/Survivors/Cream/cream_fall.apng",
+   "imagewidth": 37,
+   "imageheight": 32,
+   "type": "obj_cream"
+  },
+  {
+   "id": 48,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_damage"
+  },
+  {
+   "id": 49,
+   "image": "../../Textures/Zones/DarkTower/darktower_ball.png",
+   "imagewidth": 48,
+   "imageheight": 48,
+   "type": "obj_darktower_ball"
+  },
+  {
+   "id": 50,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_darktower_darkness"
+  },
+  {
+   "id": 51,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_darktower_fog"
+  },
+  {
+   "id": 52,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_darktower_jumpscare"
+  },
+  {
+   "id": 53,
+   "image": "../../Textures/Zones/DarkTower/darktower_stalactite1.apng",
+   "imagewidth": 9,
+   "imageheight": 7,
+   "type": "obj_darktower_liquid"
+  },
+  {
+   "id": 54,
+   "image": "../../Textures/Zones/DarkTower/darktower_stalactite.png",
+   "imagewidth": 80,
+   "imageheight": 80,
+   "type": "obj_darktower_stalactite"
+  },
+  {
+   "id": 55,
+   "image": "../../Textures/Zones/DarkTower/darktower_stalactite2.apng",
+   "imagewidth": 19,
+   "imageheight": 17,
+   "type": "obj_darktower_stalactitepart"
+  },
+  {
+   "id": 56,
+   "image": "../../Textures/Zones/DarkTower/darktower_tailsol.apng",
+   "imagewidth": 38,
+   "imageheight": 37,
+   "type": "obj_darktower_tailsdoll"
+  },
+  {
+   "id": 57,
+   "image": "../../Textures/Special/deathtp.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_deathtp"
+  },
+  {
+   "id": 58,
+   "image": "../../Textures/Special/deathtp_point.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_deathtp_point"
+  },
+  {
+   "id": 59,
+   "image": "../../Textures/GUI/Player/indicator2.png",
+   "imagewidth": 8,
+   "imageheight": 8,
+   "type": "obj_demon_indicator"
+  },
+  {
+   "id": 60,
+   "image": "../../Textures/Zones/DesertTown/deserttown_tiles.apng",
+   "imagewidth": 1648,
+   "imageheight": 1360,
+   "type": "obj_deserttown"
+  },
+  {
+   "id": 61,
+   "image": "../../Textures/Zones/DesertTown/deserttown_hide.apng",
+   "imagewidth": 49,
+   "imageheight": 80,
+   "type": "obj_deserttown_hide"
+  },
+  {
+   "id": 62,
+   "image": "../../Textures/Zones/DesertTown/deserttown_hide2.apng",
+   "imagewidth": 49,
+   "imageheight": 80,
+   "type": "obj_deserttown_hide2"
+  },
+  {
+   "id": 63,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_deserttown_i"
+  },
+  {
+   "id": 64,
+   "image": "../../Textures/Zones/DesertTown/deserttown_misc.apng",
+   "imagewidth": 48,
+   "imageheight": 36,
+   "type": "obj_deserttown_misc"
+  },
+  {
+   "id": 65,
+   "image": "../../Textures/Zones/DesertTown/deserttown_misctiles.apng",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_deserttown_tiles"
+  },
+  {
+   "id": 66,
+   "image": "../../Textures/Special/green.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_deserttown_trigger"
+  },
+  {
+   "id": 67,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_dotdotdot_i"
+  },
+  {
+   "id": 68,
+   "image": "../../Textures/Special/merfurmu2.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_dotdotdot_shitladder"
+  },
+  {
+   "id": 69,
+   "image": "../../Textures/Special/green.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_dotdotdot_trigger"
+  },
+  {
+   "id": 70,
+   "image": "../../Textures/Special/abyss.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_dotdotdot_trigger2"
+  },
+  {
+   "id": 71,
+   "image": "../../Textures/Special/green.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_dotdotdot_trigger3"
+  },
+  {
+   "id": 72,
+   "image": "../../Textures/Player/Survivors/Egg/egg_idle.apng",
+   "imagewidth": 48,
+   "imageheight": 54,
+   "type": "obj_egg"
+  },
+  {
+   "id": 73,
+   "image": "../../Textures/Zones/.../dot_eggstatue.apng",
+   "imagewidth": 58,
+   "imageheight": 70,
+   "type": "obj_eggstatue"
+  },
+  {
+   "id": 74,
+   "image": "../../Textures/Player/Survivors/Egg/eggtrack.png",
+   "imagewidth": 24,
+   "imageheight": 8,
+   "type": "obj_eggtrack"
+  },
+  {
+   "id": 75,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_ending"
+  },
+  {
+   "id": 76,
+   "image": "../../Textures/Player/Exes/Original/exe_idle.apng",
+   "imagewidth": 41,
+   "imageheight": 44,
+   "type": "obj_exe"
+  },
+  {
+   "id": 77,
+   "image": "../../Textures/GUI/Player/indicator.png",
+   "imagewidth": 32,
+   "imageheight": 16,
+   "type": "obj_exe_indicator"
+  },
+  {
+   "id": 78,
+   "image": "../../Textures/GUI/Player/indicator3.png",
+   "imagewidth": 14,
+   "imageheight": 13,
+   "type": "obj_exe_sprindicator"
+  },
+  {
+   "id": 79,
+   "image": "../../Textures/Player/Exes/Exeller/exeller_clone.apng",
+   "imagewidth": 31,
+   "imageheight": 38,
+   "type": "obj_exeller"
+  },
+  {
+   "id": 80,
+   "image": "../../Textures/Player/Exes/Exeller/exeller_clone.apng",
+   "imagewidth": 31,
+   "imageheight": 38,
+   "type": "obj_exeller_clone"
+  },
+  {
+   "id": 81,
+   "image": "../../Textures/GUI/Player/indicator.png",
+   "imagewidth": 32,
+   "imageheight": 16,
+   "type": "obj_exeller_indicator"
+  },
+  {
+   "id": 82,
+   "image": "../../Textures/GUI/Player/exeller_clonetracker2.png",
+   "imagewidth": 12,
+   "imageheight": 12,
+   "type": "obj_exeller_indicator_down"
+  },
+  {
+   "id": 83,
+   "image": "../../Textures/GUI/Player/exeller_clonetracker.png",
+   "imagewidth": 12,
+   "imageheight": 12,
+   "type": "obj_exeller_indicator_up"
+  },
+  {
+   "id": 84,
+   "image": "../../Textures/Special/exespawn.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_exespawn"
+  },
+  {
+   "id": 85,
+   "image": "../../Textures/Player/Exes/Erector/exetior_lost.apng",
+   "imagewidth": 35,
+   "imageheight": 39,
+   "type": "obj_exetior"
+  },
+  {
+   "id": 86,
+   "image": "../../Textures/GUI/Player/indicator.png",
+   "imagewidth": 32,
+   "imageheight": 16,
+   "type": "obj_exetior_indicator"
+  },
+  {
+   "id": 87,
+   "image": "../../Textures/Player/Exes/Erector/exetior_stompballs.apng",
+   "imagewidth": 27,
+   "imageheight": 23,
+   "type": "obj_exetior_stompballs"
+  },
+  {
+   "id": 88,
+   "image": "../../Textures/boom.apng",
+   "imagewidth": 348,
+   "imageheight": 498,
+   "type": "obj_fart_ass"
+  },
+  {
+   "id": 89,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_fart_controller"
+  },
+  {
+   "id": 90,
+   "image": "../../Textures/Zones/Fart Zone/fart_dummy.apng",
+   "imagewidth": 29,
+   "imageheight": 31,
+   "type": "obj_fart_dummy"
+  },
+  {
+   "id": 91,
+   "image": "../../Textures/Special/merfurmu.apng",
+   "imagewidth": 20,
+   "imageheight": 19,
+   "type": "obj_fart_mermer"
+  },
+  {
+   "id": 92,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_fart_text"
+  },
+  {
+   "id": 93,
+   "image": "../../Textures/Zones/Fart Zone/fartzone.png",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_fart_tile"
+  },
+  {
+   "id": 94,
+   "image": "../../Textures/GUI/Screens/white.png",
+   "imagewidth": 480,
+   "imageheight": 270,
+   "type": "obj_flash"
+  },
+  {
+   "id": 95,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_floor_parent"
+  },
+  {
+   "id": 96,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_ghz_controller"
+  },
+  {
+   "id": 97,
+   "image": "../../Textures/Zones/GreenHill/ghz_rain.png",
+   "imagewidth": 6,
+   "imageheight": 12,
+   "type": "obj_ghz_rain"
+  },
+  {
+   "id": 98,
+   "image": "../../Textures/Zones/GreenHill/ghz_slope1.png",
+   "imagewidth": 80,
+   "imageheight": 83,
+   "type": "obj_ghz_slope"
+  },
+  {
+   "id": 99,
+   "image": "../../Textures/Zones/GreenHill/ghz_slope2.png",
+   "imagewidth": 194,
+   "imageheight": 117,
+   "type": "obj_ghz_slope2"
+  },
+  {
+   "id": 100,
+   "image": "../../Textures/Zones/GreenHill/ghz_slope3.png",
+   "imagewidth": 134,
+   "imageheight": 55,
+   "type": "obj_ghz_slope3"
+  },
+  {
+   "id": 101,
+   "image": "../../Textures/Zones/GreenHill/ghz_slope4.png",
+   "imagewidth": 134,
+   "imageheight": 55,
+   "type": "obj_ghz_slope4"
+  },
+  {
+   "id": 102,
+   "image": "../../Textures/Zones/GreenHill/ghz_slope5.png",
+   "imagewidth": 194,
+   "imageheight": 117,
+   "type": "obj_ghz_slope5"
+  },
+  {
+   "id": 103,
+   "image": "../../Textures/Special/green.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_ghz_water"
+  },
+  {
+   "id": 104,
+   "image": "../../Textures/Zones/GreenHill/ghz_wave.apng",
+   "imagewidth": 320,
+   "imageheight": 17,
+   "type": "obj_ghz_wave"
+  },
+  {
+   "id": 105,
+   "image": "../../Textures/Minigame/minisnoc_extra.png",
+   "imagewidth": 66,
+   "imageheight": 6,
+   "type": "obj_granny"
+  },
+  {
+   "id": 106,
+   "image": "../../Textures/Zones/HauntDream/hd_colliison.png",
+   "imagewidth": 4096,
+   "imageheight": 1984,
+   "type": "obj_hd_collision"
+  },
+  {
+   "id": 107,
+   "image": "../../Textures/Zones/HauntDream/hd_crystal.apng",
+   "imagewidth": 24,
+   "imageheight": 25,
+   "type": "obj_hd_crystal"
+  },
+  {
+   "id": 108,
+   "image": "../../Textures/Zones/HauntDream/hd_door.png",
+   "imagewidth": 32,
+   "imageheight": 64,
+   "type": "obj_hd_door"
+  },
+  {
+   "id": 109,
+   "image": "../../Textures/Zones/HauntDream/hd_door2.png",
+   "imagewidth": 96,
+   "imageheight": 16,
+   "type": "obj_hd_door2"
+  },
+  {
+   "id": 110,
+   "image": "../../Textures/Zones/HauntDream/hd_hide.apng",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_hd_hide"
+  },
+  {
+   "id": 111,
+   "image": "../../Textures/Zones/HauntDream/hd_spring.apng",
+   "imagewidth": 32,
+   "imageheight": 33,
+   "type": "obj_hd_spring"
+  },
+  {
+   "id": 112,
+   "image": "../../Textures/Effects/heal_part.apng",
+   "imagewidth": 7,
+   "imageheight": 7,
+   "type": "obj_heal_particle"
+  },
+  {
+   "id": 113,
+   "image": "../../Textures/GUI/heal.apng",
+   "imagewidth": 26,
+   "imageheight": 25,
+   "type": "obj_heal_progress"
+  },
+  {
+   "id": 114,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_hiding_parent"
+  },
+  {
+   "id": 115,
+   "image": "../../Textures/Zones/HideAndSeek2/hs2_slope1.png",
+   "imagewidth": 255,
+   "imageheight": 127,
+   "type": "obj_hn2_slope1"
+  },
+  {
+   "id": 116,
+   "image": "../../Textures/Zones/HideAndSeek2/hs2_slope2.png",
+   "imagewidth": 255,
+   "imageheight": 127,
+   "type": "obj_hn2_slope2"
+  },
+  {
+   "id": 117,
+   "image": "../../Textures/Zones/HideAndSeek2/hs2_box.png",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_jack_in_the_box"
+  },
+  {
+   "id": 118,
+   "image": "../../Textures/Zones/KindAndFair/kindnfair_slope1.png",
+   "imagewidth": 178,
+   "imageheight": 128,
+   "type": "obj_kaf_slope1"
+  },
+  {
+   "id": 119,
+   "image": "../../Textures/Zones/KindAndFair/kindnfair_slope2.png",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_kaf_slope2"
+  },
+  {
+   "id": 120,
+   "image": "../../Textures/Zones/KindAndFair/kindnfair_speedbox.apng",
+   "imagewidth": 30,
+   "imageheight": 30,
+   "type": "obj_kaf_speedbox"
+  },
+  {
+   "id": 121,
+   "image": "../../Textures/Player/Survivors/Knuckles/knux_idle.apng",
+   "imagewidth": 34,
+   "imageheight": 40,
+   "type": "obj_knux"
+  },
+  {
+   "id": 122,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_left_pusher"
+  },
+  {
+   "id": 123,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_level"
+  },
+  {
+   "id": 124,
+   "image": "../../Textures/Zones/LimpCity/limpcity_chain1.apng",
+   "imagewidth": 128,
+   "imageheight": 16,
+   "type": "obj_limpcity_echain1"
+  },
+  {
+   "id": 125,
+   "image": "../../Textures/Zones/LimpCity/limpcity_chain2.apng",
+   "imagewidth": 16,
+   "imageheight": 128,
+   "type": "obj_limpcity_echain2"
+  },
+  {
+   "id": 126,
+   "image": "../../Textures/Zones/LimpCity/limpcity_eye_recharge.apng",
+   "imagewidth": 28,
+   "imageheight": 28,
+   "type": "obj_limpcity_eyeA"
+  },
+  {
+   "id": 127,
+   "image": "../../Textures/Zones/LimpCity/limpcity_eye_recharge.apng",
+   "imagewidth": 28,
+   "imageheight": 28,
+   "type": "obj_limpcity_eyeB"
+  },
+  {
+   "id": 128,
+   "image": "../../Textures/Zones/LimpCity/limpcity_eye_chain.png",
+   "imagewidth": 12,
+   "imageheight": 31,
+   "type": "obj_limpcity_eyechain"
+  },
+  {
+   "id": 129,
+   "image": "../../Textures/Zones/LimpCity/limpcity_eye_chain.png",
+   "imagewidth": 12,
+   "imageheight": 31,
+   "type": "obj_limpcity_eyechain2"
+  },
+  {
+   "id": 130,
+   "image": "../../Textures/Zones/LimpCity/limpcity_hideeye.apng",
+   "imagewidth": 57,
+   "imageheight": 47,
+   "type": "obj_limpcity_hideeye"
+  },
+  {
+   "id": 131,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_lobby"
+  },
+  {
+   "id": 132,
+   "image": "../../Textures/Effects/Blood/blood2.apng",
+   "imagewidth": 33,
+   "imageheight": 32,
+   "type": "obj_lobby_blood"
+  },
+  {
+   "id": 133,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_lobby_fire"
+  },
+  {
+   "id": 134,
+   "image": "../../Textures/Lobby/lobby_icon.apng",
+   "imagewidth": 24,
+   "imageheight": 24,
+   "type": "obj_lobby_icon"
+  },
+  {
+   "id": 135,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_lobby_prolet"
+  },
+  {
+   "id": 136,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_lobby_votekick"
+  },
+  {
+   "id": 137,
+   "image": "../../Textures/Lobby/lobby_waiting.apng",
+   "imagewidth": 153,
+   "imageheight": 8,
+   "type": "obj_lobby_waiting"
+  },
+  {
+   "id": 138,
+   "image": "../../Textures/GUI/Screens/white.png",
+   "imagewidth": 480,
+   "imageheight": 270,
+   "type": "obj_lobby_white"
+  },
+  {
+   "id": 139,
+   "image": "../../Textures/Main Menu/logo_logos.apng",
+   "imagewidth": 480,
+   "imageheight": 270,
+   "type": "obj_logo"
+  },
+  {
+   "id": 140,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_majong_controller"
+  },
+  {
+   "id": 141,
+   "image": "../../Textures/Zones/Majong forest/majong_slope.png",
+   "imagewidth": 328,
+   "imageheight": 274,
+   "type": "obj_majong_slope"
+  },
+  {
+   "id": 142,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_majong_sound"
+  },
+  {
+   "id": 143,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_majong_trigger"
+  },
+  {
+   "id": 144,
+   "image": "../../Textures/Special/deathtp_point.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_majong_trigger_point"
+  },
+  {
+   "id": 145,
+   "image": "../../Textures/Zones/Marijuna/marijuna_crystal.png",
+   "imagewidth": 40,
+   "imageheight": 48,
+   "type": "obj_marijuna_crystal"
+  },
+  {
+   "id": 146,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_marijuna_crystalcontroller"
+  },
+  {
+   "id": 147,
+   "image": "../../Textures/Zones/Marijuna/marijuna_statue.apng",
+   "imagewidth": 38,
+   "imageheight": 60,
+   "type": "obj_marijuna_statue"
+  },
+  {
+   "id": 148,
+   "image": "../../Textures/Zones/Marijuna/marijuna_judger.apng",
+   "imagewidth": 87,
+   "imageheight": 60,
+   "type": "obj_marijuna_judger"
+  },
+  {
+   "id": 149,
+   "image": "../../Textures/Zones/Marijuna/marijuna_fireball.apng",
+   "imagewidth": 24,
+   "imageheight": 16,
+   "type": "obj_marijuna_judgerpor"
+  },
+  {
+   "id": 150,
+   "image": "../../Textures/Zones/Marijuna/marijuna_lavaplatform.apng",
+   "imagewidth": 160,
+   "imageheight": 672,
+   "type": "obj_marijuna_lavaplatform"
+  },
+  {
+   "id": 151,
+   "image": "../../Textures/Special/green293.png",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_marijuna_platform"
+  },
+  {
+   "id": 152,
+   "image": "../../Textures/Zones/Marijuna/marijuna_slopes.apng",
+   "imagewidth": 640,
+   "imageheight": 320,
+   "type": "obj_marijuna_slops"
+  },
+  {
+   "id": 153,
+   "image": "../../Textures/GUI/Screens/static.apng",
+   "imagewidth": 504,
+   "imageheight": 379,
+   "type": "obj_marjiuna_static"
+  },
+  {
+   "id": 154,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_menu"
+  },
+  {
+   "id": 155,
+   "image": "../../Fonts/letter.png",
+   "imagewidth": 632,
+   "imageheight": 6,
+   "type": "obj_menu_abouttext"
+  },
+  {
+   "id": 156,
+   "image": "../../Textures/Main Menu/achivements.png",
+   "imagewidth": 334,
+   "imageheight": 1900,
+   "type": "obj_menu_achivements"
+  },
+  {
+   "id": 157,
+   "image": "../../Textures/Main Menu/achivarrows.png",
+   "imagewidth": 84,
+   "imageheight": 9,
+   "type": "obj_menu_achvarrow"
+  },
+  {
+   "id": 158,
+   "image": "../../Textures/Main Menu/menu_buttons.apng",
+   "imagewidth": 180,
+   "imageheight": 16,
+   "type": "obj_menu_button"
+  },
+  {
+   "id": 159,
+   "image": "../../Textures/Main Menu/Gifs/menu_egg.apng",
+   "imagewidth": 223,
+   "imageheight": 189,
+   "type": "obj_menu_character"
+  },
+  {
+   "id": 160,
+   "image": "../../Textures/Main Menu/menu_characters.apng",
+   "imagewidth": 272,
+   "imageheight": 216,
+   "type": "obj_menu_characters"
+  },
+  {
+   "id": 161,
+   "image": "../../Textures/Main Menu/menu_credits.png",
+   "imagewidth": 282,
+   "imageheight": 1022,
+   "type": "obj_menu_credits"
+  },
+  {
+   "id": 162,
+   "image": "../../Textures/Main Menu/menu_links2.apng",
+   "imagewidth": 86,
+   "imageheight": 13,
+   "type": "obj_menu_exeempire"
+  },
+  {
+   "id": 163,
+   "image": "../../Textures/Main Menu/Gifs/menu_spin.apng",
+   "imagewidth": 240,
+   "imageheight": 194,
+   "type": "obj_menu_gif"
+  },
+  {
+   "id": 164,
+   "image": "../../Textures/Main Menu/menu_icon.png",
+   "imagewidth": 64,
+   "imageheight": 69,
+   "type": "obj_menu_icon"
+  },
+  {
+   "id": 165,
+   "image": "../../Textures/Main Menu/menu_buttons.apng",
+   "imagewidth": 180,
+   "imageheight": 16,
+   "type": "obj_menu_join"
+  },
+  {
+   "id": 166,
+   "image": "../../Textures/Main Menu/menu_links2.apng",
+   "imagewidth": 86,
+   "imageheight": 13,
+   "type": "obj_menu_link1"
+  },
+  {
+   "id": 167,
+   "image": "../../Textures/Main Menu/menu_links.apng",
+   "imagewidth": 21,
+   "imageheight": 19,
+   "type": "obj_menu_link2"
+  },
+  {
+   "id": 168,
+   "image": "../../Textures/GUI/mobile_button.apng",
+   "imagewidth": 48,
+   "imageheight": 48,
+   "type": "obj_menu_mobilebutton"
+  },
+  {
+   "id": 169,
+   "image": "../../Textures/GUI/mobile_emotionbutton.apng",
+   "imagewidth": 14,
+   "imageheight": 14,
+   "type": "obj_menu_mobilebutton2"
+  },
+  {
+   "id": 170,
+   "image": "../../Textures/GUI/mobile_dpad.apng",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_menu_mobiledpad"
+  },
+  {
+   "id": 171,
+   "image": "../../Textures/GUI/counter.apng",
+   "imagewidth": 11,
+   "imageheight": 15,
+   "type": "obj_menu_money"
+  },
+  {
+   "id": 172,
+   "image": "../../Textures/Main Menu/menu_warning.png",
+   "imagewidth": 12,
+   "imageheight": 12,
+   "type": "obj_menu_warning"
+  },
+  {
+   "id": 173,
+   "image": "../../Textures/Main Menu/menu_particle.png",
+   "imagewidth": 8,
+   "imageheight": 8,
+   "type": "obj_menu_particle"
+  },
+  {
+   "id": 174,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_menu_particlespawner"
+  },
+  {
+   "id": 175,
+   "image": "../../Textures/Main Menu/menu_icon.png",
+   "imagewidth": 64,
+   "imageheight": 69,
+   "type": "obj_menu_pet"
+  },
+  {
+   "id": 176,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_menu_secret"
+  },
+  {
+   "id": 177,
+   "image": "../../Textures/Main Menu/menu_public.png",
+   "imagewidth": 5,
+   "imageheight": 6,
+   "type": "obj_menu_serverbutton"
+  },
+  {
+   "id": 178,
+   "image": "../../Textures/Main Menu/menu_skin.apng",
+   "imagewidth": 64,
+   "imageheight": 85,
+   "type": "obj_menu_skin"
+  },
+  {
+   "id": 179,
+   "image": "../../Textures/Main Menu/menu_slider.apng",
+   "imagewidth": 68,
+   "imageheight": 6,
+   "type": "obj_menu_slider"
+  },
+  {
+   "id": 180,
+   "image": "../../Textures/Main Menu/menu_buttons.apng",
+   "imagewidth": 180,
+   "imageheight": 16,
+   "type": "obj_menu_text"
+  },
+  {
+   "id": 181,
+   "image": "../../Textures/Main Menu/menu_textbox.png",
+   "imagewidth": 128,
+   "imageheight": 16,
+   "type": "obj_menu_textbox"
+  },
+  {
+   "id": 182,
+   "image": "../../Textures/Main Menu/menu_textpanel.png",
+   "imagewidth": 60,
+   "imageheight": 14,
+   "type": "obj_menu_textpanel"
+  },
+  {
+   "id": 183,
+   "image": "../../Textures/Main Menu/menu_buttons.apng",
+   "imagewidth": 180,
+   "imageheight": 16,
+   "type": "obj_menu_togglebutton"
+  },
+  {
+   "id": 184,
+   "image": "../../Fonts/letter.png",
+   "imagewidth": 632,
+   "imageheight": 6,
+   "type": "obj_menu_version"
+  },
+  {
+   "id": 185,
+   "image": "../../Textures/Main Menu/menu_waiting.apng",
+   "imagewidth": 191,
+   "imageheight": 8,
+   "type": "obj_menu_waiting"
+  },
+  {
+   "id": 186,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_menu_waitkick"
+  },
+  {
+   "id": 187,
+   "image": "../../Textures/Main Menu/menu_error.apng",
+   "imagewidth": 183,
+   "imageheight": 8,
+   "type": "obj_message"
+  },
+  {
+   "id": 188,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_minigame"
+  },
+  {
+   "id": 189,
+   "image": "../../Textures/Minigame/minisnoc.apng",
+   "imagewidth": 21,
+   "imageheight": 23,
+   "type": "obj_minisnoc"
+  },
+  {
+   "id": 190,
+   "image": "../../Textures/Minigame/minisnoc_graveyard.apng",
+   "imagewidth": 42,
+   "imageheight": 41,
+   "type": "obj_minisnoc_eggy"
+  },
+  {
+   "id": 191,
+   "image": "../../Textures/Minigame/minisnoc_mcbigtasty.png",
+   "imagewidth": 26,
+   "imageheight": 5,
+   "type": "obj_minisnoc_eggy2"
+  },
+  {
+   "id": 192,
+   "image": "../../Textures/Minigame/sota.png",
+   "imagewidth": 27,
+   "imageheight": 29,
+   "type": "obj_minisnoc_fade"
+  },
+  {
+   "id": 193,
+   "image": "../../Textures/Effects/dust.apng",
+   "imagewidth": 19,
+   "imageheight": 23,
+   "type": "obj_minigame_trail"
+  },
+  {
+   "id": 194,
+   "image": "../../Textures/Objects/Spikes/spike_moving.apng",
+   "imagewidth": 30,
+   "imageheight": 28,
+   "type": "obj_movingspike"
+  },
+  {
+   "id": 195,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_nap_controller"
+  },
+  {
+   "id": 196,
+   "image": "../../Textures/Zones/NastyParadise/nap_iceblock.png",
+   "imagewidth": 40,
+   "imageheight": 40,
+   "type": "obj_nap_iceblock"
+  },
+  {
+   "id": 197,
+   "image": "../../Textures/Zones/NastyParadise/nap_iceblock_part.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_nap_iceblock_part"
+  },
+  {
+   "id": 198,
+   "image": "../../Textures/Zones/NastyParadise/nap_icespike.png",
+   "imagewidth": 62,
+   "imageheight": 24,
+   "type": "obj_nap_icespike"
+  },
+  {
+   "id": 199,
+   "image": "../../Textures/Zones/NastyParadise/nap_snow.png",
+   "imagewidth": 2,
+   "imageheight": 2,
+   "type": "obj_nap_snow"
+  },
+  {
+   "id": 200,
+   "image": "../../Textures/Zones/NastyParadise/nap_snowball.apng",
+   "imagewidth": 96,
+   "imageheight": 96,
+   "type": "obj_nap_snowball"
+  },
+  {
+   "id": 201,
+   "image": "../../Textures/Zones/NastyParadise/nap_snowball_part.apng",
+   "imagewidth": 72,
+   "imageheight": 54,
+   "type": "obj_nap_snowball_part"
+  },
+  {
+   "id": 202,
+   "image": "../../Textures/Special/snbway.png",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_nap_snowball_waypoint"
+  },
+  {
+   "id": 203,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_nap_trigger"
+  },
+  {
+   "id": 204,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_netclient"
+  },
+  {
+   "id": 205,
+   "image": "../../Textures/Zones/NotPerfect/notperf.apng",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_np_background"
+  },
+  {
+   "id": 206,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_np_controller"
+  },
+  {
+   "id": 207,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_np_teleporn"
+  },
+  {
+   "id": 208,
+   "image": "../../Textures/GUI/Screens/white.png",
+   "imagewidth": 480,
+   "imageheight": 270,
+   "type": "obj_np_white"
+  },
+  {
+   "id": 209,
+   "image": "../../Textures/Objects/bigring.apng",
+   "imagewidth": 64,
+   "imageheight": 64,
+   "type": "obj_npring"
+  },
+  {
+   "id": 210,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_parallax"
+  },
+  {
+   "id": 211,
+   "image": "../../Textures/Pets/pet_chao.apng",
+   "imagewidth": 12,
+   "imageheight": 20,
+   "type": "obj_pet_chao"
+  },
+  {
+   "id": 212,
+   "image": "../../Textures/Pets/pet_daldol.apng",
+   "imagewidth": 23,
+   "imageheight": 31,
+   "type": "obj_pet_dadol"
+  },
+  {
+   "id": 213,
+   "image": "../../Textures/Pets/pet_egg.apng",
+   "imagewidth": 24,
+   "imageheight": 26,
+   "type": "obj_pet_egg"
+  },
+  {
+   "id": 214,
+   "image": "../../Textures/Pets/pet_flicky.apng",
+   "imagewidth": 16,
+   "imageheight": 15,
+   "type": "obj_pet_flicky"
+  },
+  {
+   "id": 215,
+   "image": "../../Textures/Pets/pet_majin.apng",
+   "imagewidth": 30,
+   "imageheight": 31,
+   "type": "obj_pet_majin"
+  },
+  {
+   "id": 216,
+   "image": "../../Textures/Pets/pet_metal.apng",
+   "imagewidth": 15,
+   "imageheight": 27,
+   "type": "obj_pet_metal"
+  },
+  {
+   "id": 217,
+   "image": "../../Textures/Pets/pet_mknux.apng",
+   "imagewidth": 17,
+   "imageheight": 27,
+   "type": "obj_pet_mknux"
+  },
+  {
+   "id": 218,
+   "image": "../../Textures/Pets/pet_tits.png",
+   "imagewidth": 24,
+   "imageheight": 33,
+   "type": "obj_pet_secret"
+  },
+  {
+   "id": 219,
+   "image": "../../Textures/Zones/PricelessFreedom/pf_lift.apng",
+   "imagewidth": 32,
+   "imageheight": 15,
+   "type": "obj_pf_lift"
+  },
+  {
+   "id": 220,
+   "image": "../../Textures/Objects/Solid/platform.png",
+   "imagewidth": 64,
+   "imageheight": 32,
+   "type": "obj_platform_jumptrough"
+  },
+  {
+   "id": 221,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_player_POVODOK"
+  },
+  {
+   "id": 222,
+   "image": "../../Textures/Special/merfurmu.apng",
+   "imagewidth": 20,
+   "imageheight": 19,
+   "type": "obj_player_puppet"
+  },
+  {
+   "id": 223,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorAL"
+  },
+  {
+   "id": 224,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorAR"
+  },
+  {
+   "id": 225,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorBL"
+  },
+  {
+   "id": 226,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorBR"
+  },
+  {
+   "id": 227,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorL"
+  },
+  {
+   "id": 228,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorR"
+  },
+  {
+   "id": 229,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorTL"
+  },
+  {
+   "id": 230,
+   "image": "../../Textures/Special/sensor.png",
+   "imagewidth": 1,
+   "imageheight": 1,
+   "type": "obj_player_sensorTR"
+  },
+  {
+   "id": 231,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_player_warning"
+  },
+  {
+   "id": 232,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_playerui"
+  },
+  {
+   "id": 233,
+   "image": "../../Textures/Player/Survivors/Tails/tails_tail2.apng",
+   "imagewidth": 24,
+   "imageheight": 24,
+   "type": "obj_puppet_tail"
+  },
+  {
+   "id": 234,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_quickeffect"
+  },
+  {
+   "id": 235,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_quickeffect_fade"
+  },
+  {
+   "id": 236,
+   "image": "../../Textures/Zones/RavineMist/ravinemist_bush.apng",
+   "imagewidth": 34,
+   "imageheight": 25,
+   "type": "obj_ravinemist_bush"
+  },
+  {
+   "id": 237,
+   "image": "../../Textures/Zones/RavineMist/ravinemist_bush_animated.png",
+   "imagewidth": 39,
+   "imageheight": 25,
+   "type": "obj_ravinemist_bush_animated"
+  },
+  {
+   "id": 238,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_ravinemist_controller"
+  },
+  {
+   "id": 239,
+   "image": "../../Textures/Zones/RavineMist/ravinemist_shard.apng",
+   "imagewidth": 30,
+   "imageheight": 40,
+   "type": "obj_ravintmist_shard"
+  },
+  {
+   "id": 240,
+   "image": "../../Textures/Objects/Rings/redring.apng",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_redring"
+  },
+  {
+   "id": 241,
+   "image": "../../Textures/GUI/Screens/redring_fore.apng",
+   "imagewidth": 504,
+   "imageheight": 379,
+   "type": "obj_redring_screen"
+  },
+  {
+   "id": 242,
+   "image": "../../Textures/GUI/Screens/redring_fore.apng",
+   "imagewidth": 504,
+   "imageheight": 379,
+   "type": "obj_redring_screen2"
+  },
+  {
+   "id": 243,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_results"
+  },
+  {
+   "id": 244,
+   "image": "../../Textures/Results/results_icons.apng",
+   "imagewidth": 240,
+   "imageheight": 28,
+   "type": "obj_results_icon"
+  },
+  {
+   "id": 245,
+   "image": "../../Textures/GUI/revival.apng",
+   "imagewidth": 26,
+   "imageheight": 25,
+   "type": "obj_revival_puppet"
+  },
+  {
+   "id": 246,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_right_pusher"
+  },
+  {
+   "id": 247,
+   "image": "../../Textures/Objects/Rings/ring.apng",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_ring"
+  },
+  {
+   "id": 248,
+   "image": "../../Textures/Objects/Rings/ring.apng",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_ring_spawner"
+  },
+  {
+   "id": 249,
+   "image": "../../Textures/Objects/Rings/ringpart.apng",
+   "imagewidth": 9,
+   "imageheight": 10,
+   "type": "obj_ringpart"
+  },
+  {
+   "id": 250,
+   "image": "../../Textures/Special/ringspawn.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_ringspawn"
+  },
+  {
+   "id": 251,
+   "image": "../../Textures/Zones/RavineMist/ravinemist_sonic.apng",
+   "imagewidth": 35,
+   "imageheight": 24,
+   "type": "obj_rmzsonic"
+  },
+  {
+   "id": 252,
+   "image": "../../Textures/Player/Survivors/Sally/sally_idle.apng",
+   "imagewidth": 44,
+   "imageheight": 48,
+   "type": "obj_sally"
+  },
+  {
+   "id": 253,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_shadertest"
+  },
+  {
+   "id": 254,
+   "image": "../../Textures/Objects/Solid/block.png",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_solid_block"
+  },
+  {
+   "id": 255,
+   "image": "../../Textures/Objects/Solid/block2.png",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_solid_block2"
+  },
+  {
+   "id": 256,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_solid_parent"
+  },
+  {
+   "id": 257,
+   "image": "../../Textures/Special/soundemitter.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_soundemitter"
+  },
+  {
+   "id": 258,
+   "image": "../../Textures/Special/spawnpoint.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_spawnpoint"
+  },
+  {
+   "id": 259,
+   "image": "../../Textures/Objects/Spikes/spike.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_spike"
+  },
+  {
+   "id": 260,
+   "image": "../../Textures/Objects/Spikes/spike_r.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_spike_r"
+  },
+  {
+   "id": 261,
+   "image": "../../Textures/Objects/Springs/spring_left.apng",
+   "imagewidth": 44,
+   "imageheight": 44,
+   "type": "obj_spring_left"
+  },
+  {
+   "id": 262,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_spring_parent"
+  },
+  {
+   "id": 263,
+   "image": "../../Textures/Objects/Springs/spring_right.apng",
+   "imagewidth": 44,
+   "imageheight": 44,
+   "type": "obj_spring_right"
+  },
+  {
+   "id": 264,
+   "image": "../../Textures/Objects/Springs/spring_up.apng",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_spring_up"
+  },
+  {
+   "id": 265,
+   "image": "../../Textures/GUI/Screens/sudden_death.apng",
+   "imagewidth": 480,
+   "imageheight": 270,
+   "type": "obj_suddendeath"
+  },
+  {
+   "id": 266,
+   "image": "../../Textures/GUI/Player/sindicator.png",
+   "imagewidth": 32,
+   "imageheight": 16,
+   "type": "obj_surv_indicator"
+  },
+  {
+   "id": 267,
+   "image": "../../Textures/GUI/Player/sindicator3.png",
+   "imagewidth": 32,
+   "imageheight": 16,
+   "type": "obj_surv_lampindicator"
+  },
+  {
+   "id": 268,
+   "image": "../../Textures/GUI/Player/sindicator2.png",
+   "imagewidth": 32,
+   "imageheight": 16,
+   "type": "obj_surv_ringindicator"
+  },
+  {
+   "id": 269,
+   "image": "../../Textures/Player/Survivors/Tails/tails_idle.apng",
+   "imagewidth": 37,
+   "imageheight": 34,
+   "type": "obj_tails"
+  },
+  {
+   "id": 270,
+   "image": "../../Textures/Player/Survivors/Tails/tails_ray.apng",
+   "imagewidth": 41,
+   "imageheight": 8,
+   "type": "obj_tails_projectile"
+  },
+  {
+   "id": 271,
+   "image": "../../Textures/Player/Survivors/Tails/tails_tail2.apng",
+   "imagewidth": 24,
+   "imageheight": 24,
+   "type": "obj_tails_tail"
+  },
+  {
+   "id": 272,
+   "image": "../../Textures/Special/green293.png",
+   "imagewidth": 128,
+   "imageheight": 128,
+   "type": "obj_tile"
+  },
+  {
+   "id": 273,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_unlockables"
+  },
+  {
+   "id": 274,
+   "image": "../../Textures/Zones/VolcanoValley/vv_barrel.apng",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_vv_barrel"
+  },
+  {
+   "id": 275,
+   "image": "../../Textures/Zones/VolcanoValley/vv_barrel2.apng",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_vv_barrel2"
+  },
+  {
+   "id": 276,
+   "image": "../../Textures/Zones/VolcanoValley/vv_lavacolumn.apng",
+   "imagewidth": 113,
+   "imageheight": 200,
+   "type": "obj_vv_lavacolumn"
+  },
+  {
+   "id": 277,
+   "image": "../../Textures/Zones/VolcanoValley/vv_vase.png",
+   "imagewidth": 24,
+   "imageheight": 32,
+   "type": "obj_vv_vase"
+  },
+  {
+   "id": 278,
+   "image": "../../Textures/Zones/VolcanoValley/vv_vasepiece.apng",
+   "imagewidth": 13,
+   "imageheight": 16,
+   "type": "obj_vv_vasepiece"
+  },
+  {
+   "id": 279,
+   "image": "../../Textures/Objects/warning.apng",
+   "imagewidth": 41,
+   "imageheight": 38,
+   "type": "obj_warning"
+  },
+  {
+   "id": 280,
+   "image": "no_sprite.png",
+   "imagewidth": 16,
+   "imageheight": 16,
+   "type": "obj_weed"
+  },
+  {
+   "id": 281,
+   "image": "../../Textures/Zones/Weed Zone/weed_conveyor.apng",
+   "imagewidth": 128,
+   "imageheight": 32,
+   "type": "obj_weed_conveyor"
+  },
+  {
+   "id": 282,
+   "image": "../../Textures/Zones/Weed Zone/weed_conveyor2.apng",
+   "imagewidth": 256,
+   "imageheight": 32,
+   "type": "obj_weed_conveyor2"
+  },
+  {
+   "id": 283,
+   "image": "../../Textures/Zones/Weed Zone/weed_conveyor3.apng",
+   "imagewidth": 384,
+   "imageheight": 32,
+   "type": "obj_weed_conveyor3"
+  },
+  {
+   "id": 284,
+   "image": "../../Textures/Zones/Weed Zone/weed_ghosts.apng",
+   "imagewidth": 35,
+   "imageheight": 39,
+   "type": "obj_weed_ghost"
+  },
+  {
+   "id": 285,
+   "image": "../../Textures/Zones/Weed Zone/weed_ghosts2.apng",
+   "imagewidth": 46,
+   "imageheight": 50,
+   "type": "obj_weed_ghost2"
+  },
+  {
+   "id": 286,
+   "image": "../../Textures/Zones/Weed Zone/weed_latern.apng",
+   "imagewidth": 17,
+   "imageheight": 33,
+   "type": "obj_weed_lantern"
+  },
+  {
+   "id": 287,
+   "image": "../../Textures/Zones/Weed Zone/weed_chain.png",
+   "imagewidth": 6,
+   "imageheight": 180,
+   "type": "obj_weed_lantern2"
+  },
+  {
+   "id": 288,
+   "image": "../../Textures/Zones/Weed Zone/weed_chain2.png",
+   "imagewidth": 6,
+   "imageheight": 63,
+   "type": "obj_weed_lantern3"
+  },
+  {
+   "id": 289,
+   "image": "../../Textures/Zones/Weed Zone/weed_light.apng",
+   "imagewidth": 200,
+   "imageheight": 200,
+   "type": "obj_weed_light"
+  },
+  {
+   "id": 290,
+   "image": "../../Textures/Zones/Weed Zone/selfinsert.apng",
+   "imagewidth": 47,
+   "imageheight": 54,
+   "type": "obj_weed_selfinsert"
+  },
+  {
+   "id": 291,
+   "image": "../../Textures/Zones/Weed Zone/weed_slope.png",
+   "imagewidth": 256,
+   "imageheight": 64,
+   "type": "obj_weed_slope"
+  },
+  {
+   "id": 292,
+   "image": "../../Textures/Zones/Weed Zone/weed_slope_jumpthrough.png",
+   "imagewidth": 64,
+   "imageheight": 48,
+   "type": "obj_weed_slope_jumpthrough"
+  },
+  {
+   "id": 293,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_weed_zone"
+  },
+  {
+   "id": 294,
+   "image": "../../Textures/Zones/YouCantRun/ycr_slope.png",
+   "imagewidth": 512,
+   "imageheight": 96,
+   "type": "obj_ycr_slope"
+  },
+  {
+   "id": 295,
+   "image": "../../Textures/Zones/YouCantRun/ycr_slope2.png",
+   "imagewidth": 256,
+   "imageheight": 64,
+   "type": "obj_ycr_slope2"
+  },
+  {
+   "id": 296,
+   "image": "../../Textures/Effects/smoke.apng",
+   "imagewidth": 228,
+   "imageheight": 178,
+   "type": "obj_ycr_smoke"
+  },
+  {
+   "id": 297,
+   "image": "../../Textures/Special/red.png",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_ycr_smokearea"
+  },
+  {
+   "id": 298,
+   "image": "../../Textures/Objects/Springs/yspring_up.apng",
+   "imagewidth": 32,
+   "imageheight": 32,
+   "type": "obj_yspring_up"
+  }
+ ]
+}

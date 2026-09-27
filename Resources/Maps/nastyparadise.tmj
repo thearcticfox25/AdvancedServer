@@ -1,0 +1,3352 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "infinite": false,
+  "width": 1024,
+  "height": 256,
+  "tilewidth": 4,
+  "tileheight": 4,
+  "nextlayerid": 10,
+  "nextobjectid": 199,
+  "properties": [
+    {
+      "name": "persistent",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "views_enabled",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "clear_view_background",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "name": "view_visible",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "view_x",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "view_y",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "view_width",
+      "type": "int",
+      "value": 480
+    },
+    {
+      "name": "view_height",
+      "type": "int",
+      "value": 270
+    },
+    {
+      "name": "port_x",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "port_y",
+      "type": "int",
+      "value": 0
+    },
+    {
+      "name": "port_width",
+      "type": "int",
+      "value": 480
+    },
+    {
+      "name": "port_height",
+      "type": "int",
+      "value": 270
+    }
+  ],
+  "tilesets": [
+    {
+      "firstgid": 1,
+      "source": "Tilesets/objects.tsj"
+    },
+    {
+      "firstgid": 10000,
+      "source": "Tilesets/sprites.tsj"
+    }
+  ],
+  "layers": [
+    {
+      "type": "imagelayer",
+      "id": 1,
+      "name": "Background",
+      "image": "../Textures/Zones/NastyParadise/nap.png",
+      "imagewidth": 256,
+      "imageheight": 200,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 0.0,
+      "parallaxx": 0.1,
+      "parallaxy": 0.0,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 600
+        }
+      ]
+    },
+    {
+      "type": "imagelayer",
+      "id": 2,
+      "name": "Background2",
+      "image": "../Textures/Zones/NastyParadise/nap2.png",
+      "imagewidth": 461,
+      "imageheight": 233,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 37.0,
+      "parallaxx": 0.2,
+      "parallaxy": 0.0,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 500
+        }
+      ]
+    },
+    {
+      "type": "imagelayer",
+      "id": 3,
+      "name": "Background3",
+      "image": "../Textures/Zones/NastyParadise/nap3.png",
+      "imagewidth": 381,
+      "imageheight": 93,
+      "repeatx": true,
+      "repeaty": false,
+      "offsetx": 0.0,
+      "offsety": 177.0,
+      "parallaxx": 0.3,
+      "parallaxy": 0.0,
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 400
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 4,
+      "name": "Assets_2",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 183,
+          "name": "",
+          "type": "",
+          "gid": 10608,
+          "x": 483.0,
+          "y": 739.0,
+          "width": 49.0,
+          "height": 69.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 300
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 5,
+      "name": "Assets_3",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 184,
+          "name": "",
+          "type": "",
+          "gid": 10619,
+          "x": 3727.0,
+          "y": 643.0,
+          "width": 369.0,
+          "height": 167.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 200
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 9,
+      "name": "LevelArt nap_tiles",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 197,
+          "name": "",
+          "type": "",
+          "gid": 10618,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 2048.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 198,
+          "name": "",
+          "type": "",
+          "gid": 10618,
+          "x": 2048.0,
+          "y": 0.0,
+          "width": 2048.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 101
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 6,
+      "name": "Assets_1",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 185,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2307.0,
+          "y": 931.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 186,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2369.0,
+          "y": 931.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 187,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2431.0,
+          "y": 931.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 188,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2627.0,
+          "y": 931.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 189,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2689.0,
+          "y": 931.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 190,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2751.0,
+          "y": 931.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 191,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2692.0,
+          "y": 251.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 192,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2754.0,
+          "y": 251.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 193,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2816.0,
+          "y": 251.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 194,
+          "name": "",
+          "type": "",
+          "gid": 10613,
+          "x": 2878.0,
+          "y": 251.0,
+          "width": 62.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 100
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 7,
+      "name": "Instances",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "",
+          "type": "obj_parallax",
+          "gid": 211,
+          "x": 0.0,
+          "y": -16.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 2,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 128.0,
+          "y": 328.0,
+          "width": 256.0,
+          "height": 192.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 3,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 384.0,
+          "y": 392.0,
+          "width": 128.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 4,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 0.0,
+          "y": 624.0,
+          "width": 256.0,
+          "height": 584.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 5,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 256.0,
+          "y": 816.0,
+          "width": 384.0,
+          "height": 392.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 6,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 896.0,
+          "y": 880.0,
+          "width": 648.0,
+          "height": 328.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 7,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1544.0,
+          "y": 944.0,
+          "width": 636.0,
+          "height": 268.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 8,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2176.0,
+          "y": 880.0,
+          "width": 127.99999232,
+          "height": 332.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 9,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2304.0,
+          "y": 955.0,
+          "width": 191.9999872,
+          "height": 257.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 10,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2496.0,
+          "y": 880.0,
+          "width": 127.99999232,
+          "height": 332.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 11,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2624.0,
+          "y": 955.0,
+          "width": 191.9999872,
+          "height": 257.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 12,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2816.0,
+          "y": 880.0,
+          "width": 376.0,
+          "height": 332.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 13,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3192.0,
+          "y": 816.0,
+          "width": 264.0,
+          "height": 400.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 14,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3456.0,
+          "y": 756.0,
+          "width": 128.0,
+          "height": 460.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 15,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3584.0,
+          "y": 816.0,
+          "width": 511.9999744,
+          "height": 400.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 16,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2304.0,
+          "y": 504.0,
+          "width": 127.99999232,
+          "height": 192.0000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 17,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2176.0,
+          "y": 568.0,
+          "width": 127.99999232,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 18,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2432.0,
+          "y": 568.0,
+          "width": 127.99999232,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 19,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1920.0,
+          "y": 584.0,
+          "width": 127.99999232,
+          "height": 192.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 20,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1408.0,
+          "y": 648.0,
+          "width": 512.0,
+          "height": 128.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 21,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1280.0,
+          "y": 584.0,
+          "width": 128.0,
+          "height": 192.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 22,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1280.0,
+          "y": 0.0,
+          "width": 256.0,
+          "height": 328.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 23,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2176.0,
+          "y": 200.0,
+          "width": 127.99999232,
+          "height": 192.0000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 24,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2432.0,
+          "y": 200.0,
+          "width": 256.0,
+          "height": 192.0000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 25,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2688.0,
+          "y": 275.0,
+          "width": 256.0,
+          "height": 117.0000256,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 26,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2944.0,
+          "y": 200.0,
+          "width": 128.0,
+          "height": 192.0000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 27,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3072.0,
+          "y": 264.0,
+          "width": 128.0,
+          "height": 192.0000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 28,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3440.0,
+          "y": 328.0,
+          "width": 272.0,
+          "height": 128.0000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 29,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3856.0,
+          "y": 0.0,
+          "width": 240.0,
+          "height": 648.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 30,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3712.0,
+          "y": 624.0,
+          "width": 256.0,
+          "height": 88.00000768,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 31,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 512.0,
+          "y": 392.0,
+          "width": 384.0,
+          "height": 88.0,
+          "rotation": 14.0,
+          "visible": true
+        },
+        {
+          "id": 32,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 512.0,
+          "y": 488.0,
+          "width": 384.0,
+          "height": 96.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 33,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 640.0,
+          "y": 816.0,
+          "width": 284.0,
+          "height": 88.0,
+          "rotation": 14.0,
+          "visible": true
+        },
+        {
+          "id": 34,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1664.0,
+          "y": 648.0,
+          "width": 264.0,
+          "height": 88.0,
+          "rotation": 346.0,
+          "visible": true
+        },
+        {
+          "id": 35,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1920.0,
+          "y": 357.0,
+          "width": 268.8,
+          "height": 25.6,
+          "rotation": 346.0,
+          "visible": true
+        },
+        {
+          "id": 36,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2048.0,
+          "y": 336.0,
+          "width": 128.0,
+          "height": 56.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 37,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1920.0,
+          "y": 360.0,
+          "width": 128.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 38,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 1544.0,
+          "y": 880.0,
+          "width": 276.0,
+          "height": 88.0,
+          "rotation": 14.0,
+          "visible": true
+        },
+        {
+          "id": 39,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2560.0,
+          "y": 568.0,
+          "width": 396.0,
+          "height": 24.0,
+          "rotation": 14.0,
+          "visible": true
+        },
+        {
+          "id": 40,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2560.0,
+          "y": 616.0,
+          "width": 127.99999232,
+          "height": 80.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 41,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2688.0,
+          "y": 648.0,
+          "width": 127.99999232,
+          "height": 48.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 42,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2816.0,
+          "y": 664.0,
+          "width": 127.99999232,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 43,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2936.0,
+          "y": 880.0,
+          "width": 264.0,
+          "height": 88.0,
+          "rotation": 346.0,
+          "visible": true
+        },
+        {
+          "id": 44,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3200.0,
+          "y": 264.0,
+          "width": 276.0,
+          "height": 88.0,
+          "rotation": 14.0,
+          "visible": true
+        },
+        {
+          "id": 45,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3200.0,
+          "y": 328.0,
+          "width": 240.0,
+          "height": 128.0000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 46,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 3952.301,
+          "y": 818.91693,
+          "width": 152.0,
+          "height": 88.0,
+          "rotation": 346.0,
+          "visible": true
+        },
+        {
+          "id": 47,
+          "name": "",
+          "type": "obj_spring_up",
+          "gid": 265,
+          "x": 3760.0,
+          "y": 592.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 48,
+          "name": "",
+          "type": "obj_spring_up",
+          "gid": 265,
+          "x": 48.0,
+          "y": 592.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 49,
+          "name": "",
+          "type": "obj_bspring_up",
+          "gid": 34,
+          "x": 256.0,
+          "y": 784.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 50,
+          "name": "",
+          "type": "obj_spring_up",
+          "gid": 265,
+          "x": 2352.0,
+          "y": 472.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 51,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 2348.0,
+          "y": 464.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 52,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 252.0,
+          "y": 776.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 53,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 384.0,
+          "y": 328.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 54,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 480.0,
+          "y": 328.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 55,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 576.0,
+          "y": 352.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 56,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 672.0,
+          "y": 376.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 57,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 768.0,
+          "y": 400.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 58,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 864.0,
+          "y": 424.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": 59,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 960.0,
+          "y": 456.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 6.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.0625
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.4125
+            }
+          ]
+        },
+        {
+          "id": 60,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1056.0,
+          "y": 516.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 7.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.075
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.475
+            }
+          ]
+        },
+        {
+          "id": 61,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1152.0,
+          "y": 608.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 8.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.0875
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.5375
+            }
+          ]
+        },
+        {
+          "id": 62,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1248.0,
+          "y": 692.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 9.0
+            }
+          ]
+        },
+        {
+          "id": 63,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2112.0,
+          "y": 236.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 64,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2016.0,
+          "y": 260.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 65,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1920.0,
+          "y": 284.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 66,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1824.0,
+          "y": 328.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.06
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.4
+            }
+          ]
+        },
+        {
+          "id": 67,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1728.0,
+          "y": 368.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 4.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.07
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.45
+            }
+          ]
+        },
+        {
+          "id": 68,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1632.0,
+          "y": 432.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 5.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.08
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.5
+            }
+          ]
+        },
+        {
+          "id": 69,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1536.0,
+          "y": 516.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 6.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.09
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.55
+            }
+          ]
+        },
+        {
+          "id": 70,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 1408.0,
+          "y": 584.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 1.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 7.0
+            }
+          ]
+        },
+        {
+          "id": 71,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2432.0,
+          "y": 504.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 72,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2528.0,
+          "y": 504.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 73,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2624.0,
+          "y": 528.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 74,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2720.0,
+          "y": 552.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 75,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2816.0,
+          "y": 576.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 76,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 2912.0,
+          "y": 600.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": 77,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3008.0,
+          "y": 624.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 6.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.06
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.4
+            }
+          ]
+        },
+        {
+          "id": 78,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3104.0,
+          "y": 692.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 7.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.07
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.45
+            }
+          ]
+        },
+        {
+          "id": 79,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3192.0,
+          "y": 756.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 8.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.08
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.5
+            }
+          ]
+        },
+        {
+          "id": 80,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3392.0,
+          "y": 752.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 10.0
+            }
+          ]
+        },
+        {
+          "id": 81,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3072.0,
+          "y": 200.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 82,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3168.0,
+          "y": 200.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 83,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3264.0,
+          "y": 224.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 84,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3360.0,
+          "y": 248.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 85,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3456.0,
+          "y": 264.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 86,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3552.0,
+          "y": 264.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": 87,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3648.0,
+          "y": 264.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 6.0
+            }
+          ]
+        },
+        {
+          "id": 88,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3744.0,
+          "y": 304.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 7.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.075
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.475
+            }
+          ]
+        },
+        {
+          "id": 89,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3808.0,
+          "y": 348.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 8.0
+            }
+          ]
+        },
+        {
+          "id": 90,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 2539.0,
+          "y": 168.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 91,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 3503.0,
+          "y": 296.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 92,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 176.0,
+          "y": 300.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 93,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 308.0,
+          "y": 300.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 94,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 231.0,
+          "y": 216.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 95,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 4067.0,
+          "y": 717.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 96,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3936.0,
+          "y": 750.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "id": 97,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3840.0,
+          "y": 752.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 98,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3708.0,
+          "y": 752.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 99,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3584.0,
+          "y": 752.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 100,
+          "name": "",
+          "type": "obj_nap_snowball_waypoint",
+          "gid": 203,
+          "x": 3292.0,
+          "y": 752.0,
+          "width": 64.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            },
+            {
+              "name": "wid",
+              "type": "float",
+              "value": 9.0
+            },
+            {
+              "name": "roll_speed",
+              "type": "float",
+              "value": 0.09
+            },
+            {
+              "name": "roll_frames",
+              "type": "float",
+              "value": 0.55
+            }
+          ]
+        },
+        {
+          "id": 101,
+          "name": "",
+          "type": "obj_nap_controller",
+          "gid": 196,
+          "x": 16.0,
+          "y": -16.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 102,
+          "name": "",
+          "type": "obj_nap_trigger",
+          "gid": 204,
+          "x": 2208.0,
+          "y": 696.0,
+          "width": 708.0,
+          "height": 280.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 103,
+          "name": "",
+          "type": "obj_nap_trigger",
+          "gid": 204,
+          "x": 3740.0,
+          "y": 712.0,
+          "width": 360.000032,
+          "height": 108.0000064,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 104,
+          "name": "",
+          "type": "obj_nap_trigger",
+          "gid": 204,
+          "x": 3968.0,
+          "y": 648.0,
+          "width": 132.0,
+          "height": 64.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 105,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 296.0,
+          "y": 288.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "id": 106,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 152.0,
+          "y": 596.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 107,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 180.0,
+          "y": 596.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 108,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 323.0,
+          "y": 584.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 109,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1300.0,
+          "y": 848.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 110,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1336.0,
+          "y": 848.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 111,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1376.0,
+          "y": 848.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 112,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1328.0,
+          "y": 556.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 113,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 1316.0,
+          "y": 544.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "id": 114,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 2220.0,
+          "y": 528.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 4.0
+            }
+          ]
+        },
+        {
+          "id": 115,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2232.0,
+          "y": 540.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 116,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 2136.0,
+          "y": 904.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 5.0
+            }
+          ]
+        },
+        {
+          "id": 117,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2148.0,
+          "y": 916.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 118,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1940.0,
+          "y": 916.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 119,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 1976.0,
+          "y": 916.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 120,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2016.0,
+          "y": 916.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 121,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2552.0,
+          "y": 848.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 122,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 2547.0,
+          "y": 780.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 123,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2852.0,
+          "y": 852.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 124,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 2840.0,
+          "y": 840.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 6.0
+            }
+          ]
+        },
+        {
+          "id": 125,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3512.0,
+          "y": 724.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 126,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 164.0,
+          "y": 288.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 7.0
+            }
+          ]
+        },
+        {
+          "id": 127,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3636.0,
+          "y": 292.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 128,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3596.0,
+          "y": 292.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 129,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3552.0,
+          "y": 292.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 130,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2636.0,
+          "y": 172.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 131,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2460.0,
+          "y": 172.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 132,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 2228.0,
+          "y": 172.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 133,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 2216.0,
+          "y": 160.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 8.0
+            }
+          ]
+        },
+        {
+          "id": 134,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 2023.0,
+          "y": 200.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 135,
+          "name": "",
+          "type": "obj_ringspawn",
+          "gid": 251,
+          "x": 4011.0,
+          "y": 708.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 136,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 3940.0,
+          "y": 788.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 137,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 4008.0,
+          "y": 772.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 138,
+          "name": "",
+          "type": "obj_ring_spawner",
+          "gid": 249,
+          "x": 4072.0,
+          "y": 756.0,
+          "width": 16.0,
+          "height": 16.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 139,
+          "name": "",
+          "type": "obj_nap_iceblock",
+          "gid": 197,
+          "x": 3580.0,
+          "y": 776.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "nid",
+              "type": "float",
+              "value": 9.0
+            }
+          ]
+        },
+        {
+          "id": 140,
+          "name": "",
+          "type": "obj_yspring_up",
+          "gid": 299,
+          "x": 3584.0,
+          "y": 784.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 141,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2688.0,
+          "y": 252.0,
+          "width": 256.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 142,
+          "name": "",
+          "type": "obj_damage",
+          "gid": 49,
+          "x": 2688.0,
+          "y": 250.0,
+          "width": 256.0,
+          "height": 26.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 143,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2304.0,
+          "y": 932.0,
+          "width": 192.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 144,
+          "name": "",
+          "type": "obj_damage",
+          "gid": 49,
+          "x": 2304.0,
+          "y": 930.0,
+          "width": 192.0,
+          "height": 26.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 145,
+          "name": "",
+          "type": "obj_damage",
+          "gid": 49,
+          "x": 2624.0,
+          "y": 930.0,
+          "width": 192.0,
+          "height": 26.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 146,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 2624.0,
+          "y": 932.0,
+          "width": 192.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 147,
+          "name": "",
+          "type": "obj_angleanuller_eggsafe",
+          "gid": 21,
+          "x": 3552.0,
+          "y": 736.0,
+          "width": 72.0,
+          "height": 80.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 148,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 531.0,
+          "y": 784.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 149,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 2547.0,
+          "y": 848.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 150,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 1423.0,
+          "y": 616.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 151,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 3723.0,
+          "y": 784.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 152,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 1859.0,
+          "y": 912.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 153,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 236.0,
+          "y": 296.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 154,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 2175.0,
+          "y": 168.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 155,
+          "name": "",
+          "type": "obj_spawnpoint",
+          "gid": 259,
+          "x": 1967.0,
+          "y": 552.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 156,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 3363.0,
+          "y": 784.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 157,
+          "name": "",
+          "type": "obj_exespawn",
+          "gid": 85,
+          "x": 1071.0,
+          "y": 848.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 158,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 2348.0,
+          "y": 464.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 159,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 2220.0,
+          "y": 528.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 160,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 2216.0,
+          "y": 160.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 161,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 3580.0,
+          "y": 776.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 162,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 2840.0,
+          "y": 840.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 163,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 2136.0,
+          "y": 904.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 164,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 1316.0,
+          "y": 544.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 165,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 252.0,
+          "y": 776.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 166,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 164.0,
+          "y": 288.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 167,
+          "name": "",
+          "type": "obj_angleanuller",
+          "gid": 20,
+          "x": 296.0,
+          "y": 288.0,
+          "width": 40.0,
+          "height": 40.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 168,
+          "name": "",
+          "type": "obj_angleanuller_eggsafe",
+          "gid": 21,
+          "x": 2136.0,
+          "y": 836.0,
+          "width": 84.0,
+          "height": 108.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 169,
+          "name": "",
+          "type": "obj_deathtp",
+          "gid": 58,
+          "x": 2304.0,
+          "y": 908.0,
+          "width": 192.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 170,
+          "name": "",
+          "type": "obj_deathtp_point",
+          "gid": 59,
+          "x": 2260.0,
+          "y": 848.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 171,
+          "name": "",
+          "type": "obj_deathtp_point",
+          "gid": 59,
+          "x": 2508.0,
+          "y": 848.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 172,
+          "name": "",
+          "type": "obj_deathtp_point",
+          "gid": 59,
+          "x": 2584.0,
+          "y": 848.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 173,
+          "name": "",
+          "type": "obj_deathtp_point",
+          "gid": 59,
+          "x": 2904.0,
+          "y": 848.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 174,
+          "name": "",
+          "type": "obj_deathtp",
+          "gid": 58,
+          "x": 2624.0,
+          "y": 904.0,
+          "width": 192.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 175,
+          "name": "",
+          "type": "obj_deathtp",
+          "gid": 58,
+          "x": 2688.0,
+          "y": 228.0,
+          "width": 256.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 176,
+          "name": "",
+          "type": "obj_deathtp_point",
+          "gid": 59,
+          "x": 2948.0,
+          "y": 168.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 177,
+          "name": "",
+          "type": "obj_deathtp_point",
+          "gid": 59,
+          "x": 2650.0,
+          "y": 168.0,
+          "width": 32.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 178,
+          "name": "",
+          "type": "obj_angleanuller_eggsafe",
+          "gid": 21,
+          "x": 2175.0,
+          "y": 264.0,
+          "width": 5.0,
+          "height": 32.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 179,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": -28.0,
+          "y": -24.0,
+          "width": 4156.0,
+          "height": 24.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 180,
+          "name": "",
+          "type": "obj_solid_block",
+          "gid": 255,
+          "x": 640.0,
+          "y": 880.0,
+          "width": 256.0,
+          "height": 328.0,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 181,
+          "name": "",
+          "type": "obj_solid_block2",
+          "gid": 256,
+          "x": -28.0,
+          "y": 0.0,
+          "width": 28.0,
+          "height": 1208.000128,
+          "rotation": -0.0,
+          "visible": true
+        },
+        {
+          "id": 182,
+          "name": "",
+          "type": "obj_solid_block2",
+          "gid": 256,
+          "x": 4096.0,
+          "y": 0.0,
+          "width": 32.0,
+          "height": 1216.0,
+          "rotation": -0.0,
+          "visible": true
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "type": "objectgroup",
+      "id": 8,
+      "name": "LevelArt nap_tails2",
+      "draworder": "index",
+      "opacity": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 195,
+          "name": "",
+          "type": "",
+          "gid": 10617,
+          "x": 0.0,
+          "y": 0.0,
+          "width": 2048.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "id": 196,
+          "name": "",
+          "type": "",
+          "gid": 10617,
+          "x": 2048.0,
+          "y": 0.0,
+          "width": 2048.0,
+          "height": 1024.0,
+          "rotation": -0.0,
+          "visible": true,
+          "properties": [
+            {
+              "name": "animation_speed",
+              "type": "float",
+              "value": 0.0
+            },
+            {
+              "name": "frame",
+              "type": "float",
+              "value": 1.0
+            }
+          ]
+        }
+      ],
+      "properties": [
+        {
+          "name": "depth",
+          "type": "int",
+          "value": -10
+        },
+        {
+          "name": "asset_layer",
+          "type": "bool",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

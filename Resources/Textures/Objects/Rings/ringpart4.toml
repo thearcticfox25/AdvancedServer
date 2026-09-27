@@ -1,0 +1,4 @@
+origin = [8, 5]
+bbox_mode = "manual"
+bbox = [0, 0, 15, 9]
+fps = 0
